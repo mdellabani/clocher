@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PostTypeBadge } from "@/components/post-type-badge";
 import { CommentSection } from "@/components/comment-section";
 import { RsvpButtons } from "@/components/rsvp-buttons";
+import { DeletePostButton } from "@/components/delete-post-button";
 
 export default async function PostDetailPage({
   params,
@@ -45,6 +46,7 @@ export default async function PostDetailPage({
   }
 
   const isEvent = post.type === "evenement";
+  const canDelete = post.author_id === user.id || profile.role === "admin";
   const images = (post.post_images ?? []) as {
     id: string;
     storage_path: string;
@@ -63,15 +65,18 @@ export default async function PostDetailPage({
             )}
           </div>
           <h1 className="text-2xl font-bold leading-tight">{post.title}</h1>
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            <span>{post.profiles?.display_name ?? "Anonyme"}</span>
-            <span>
-              {new Date(post.created_at).toLocaleDateString("fr-FR", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <span>{post.profiles?.display_name ?? "Anonyme"}</span>
+              <span>
+                {new Date(post.created_at).toLocaleDateString("fr-FR", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </span>
+            </div>
+            {canDelete && <DeletePostButton postId={id} />}
           </div>
         </CardHeader>
 

@@ -5,11 +5,13 @@ import { createClient } from "@/lib/supabase/server";
 import {
   createComment,
   deleteComment,
+  deletePost,
   setRsvp,
   removeRsvp,
   createCommentSchema,
 } from "@rural-community-platform/shared";
 import type { RsvpStatus } from "@rural-community-platform/shared";
+import { redirect } from "next/navigation";
 
 export async function addCommentAction(postId: string, body: string) {
   const supabase = await createClient();
@@ -54,6 +56,13 @@ export async function setRsvpAction(
   if (error) return { error: "Erreur lors de l'enregistrement" };
   revalidatePath(`/app/posts/${postId}`);
   return { error: null };
+}
+
+export async function deletePostAction(postId: string) {
+  const supabase = await createClient();
+  const { error } = await deletePost(supabase, postId);
+  if (error) return { error: "Erreur lors de la suppression" };
+  redirect("/app/feed");
 }
 
 export async function removeRsvpAction(postId: string) {

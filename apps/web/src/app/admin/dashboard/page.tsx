@@ -10,8 +10,7 @@ import { SummaryCards } from "@/components/admin/summary-cards";
 import { MiniCalendar } from "@/components/admin/mini-calendar";
 import { ThemeInjector } from "@/components/theme-injector";
 import type { PostType } from "@rural-community-platform/shared";
-import Link from "next/link";
-import { Plus } from "lucide-react";
+import { CreatePostDialog } from "@/components/create-post-dialog";
 
 export default async function AdminDashboardPage({
   searchParams,
@@ -86,17 +85,7 @@ export default async function AdminDashboardPage({
 
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-[var(--foreground)]">Administration</h1>
-        <Link
-          href="/app/feed"
-          className="inline-flex items-center gap-2 rounded-[14px] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-opacity hover:opacity-90"
-          style={{
-            background:
-              "linear-gradient(135deg, var(--theme-gradient-1), var(--theme-gradient-2), var(--theme-gradient-3))",
-          }}
-        >
-          <Plus size={16} />
-          Publier
-        </Link>
+        <CreatePostDialog isAdmin={true} />
       </div>
 
       <SummaryCards

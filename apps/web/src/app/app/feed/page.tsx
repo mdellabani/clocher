@@ -54,7 +54,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
         </Link>
       </div>
       {posts && posts.length > 0 ? (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {(posts as Post[]).map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
