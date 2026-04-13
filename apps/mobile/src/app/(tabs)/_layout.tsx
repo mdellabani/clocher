@@ -1,21 +1,31 @@
 import { Tabs } from "expo-router";
-import { useColorScheme } from "react-native";
+import { House, CalendarDots, ChatTeardropDots, BellRinging, UserCircle } from "phosphor-react-native";
+import { useTheme } from "@/lib/theme-context";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useTheme();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colorScheme === "dark" ? "#fafafa" : "#18181b",
-        tabBarInactiveTintColor: colorScheme === "dark" ? "#71717a" : "#a1a1aa",
+        tabBarActiveTintColor: theme.primary,
+        tabBarInactiveTintColor: theme.muted,
+        tabBarLabelStyle: {
+          fontFamily: "DMSans_500Medium",
+          fontSize: 11,
+        },
         tabBarStyle: {
-          backgroundColor: colorScheme === "dark" ? "#09090b" : "#ffffff",
+          backgroundColor: "#FFFFFF",
+          borderTopWidth: 1,
+          borderTopColor: "#F0E6D8",
         },
         headerStyle: {
-          backgroundColor: colorScheme === "dark" ? "#09090b" : "#ffffff",
+          backgroundColor: "#FFFFFF",
         },
-        headerTintColor: colorScheme === "dark" ? "#fafafa" : "#18181b",
+        headerTintColor: "#18181b",
+        headerTitleStyle: {
+          fontFamily: "DMSans_600SemiBold",
+        },
       }}
     >
       <Tabs.Screen
@@ -23,6 +33,10 @@ export default function TabLayout() {
         options={{
           title: "Fil",
           tabBarLabel: "Fil",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <House size={size} color={color} weight="fill" />
+          ),
         }}
       />
       <Tabs.Screen
@@ -30,13 +44,29 @@ export default function TabLayout() {
         options={{
           title: "Événements",
           tabBarLabel: "Événements",
+          tabBarIcon: ({ color, size }) => (
+            <CalendarDots size={size} color={color} weight="fill" />
+          ),
         }}
       />
       <Tabs.Screen
-        name="create"
+        name="exchanges"
         options={{
-          title: "Publier",
-          tabBarLabel: "Publier",
+          title: "Échanges",
+          tabBarLabel: "Échanges",
+          tabBarIcon: ({ color, size }) => (
+            <ChatTeardropDots size={size} color={color} weight="fill" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="alerts"
+        options={{
+          title: "Alertes",
+          tabBarLabel: "Alertes",
+          tabBarIcon: ({ color, size }) => (
+            <BellRinging size={size} color={color} weight="fill" />
+          ),
         }}
       />
       <Tabs.Screen
@@ -44,8 +74,12 @@ export default function TabLayout() {
         options={{
           title: "Profil",
           tabBarLabel: "Profil",
+          tabBarIcon: ({ color, size }) => (
+            <UserCircle size={size} color={color} weight="fill" />
+          ),
         }}
       />
+      <Tabs.Screen name="create" options={{ href: null, title: "Publier" }} />
       <Tabs.Screen name="index" options={{ href: null }} />
     </Tabs>
   );
