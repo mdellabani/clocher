@@ -89,21 +89,19 @@ export function PostManagement({ posts, totalCount, page, perPage }: PostManagem
                 key={post.id}
                 className="flex items-center justify-between gap-4 rounded-xl border border-[var(--border)] px-4 py-3"
               >
-                <div className="flex min-w-0 flex-1 items-start gap-3">
-                  <PostTypeBadge type={post.type} />
-                  <div className="min-w-0">
-                    <p className="truncate font-medium text-[var(--foreground)]">{post.title}</p>
-                    <p className="text-xs text-[var(--muted-foreground)]">
-                      {post.profiles?.display_name ?? "Inconnu"} &middot;{" "}
-                      {new Date(post.created_at).toLocaleDateString("fr-FR", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </p>
-                  </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-medium text-[var(--foreground)]">{post.title}</p>
+                  <p className="text-xs text-[var(--muted-foreground)]">
+                    {post.profiles?.display_name ?? "Inconnu"} &middot;{" "}
+                    {new Date(post.created_at).toLocaleDateString("fr-FR", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </p>
                 </div>
-                <div className="flex shrink-0 gap-2">
+                <div className="flex shrink-0 items-center gap-2">
+                  <PostTypeBadge type={post.type} />
                   <button
                     onClick={() => handleTogglePin(post.id, post.is_pinned)}
                     className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
