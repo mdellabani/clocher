@@ -1,10 +1,18 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "./supabase";
+import { ThemeProvider } from "./theme-context";
 import type { Session } from "@supabase/supabase-js";
 import type { Profile } from "@rural-community-platform/shared";
 
 type ProfileWithCommune = Profile & {
-  communes: { name: string; slug: string; epci_id: string | null };
+  communes: {
+    name: string;
+    slug: string;
+    epci_id: string | null;
+    theme: string | null;
+    motto: string | null;
+    code_postal: string | null;
+  };
 };
 
 type AuthState = {
@@ -50,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function loadProfile(userId: string) {
     const { data } = await supabase
       .from("profiles")
-      .select("*, communes(name, slug, epci_id)")
+      .select("*, communes(name, slug, epci_id, theme, motto, code_postal)")
       .eq("id", userId)
       .single();
     setProfile(data as ProfileWithCommune | null);
@@ -58,16 +66,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider
-      value={{
-        session,
-        profile,
-        loading,
-        isAdmin: profile?.role === "admin",
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <ThemeProvider theme={profile?.communes?.theme ?? null}>
+      <AuthContext.Provider
+        value={{
+          session,
+          profile,
+          loading,
+          isAdmin: profile?.role === "admin",
+        }}
+      >
+        {children}
+      </AuthContext.Provider>
+    </ThemeProvider>
   );
 }
 
