@@ -68,6 +68,12 @@ export function NavBar() {
             >
               Fil
             </Link>
+            <Link
+              href="/app/infos-pratiques"
+              className="text-sm text-white/70 transition-colors hover:text-white"
+            >
+              Infos pratiques
+            </Link>
             {isAdmin && (
               <Link
                 href="/admin/dashboard"
