@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { House, CalendarDots, ChatTeardropDots, BellRinging, UserCircle } from "phosphor-react-native";
+import { House, CalendarDots, ChatTeardropDots, BellRinging, Info } from "phosphor-react-native";
 import { useTheme } from "@/lib/theme-context";
 
 export default function TabLayout() {
@@ -40,22 +40,22 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="events"
-        options={{
-          title: "Événements",
-          tabBarLabel: "Événements",
-          tabBarIcon: ({ color, size }) => (
-            <CalendarDots size={size} color={color} weight="fill" />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="exchanges"
         options={{
           title: "Échanges",
           tabBarLabel: "Échanges",
           tabBarIcon: ({ color, size }) => (
             <ChatTeardropDots size={size} color={color} weight="fill" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="events"
+        options={{
+          title: "Événements",
+          tabBarLabel: "Événements",
+          tabBarIcon: ({ color, size }) => (
+            <CalendarDots size={size} color={color} weight="fill" />
           ),
         }}
       />
@@ -70,12 +70,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="infos-pratiques"
         options={{
-          title: "Profil",
-          tabBarLabel: "Profil",
+          title: "Infos pratiques",
+          tabBarLabel: "Infos",
           tabBarIcon: ({ color, size }) => (
-            <UserCircle size={size} color={color} weight="fill" />
+            <Info size={size} color={color} weight="fill" />
           ),
         }}
       />

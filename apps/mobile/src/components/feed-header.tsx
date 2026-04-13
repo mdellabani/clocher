@@ -1,11 +1,13 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 import { useTheme } from "@/lib/theme-context";
 import { useAuth } from "@/lib/auth-context";
 
 export function FeedHeader() {
   const theme = useTheme();
   const { profile } = useAuth();
+  const router = useRouter();
 
   const communeName = profile?.communes?.name ?? "Ma Commune";
   const codePostal = profile?.communes?.code_postal;
@@ -33,9 +35,13 @@ export function FeedHeader() {
               </Text>
             )}
           </View>
-          <View style={styles.avatar}>
+          <TouchableOpacity
+            style={styles.avatar}
+            onPress={() => router.push("/profile")}
+            activeOpacity={0.8}
+          >
             <Text style={styles.avatarText}>{initials}</Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {motto && (
