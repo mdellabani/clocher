@@ -65,6 +65,9 @@ export default function RootLayout() {
               headerTitleStyle: {
                 fontFamily: "DMSans_600SemiBold",
               },
+              gestureEnabled: true,
+              fullScreenGestureEnabled: true,
+              animation: "slide_from_right",
             }}
           >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
