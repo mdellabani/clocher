@@ -1,9 +1,12 @@
 import { Stack, useSegments, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useColorScheme } from "react-native";
 import { useEffect } from "react";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
+import { useFonts, DMSans_400Regular, DMSans_500Medium, DMSans_600SemiBold } from "@expo-google-fonts/dm-sans";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,7 +40,17 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 }
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const [fontsLoaded] = useFonts({
+    DMSans_400Regular,
+    DMSans_500Medium,
+    DMSans_600SemiBold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) SplashScreen.hideAsync();
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) return null;
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -46,9 +59,12 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerStyle: {
-                backgroundColor: colorScheme === "dark" ? "#09090b" : "#ffffff",
+                backgroundColor: "#ffffff",
               },
-              headerTintColor: colorScheme === "dark" ? "#fafafa" : "#09090b",
+              headerTintColor: "#18181b",
+              headerTitleStyle: {
+                fontFamily: "DMSans_600SemiBold",
+              },
             }}
           >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
