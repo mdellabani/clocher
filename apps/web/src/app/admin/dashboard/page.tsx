@@ -9,23 +9,21 @@ import { PostManagement } from "@/components/admin/post-management";
 import { SummaryCards } from "@/components/admin/summary-cards";
 import { MiniCalendar } from "@/components/admin/mini-calendar";
 import { ThemeInjector } from "@/components/theme-injector";
+import { FeedFilters } from "@/components/feed-filters";
 import type { PostType } from "@rural-community-platform/shared";
 import { CreatePostDialog } from "@/components/create-post-dialog";
 
 export default async function AdminDashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; perPage?: string; type?: string; date?: string }>;
+  searchParams: Promise<{ page?: string; perPage?: string; types?: string; date?: string }>;
 }) {
   const params = await searchParams;
   const page = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
   const perPage = [10, 25, 50].includes(Number(params.perPage)) ? Number(params.perPage) : 10;
-  const typeFilter = params.type && ["annonce", "evenement", "entraide", "discussion"].includes(params.type)
-    ? params.type
-    : null;
-  const dateFilter = params.date && ["today", "week", "month"].includes(params.date)
-    ? params.date
-    : null;
+  const typesParam = params.types ?? "";
+  const selectedTypes = typesParam ? typesParam.split(",").filter(Boolean) : [];
+  const dateFilter = params.date ?? "";
 
   const supabase = await createClient();
   const {
@@ -66,7 +64,7 @@ export default async function AdminDashboardPage({
     .from("posts")
     .select("id", { count: "exact", head: true })
     .eq("commune_id", profile.commune_id);
-  if (typeFilter) countQuery = countQuery.eq("type", typeFilter);
+  if (selectedTypes.length > 0) countQuery = countQuery.in("type", selectedTypes);
   if (dateSince) countQuery = countQuery.gte("created_at", dateSince);
   const { count: totalCount } = await countQuery;
 
@@ -79,7 +77,7 @@ export default async function AdminDashboardPage({
     .eq("commune_id", profile.commune_id)
     .order("created_at", { ascending: false })
     .range(from, to);
-  if (typeFilter) postsQuery = postsQuery.eq("type", typeFilter);
+  if (selectedTypes.length > 0) postsQuery = postsQuery.in("type", selectedTypes);
   if (dateSince) postsQuery = postsQuery.gte("created_at", dateSince);
   const { data: posts } = await postsQuery;
 
@@ -115,6 +113,8 @@ export default async function AdminDashboardPage({
       <MiniCalendar events={calendarEvents} />
 
       <PendingUsers users={pendingUsers ?? []} />
+      <FeedFilters types={selectedTypes} date={dateFilter} />
+
       <PostManagement
         posts={
           (posts ?? []).map((p) => ({
@@ -129,8 +129,6 @@ export default async function AdminDashboardPage({
         totalCount={totalCount ?? 0}
         page={page}
         perPage={perPage}
-        typeFilter={typeFilter}
-        dateFilter={dateFilter}
       />
     </div>
   );

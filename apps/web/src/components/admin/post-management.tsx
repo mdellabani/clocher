@@ -3,9 +3,8 @@
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { PostTypeBadge } from "@/components/post-type-badge";
 import { togglePinAction, deletePostAction } from "@/app/admin/dashboard/actions";
-import { POST_TYPE_LABELS } from "@rural-community-platform/shared";
 import type { PostType } from "@rural-community-platform/shared";
-import { Pin, Trash2, ChevronLeft, ChevronRight, Filter } from "lucide-react";
+import { Pin, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PostItem {
   id: string;
@@ -21,26 +20,11 @@ interface PostManagementProps {
   totalCount: number;
   page: number;
   perPage: number;
-  typeFilter: string | null;
-  dateFilter: string | null;
 }
 
 const PER_PAGE_OPTIONS = [10, 25, 50];
-const TYPE_OPTIONS: Array<{ value: string; label: string }> = [
-  { value: "", label: "Tous les types" },
-  { value: "annonce", label: POST_TYPE_LABELS.annonce },
-  { value: "evenement", label: POST_TYPE_LABELS.evenement },
-  { value: "entraide", label: POST_TYPE_LABELS.entraide },
-  { value: "discussion", label: POST_TYPE_LABELS.discussion },
-];
-const DATE_OPTIONS: Array<{ value: string; label: string }> = [
-  { value: "", label: "Toutes les dates" },
-  { value: "today", label: "Aujourd'hui" },
-  { value: "week", label: "Cette semaine" },
-  { value: "month", label: "Ce mois" },
-];
 
-export function PostManagement({ posts, totalCount, page, perPage, typeFilter, dateFilter }: PostManagementProps) {
+export function PostManagement({ posts, totalCount, page, perPage }: PostManagementProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -48,16 +32,13 @@ export function PostManagement({ posts, totalCount, page, perPage, typeFilter, d
   function buildUrl(params: Record<string, string | number | null>) {
     const sp = new URLSearchParams(searchParams.toString());
     for (const [key, value] of Object.entries(params)) {
-      if (value === null || value === "" || value === 1) {
+      if (value === null || value === "") {
         sp.delete(key);
       } else {
         sp.set(key, String(value));
       }
     }
-    // Reset page when changing filters
-    if ("type" in params || "date" in params || "perPage" in params) {
-      sp.delete("page");
-    }
+    if ("perPage" in params) sp.delete("page");
     const qs = sp.toString();
     return qs ? `${pathname}?${qs}` : pathname;
   }
@@ -80,53 +61,25 @@ export function PostManagement({ posts, totalCount, page, perPage, typeFilter, d
 
   return (
     <div className="rounded-[14px] bg-white px-5 py-4 shadow-[0_1px_6px_rgba(160,130,90,0.06)]">
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <h2 className="text-base font-semibold text-[var(--foreground)]">
           Publications ({totalCount})
         </h2>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Type filter */}
-          <div className="flex items-center gap-1.5">
-            <Filter size={14} className="text-[var(--theme-muted)]" />
-            <select
-              value={typeFilter ?? ""}
-              onChange={(e) => router.push(buildUrl({ type: e.target.value }))}
-              className="rounded-lg border border-[var(--border)] bg-white px-2.5 py-1.5 text-xs font-medium text-[var(--foreground)] outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
-            >
-              {TYPE_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Date filter */}
-          <select
-            value={dateFilter ?? ""}
-            onChange={(e) => router.push(buildUrl({ date: e.target.value }))}
-            className="rounded-lg border border-[var(--border)] bg-white px-2.5 py-1.5 text-xs font-medium text-[var(--foreground)] outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
-          >
-            {DATE_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
-
-          {/* Per page */}
-          <select
-            value={perPage}
-            onChange={(e) => router.push(buildUrl({ perPage: Number(e.target.value) }))}
-            className="rounded-lg border border-[var(--border)] bg-white px-2.5 py-1.5 text-xs font-medium text-[var(--foreground)] outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
-          >
-            {PER_PAGE_OPTIONS.map((n) => (
-              <option key={n} value={n}>{n} par page</option>
-            ))}
-          </select>
-        </div>
+        <select
+          value={perPage}
+          onChange={(e) => router.push(buildUrl({ perPage: Number(e.target.value) }))}
+          className="rounded-lg border border-[var(--border)] bg-white px-2.5 py-1.5 text-xs font-medium text-[var(--foreground)] outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
+        >
+          {PER_PAGE_OPTIONS.map((n) => (
+            <option key={n} value={n}>{n} par page</option>
+          ))}
+        </select>
       </div>
 
       {posts.length === 0 ? (
         <p className="py-8 text-center text-sm text-[var(--muted-foreground)]">
-          Aucune publication{typeFilter ? ` de type "${POST_TYPE_LABELS[typeFilter as PostType]}"` : ""}.
+          Aucune publication pour cette sélection.
         </p>
       ) : (
         <>
