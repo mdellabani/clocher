@@ -15,8 +15,9 @@
     "db:reset": "supabase db reset"
   },
   "dependencies": {
-    "@rural-community-platform/shared": "workspace:*",
+    "@phosphor-icons/react": "^2.1.10",
     "@radix-ui/react-slot": "^1.2.0",
+    "@rural-community-platform/shared": "workspace:*",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.49.0",
     "class-variance-authority": "^0.7.0",
