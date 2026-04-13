@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   FlatList,
   RefreshControl,
@@ -14,6 +14,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
 import { getPostsByType } from "@rural-community-platform/shared";
 import type { Post } from "@rural-community-platform/shared";
+import { EventCalendar } from "@/components/event-calendar";
 
 export default function EventsScreen() {
   const { profile } = useAuth();
@@ -22,6 +23,8 @@ export default function EventsScreen() {
   const [events, setEvents] = useState<Post[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const listRef = useRef<FlatList<Post>>(null);
 
   const loadEvents = useCallback(async () => {
     if (!profile?.commune_id) return;
@@ -62,6 +65,39 @@ export default function EventsScreen() {
     });
   }
 
+  // Called by the calendar when a day with events is tapped.
+  // Toggles date selection for filtering; also scrolls to first event as fallback.
+  const handleDayPress = useCallback(
+    (eventId: string, dateString: string) => {
+      if (selectedDate === dateString) {
+        setSelectedDate(null);
+      } else {
+        setSelectedDate(dateString);
+      }
+      // Also scroll to first event on that day
+      const index = events.findIndex((e) => e.id === eventId);
+      if (index >= 0 && listRef.current) {
+        listRef.current.scrollToIndex({ index, animated: true, viewPosition: 0 });
+      }
+    },
+    [events, selectedDate]
+  );
+
+  // Build calendar events from the loaded posts
+  const calendarEvents = events
+    .filter((e) => e.event_date != null)
+    .map((e) => ({ id: e.id, date: e.event_date! }));
+
+  // Filter events by selected date
+  const filteredEvents = selectedDate
+    ? events.filter((e) => {
+        if (!e.event_date) return false;
+        const d = new Date(e.event_date);
+        const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+        return dateStr === selectedDate;
+      })
+    : events;
+
   if (loading) {
     return (
       <View style={[styles.center, { backgroundColor: theme.background }]}>
@@ -72,13 +108,41 @@ export default function EventsScreen() {
 
   return (
     <FlatList
-      data={events}
+      ref={listRef}
+      data={filteredEvents}
       keyExtractor={(item) => item.id}
       style={{ backgroundColor: theme.background }}
-      contentContainerStyle={events.length === 0 ? styles.emptyContainer : styles.list}
+      contentContainerStyle={filteredEvents.length === 0 ? styles.emptyContainer : styles.list}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
+      ListHeaderComponent={
+        <View>
+          <EventCalendar
+            events={calendarEvents}
+            onDayPress={handleDayPress}
+            selectedDate={selectedDate}
+          />
+          {selectedDate && (
+            <TouchableOpacity
+              style={[styles.clearFilterChip, { backgroundColor: theme.pinBg }]}
+              onPress={() => setSelectedDate(null)}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.clearFilterText, { color: theme.primary }]}>
+                Voir tout
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      }
+      onScrollToIndexFailed={(info) => {
+        // Fallback: scroll to end if index not yet measured
+        listRef.current?.scrollToOffset({
+          offset: info.averageItemLength * info.index,
+          animated: true,
+        });
+      }}
       renderItem={({ item }) => (
         <TouchableOpacity
           style={styles.card}
@@ -200,5 +264,17 @@ const styles = StyleSheet.create({
   rsvpCount: {
     fontFamily: "DMSans_600SemiBold",
     fontSize: 12,
+  },
+  clearFilterChip: {
+    alignSelf: "center",
+    marginTop: 8,
+    marginBottom: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  clearFilterText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 13,
   },
 });

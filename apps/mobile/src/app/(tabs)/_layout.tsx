@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { House, CalendarDots, ChatTeardropDots, BellRinging, Info } from "phosphor-react-native";
+import { House, CalendarDots, SquaresFour, BellRinging, Info } from "phosphor-react-native";
 import { useTheme } from "@/lib/theme-context";
 
 export default function TabLayout() {
@@ -42,10 +42,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="exchanges"
         options={{
-          title: "Échanges",
-          tabBarLabel: "Échanges",
+          title: "Mon espace",
+          tabBarLabel: "Mon espace",
           tabBarIcon: ({ color, size }) => (
-            <ChatTeardropDots size={size} color={color} weight="fill" />
+            <SquaresFour size={size} color={color} weight="fill" />
           ),
         }}
       />
