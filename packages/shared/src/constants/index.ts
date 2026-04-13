@@ -1,2 +1,2 @@
-// Shared constants used by both web and mobile apps
-export const APP_NAME = "rural-community-platform";
+export { POST_TYPE_LABELS, POST_TYPE_COLORS, POST_TYPE_ICONS } from "./post-types";
+export { ROLE_LABELS, ADMIN_ROLES } from "./roles";

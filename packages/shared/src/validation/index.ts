@@ -1,4 +1,4 @@
-import { z } from "zod";
-
-// Shared validation schemas used by both web and mobile apps
-export const emailSchema = z.string().email("Invalid email address");
+export { createPostSchema, createCommentSchema } from "./post.schema";
+export type { CreatePostFormData, CreateCommentFormData } from "./post.schema";
+export { updateProfileSchema, signupSchema } from "./profile.schema";
+export type { UpdateProfileFormData, SignupFormData } from "./profile.schema";
