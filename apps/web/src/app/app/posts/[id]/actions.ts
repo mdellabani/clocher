@@ -1,0 +1,69 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { createClient } from "@/lib/supabase/server";
+import {
+  createComment,
+  deleteComment,
+  setRsvp,
+  removeRsvp,
+  createCommentSchema,
+} from "@rural-community-platform/shared";
+import type { RsvpStatus } from "@rural-community-platform/shared";
+
+export async function addCommentAction(postId: string, body: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Non authentifié" };
+  const parsed = createCommentSchema.safeParse({ body });
+  if (!parsed.success) return { error: parsed.error.errors[0].message };
+  const { error } = await createComment(
+    supabase,
+    postId,
+    user.id,
+    parsed.data.body
+  );
+  if (error) return { error: "Erreur lors de l'ajout du commentaire" };
+  revalidatePath(`/app/posts/${postId}`);
+  return { error: null };
+}
+
+export async function deleteCommentAction(
+  commentId: string,
+  postId: string
+) {
+  const supabase = await createClient();
+  const { error } = await deleteComment(supabase, commentId);
+  if (error) return { error: "Erreur lors de la suppression" };
+  revalidatePath(`/app/posts/${postId}`);
+  return { error: null };
+}
+
+export async function setRsvpAction(
+  postId: string,
+  status: "going" | "maybe" | "not_going"
+) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Non authentifié" };
+  const { error } = await setRsvp(supabase, postId, user.id, status as RsvpStatus);
+  if (error) return { error: "Erreur lors de l'enregistrement" };
+  revalidatePath(`/app/posts/${postId}`);
+  return { error: null };
+}
+
+export async function removeRsvpAction(postId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Non authentifié" };
+  const { error } = await removeRsvp(supabase, postId, user.id);
+  if (error) return { error: "Erreur" };
+  revalidatePath(`/app/posts/${postId}`);
+  return { error: null };
+}
