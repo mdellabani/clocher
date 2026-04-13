@@ -24,7 +24,7 @@ export async function createPostAction(formData: FormData) {
     title: formData.get("title") as string,
     body: formData.get("body") as string,
     type: formData.get("type") as string,
-    event_date: (formData.get("event_date") as string) || null,
+    event_date: formData.get("event_date") ? new Date(formData.get("event_date") as string).toISOString() : null,
     event_location: (formData.get("event_location") as string) || null,
     epci_visible: formData.get("epci_visible") === "true",
   };

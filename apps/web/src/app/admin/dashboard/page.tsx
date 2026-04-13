@@ -13,7 +13,18 @@ import type { PostType } from "@rural-community-platform/shared";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 
-export default async function AdminDashboardPage() {
+export default async function AdminDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; perPage?: string; type?: string }>;
+}) {
+  const params = await searchParams;
+  const page = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
+  const perPage = [10, 25, 50].includes(Number(params.perPage)) ? Number(params.perPage) : 10;
+  const typeFilter = params.type && ["annonce", "evenement", "entraide", "discussion"].includes(params.type)
+    ? params.type
+    : null;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -26,19 +37,34 @@ export default async function AdminDashboardPage() {
 
   const { data: pendingUsers } = await getPendingUsers(supabase, profile.commune_id);
 
-  const { data: posts } = await supabase
+  // Count posts this week (for summary card)
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  const { count: postsThisWeek } = await supabase
+    .from("posts")
+    .select("id", { count: "exact", head: true })
+    .eq("commune_id", profile.commune_id)
+    .gte("created_at", oneWeekAgo.toISOString());
+
+  // Count total posts (with optional type filter)
+  let countQuery = supabase
+    .from("posts")
+    .select("id", { count: "exact", head: true })
+    .eq("commune_id", profile.commune_id);
+  if (typeFilter) countQuery = countQuery.eq("type", typeFilter);
+  const { count: totalCount } = await countQuery;
+
+  // Fetch paginated posts
+  const from = (page - 1) * perPage;
+  const to = from + perPage - 1;
+  let postsQuery = supabase
     .from("posts")
     .select("id, title, type, is_pinned, created_at, profiles!author_id(display_name)")
     .eq("commune_id", profile.commune_id)
     .order("created_at", { ascending: false })
-    .limit(50);
-
-  // Count posts this week
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  const postsThisWeek = (posts ?? []).filter(
-    (p) => new Date(p.created_at) >= oneWeekAgo
-  ).length;
+    .range(from, to);
+  if (typeFilter) postsQuery = postsQuery.eq("type", typeFilter);
+  const { data: posts } = await postsQuery;
 
   // Extract events for calendar
   const { data: eventPosts } = await supabase
@@ -75,7 +101,7 @@ export default async function AdminDashboardPage() {
 
       <SummaryCards
         pendingCount={pendingUsers?.length ?? 0}
-        postsThisWeek={postsThisWeek}
+        postsThisWeek={postsThisWeek ?? 0}
         openReports={0}
       />
 
@@ -93,6 +119,10 @@ export default async function AdminDashboardPage() {
             profiles: Array.isArray(p.profiles) ? p.profiles[0] ?? null : p.profiles,
           }))
         }
+        totalCount={totalCount ?? 0}
+        page={page}
+        perPage={perPage}
+        typeFilter={typeFilter}
       />
     </div>
   );
