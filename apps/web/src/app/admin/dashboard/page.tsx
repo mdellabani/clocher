@@ -7,7 +7,6 @@ import {
 import { PendingUsers } from "@/components/admin/pending-users";
 import { PostManagement } from "@/components/admin/post-management";
 import { SummaryCards } from "@/components/admin/summary-cards";
-import { MiniCalendar } from "@/components/admin/mini-calendar";
 import { ThemeInjector } from "@/components/theme-injector";
 import { FeedFilters } from "@/components/feed-filters";
 import type { PostType } from "@rural-community-platform/shared";
@@ -81,20 +80,6 @@ export default async function AdminDashboardPage({
   if (dateSince) postsQuery = postsQuery.gte("created_at", dateSince);
   const { data: posts } = await postsQuery;
 
-  // Extract events for calendar
-  const { data: eventPosts } = await supabase
-    .from("posts")
-    .select("title, type, event_date")
-    .eq("commune_id", profile.commune_id)
-    .eq("type", "evenement")
-    .not("event_date", "is", null);
-
-  const calendarEvents = (eventPosts ?? []).map((e) => ({
-    date: e.event_date!,
-    title: e.title,
-    type: e.type,
-  }));
-
   return (
     <div className="space-y-6">
       <ThemeInjector theme={profile.communes?.theme} />
@@ -109,8 +94,6 @@ export default async function AdminDashboardPage({
         postsThisWeek={postsThisWeek ?? 0}
         openReports={0}
       />
-
-      <MiniCalendar events={calendarEvents} />
 
       <PendingUsers users={pendingUsers ?? []} />
       <FeedFilters types={selectedTypes} date={dateFilter} />
