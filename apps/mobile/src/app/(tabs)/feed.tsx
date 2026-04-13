@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   FlatList,
   RefreshControl,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -15,9 +16,52 @@ import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
 import { PostCard } from "@/components/post-card";
 import { FeedHeader } from "@/components/feed-header";
-import { QuickActions } from "@/components/quick-actions";
-import { getPosts, getEpciPosts } from "@rural-community-platform/shared";
-import type { Post } from "@rural-community-platform/shared";
+import { getPosts, getEpciPosts, POST_TYPE_LABELS } from "@rural-community-platform/shared";
+import type { Post, PostType } from "@rural-community-platform/shared";
+
+// --- Filter options ---
+
+const TYPE_OPTIONS: { value: PostType; label: string }[] = [
+  { value: "annonce", label: POST_TYPE_LABELS.annonce },
+  { value: "evenement", label: POST_TYPE_LABELS.evenement },
+  { value: "entraide", label: POST_TYPE_LABELS.entraide },
+  { value: "discussion", label: POST_TYPE_LABELS.discussion },
+];
+
+type DateFilter = "" | "today" | "week" | "month";
+
+const DATE_OPTIONS: { value: DateFilter; label: string }[] = [
+  { value: "", label: "Toutes" },
+  { value: "today", label: "Aujourd'hui" },
+  { value: "week", label: "Cette semaine" },
+  { value: "month", label: "Ce mois" },
+];
+
+function isWithinDate(dateFilter: DateFilter, createdAt: string): boolean {
+  if (!dateFilter) return true;
+  const now = new Date();
+  const postDate = new Date(createdAt);
+  if (dateFilter === "today") {
+    return (
+      postDate.getFullYear() === now.getFullYear() &&
+      postDate.getMonth() === now.getMonth() &&
+      postDate.getDate() === now.getDate()
+    );
+  }
+  if (dateFilter === "week") {
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+    return postDate >= startOfWeek;
+  }
+  if (dateFilter === "month") {
+    return (
+      postDate.getFullYear() === now.getFullYear() &&
+      postDate.getMonth() === now.getMonth()
+    );
+  }
+  return true;
+}
 
 export default function FeedScreen() {
   const { profile } = useAuth();
@@ -27,7 +71,9 @@ export default function FeedScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [scope, setScope] = useState<"commune" | "epci">("commune");
-  const [typeFilter, setTypeFilter] = useState<string | null>(null);
+  // Multi-select type filter (empty set = all)
+  const [activeTypes, setActiveTypes] = useState<Set<PostType>>(new Set());
+  const [dateFilter, setDateFilter] = useState<DateFilter>("");
 
   const loadPosts = useCallback(async () => {
     if (!profile?.commune_id) return;
@@ -75,9 +121,26 @@ export default function FeedScreen() {
     setRefreshing(false);
   }
 
-  const filteredPosts = typeFilter
-    ? posts.filter((p) => p.type === typeFilter)
-    : posts;
+  function toggleType(type: PostType) {
+    setActiveTypes((prev) => {
+      const next = new Set(prev);
+      if (next.has(type)) {
+        next.delete(type);
+      } else {
+        next.add(type);
+      }
+      return next;
+    });
+  }
+
+  const filteredPosts = useMemo(() => {
+    return posts.filter((p) => {
+      const typeMatch =
+        activeTypes.size === 0 || activeTypes.has(p.type as PostType);
+      const dateMatch = isWithinDate(dateFilter, p.created_at);
+      return typeMatch && dateMatch;
+    });
+  }, [posts, activeTypes, dateFilter]);
 
   if (loading) {
     return (
@@ -102,7 +165,8 @@ export default function FeedScreen() {
         ListHeaderComponent={
           <>
             <FeedHeader />
-            <QuickActions activeFilter={typeFilter} onFilter={setTypeFilter} />
+
+            {/* Scope toggle */}
             <View style={styles.toggleContainer}>
               <TouchableOpacity
                 onPress={() => setScope("commune")}
@@ -137,6 +201,91 @@ export default function FeedScreen() {
                 </Text>
               </TouchableOpacity>
             </View>
+
+            {/* Filter pills */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.pillsRow}
+            >
+              {/* "Tout" clears type selection */}
+              <TouchableOpacity
+                style={[
+                  styles.pill,
+                  activeTypes.size === 0 && {
+                    backgroundColor: theme.primary,
+                    borderColor: theme.primary,
+                  },
+                ]}
+                onPress={() => setActiveTypes(new Set())}
+                activeOpacity={0.7}
+              >
+                <Text
+                  style={[
+                    styles.pillText,
+                    activeTypes.size === 0 && styles.pillTextActive,
+                  ]}
+                >
+                  Tout
+                </Text>
+              </TouchableOpacity>
+
+              {TYPE_OPTIONS.map((opt) => {
+                const isActive = activeTypes.has(opt.value);
+                return (
+                  <TouchableOpacity
+                    key={opt.value}
+                    style={[
+                      styles.pill,
+                      isActive && {
+                        backgroundColor: theme.primary,
+                        borderColor: theme.primary,
+                      },
+                    ]}
+                    onPress={() => toggleType(opt.value)}
+                    activeOpacity={0.7}
+                  >
+                    <Text
+                      style={[
+                        styles.pillText,
+                        isActive && styles.pillTextActive,
+                      ]}
+                    >
+                      {opt.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+
+              <View style={styles.pillSeparator} />
+
+              {DATE_OPTIONS.map((opt) => {
+                const isActive = dateFilter === opt.value;
+                return (
+                  <TouchableOpacity
+                    key={opt.value}
+                    style={[
+                      styles.pill,
+                      isActive && {
+                        backgroundColor: theme.primary,
+                        borderColor: theme.primary,
+                      },
+                    ]}
+                    onPress={() => setDateFilter(opt.value)}
+                    activeOpacity={0.7}
+                  >
+                    <Text
+                      style={[
+                        styles.pillText,
+                        isActive && styles.pillTextActive,
+                      ]}
+                    >
+                      {opt.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
           </>
         }
         ListEmptyComponent={
@@ -205,7 +354,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     paddingHorizontal: 16,
-    paddingBottom: 8,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   toggleButton: {
     paddingHorizontal: 16,
@@ -221,6 +371,36 @@ const styles = StyleSheet.create({
   toggleTextActive: {
     color: "#ffffff",
     fontFamily: "DMSans_600SemiBold",
+  },
+  pillsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    gap: 8,
+  },
+  pill: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#e8dfd0",
+    backgroundColor: "#FFFFFF",
+  },
+  pillText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 12,
+    color: "#71717a",
+  },
+  pillTextActive: {
+    fontFamily: "DMSans_600SemiBold",
+    color: "#FFFFFF",
+  },
+  pillSeparator: {
+    width: 1,
+    height: 20,
+    backgroundColor: "#e8dfd0",
+    marginHorizontal: 4,
   },
   fab: {
     position: "absolute",

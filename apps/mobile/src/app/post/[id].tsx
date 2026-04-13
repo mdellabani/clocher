@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Megaphone,
@@ -207,6 +207,7 @@ export default function PostDetailScreen() {
 
   return (
     <View style={[styles.wrapper, { backgroundColor: theme.background }]}>
+      <Stack.Screen options={{ title: "Publication", headerBackTitle: "Retour" }} />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.content}

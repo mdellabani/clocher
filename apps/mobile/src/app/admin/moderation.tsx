@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Stack } from "expo-router";
 import { Check, X, UserCheck } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
@@ -82,8 +83,10 @@ export default function ModerationScreen() {
   }
 
   return (
-    <FlatList
-      style={{ backgroundColor: theme.background }}
+    <>
+      <Stack.Screen options={{ title: "Modération", headerBackTitle: "Retour" }} />
+      <FlatList
+        style={{ backgroundColor: theme.background }}
       data={users}
       keyExtractor={(item) => item.id}
       contentContainerStyle={
@@ -147,6 +150,7 @@ export default function ModerationScreen() {
         </View>
       }
     />
+    </>
   );
 }
 

@@ -1,5 +1,5 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { ShieldCheck, LogOut, ChevronRight } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
@@ -43,6 +43,7 @@ export default function ProfileScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <Stack.Screen options={{ title: "Mon profil", headerBackTitle: "Retour" }} />
       {/* Profile section */}
       <View style={styles.profileSection}>
         {/* Avatar with theme border */}
