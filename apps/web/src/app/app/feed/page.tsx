@@ -9,6 +9,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { PostCard } from "@/components/post-card";
 import { CreatePostDialog } from "@/components/create-post-dialog";
+import { ThemeInjector } from "@/components/theme-injector";
+import { Plus } from "lucide-react";
 
 export default async function FeedPage({ searchParams }: { searchParams: Promise<{ scope?: string }> }) {
   const { scope: scopeParam } = await searchParams;
@@ -32,22 +34,23 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
 
   return (
     <div className="space-y-4">
+      <ThemeInjector theme={profile.communes?.theme} />
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Fil de la commune</h1>
+        <h1 className="text-2xl font-semibold text-[var(--foreground)]">Fil de la commune</h1>
         <CreatePostDialog isAdmin={profile.role === "admin"} />
       </div>
       <div className="flex gap-2 text-sm">
         <Link
           href="/app/feed"
-          className={scope === "commune" ? "font-bold underline" : "text-muted-foreground hover:text-foreground"}
+          className={scope === "commune" ? "font-semibold underline" : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"}
         >
           Ma commune
         </Link>
         <Link
           href="/app/feed?scope=epci"
-          className={scope === "epci" ? "font-bold underline" : "text-muted-foreground hover:text-foreground"}
+          className={scope === "epci" ? "font-semibold underline" : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"}
         >
-          Intercommunalité
+          Intercommunalite
         </Link>
       </div>
       {posts && posts.length > 0 ? (
@@ -57,7 +60,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground">
+        <p className="text-[var(--muted-foreground)]">
           Aucune publication pour le moment.
         </p>
       )}
