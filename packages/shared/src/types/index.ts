@@ -1,3 +1,4 @@
-// App-wide shared types
-// Database types will be generated here by: pnpm db:gen-types
-export type TODO = "Replace this with your types";
+export type { Database } from "./database";
+export type { Post, PostType, CreatePostInput } from "./post";
+export type { Commune, EPCI } from "./commune";
+export type { Profile, Role, ProfileStatus } from "./profile";
