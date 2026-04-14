@@ -12,6 +12,8 @@ export function ThemeInjector({ theme }: { theme?: string | null }) {
         --theme-background: ${t.background};
         --theme-muted: ${t.muted};
         --theme-pin-bg: ${t.pinBg};
+        --primary: ${t.primary};
+        --ring: ${t.primary};
       }
     `}} />
   );

@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
 import { LogOut } from "lucide-react";
 
 export function NavBar() {
   const router = useRouter();
+  const pathname = usePathname();
   const { profile, loading, isAdmin, isModerator } = useProfile();
 
   async function handleLogout() {
@@ -18,6 +19,13 @@ export function NavBar() {
   }
 
   if (loading) return null;
+
+  const navLinkClass = (href: string) => {
+    const isActive = pathname === href || pathname.startsWith(href + "/");
+    return isActive
+      ? "rounded-md px-3 py-1.5 text-sm font-semibold text-white bg-white/20"
+      : "rounded-md px-3 py-1.5 text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white";
+  };
 
   const communeName = profile?.communes?.name ?? "Ma Commune";
   const codePostal = profile?.communes?.code_postal;
@@ -74,43 +82,25 @@ export function NavBar() {
 
       {/* Bottom row: navigation */}
       <div className="relative mx-auto flex max-w-5xl items-center gap-1 px-5 pb-3">
-        <Link
-          href="/app/feed"
-          className="rounded-md px-3 py-1.5 text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
-        >
+        <Link href="/app/feed" className={navLinkClass("/app/feed")}>
           Fil
         </Link>
-        <Link
-          href="/app/evenements"
-          className="rounded-md px-3 py-1.5 text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
-        >
+        <Link href="/app/evenements" className={navLinkClass("/app/evenements")}>
           Événements
         </Link>
-        <Link
-          href="/app/mon-espace"
-          className="rounded-md px-3 py-1.5 text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
-        >
+        <Link href="/app/mon-espace" className={navLinkClass("/app/mon-espace")}>
           Mon espace
         </Link>
-        <Link
-          href="/app/infos-pratiques"
-          className="rounded-md px-3 py-1.5 text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
-        >
+        <Link href="/app/infos-pratiques" className={navLinkClass("/app/infos-pratiques")}>
           Infos pratiques
         </Link>
         {isAdmin && (
-          <Link
-            href="/admin/dashboard"
-            className="rounded-md px-3 py-1.5 text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
-          >
+          <Link href="/admin/dashboard" className={navLinkClass("/admin")}>
             Admin
           </Link>
         )}
         {!isAdmin && isModerator && (
-          <Link
-            href="/moderation/dashboard"
-            className="rounded-md px-3 py-1.5 text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
-          >
+          <Link href="/moderation/dashboard" className={navLinkClass("/moderation")}>
             Modération
           </Link>
         )}

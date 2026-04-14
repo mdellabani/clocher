@@ -4,7 +4,7 @@ import type { Database } from "../types";
 type Client = SupabaseClient<Database>;
 
 export async function getProfile(client: Client, userId: string) {
-  return client.from("profiles").select("*, communes(name, slug, epci_id)").eq("id", userId).single();
+  return client.from("profiles").select("*, communes(name, slug, epci_id, theme, motto)").eq("id", userId).single();
 }
 
 export async function createProfile(client: Client, userId: string, communeId: string, displayName: string) {
