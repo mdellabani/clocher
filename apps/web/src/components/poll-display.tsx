@@ -102,8 +102,8 @@ export function PollDisplay({ poll, userId }: PollDisplayProps) {
               disabled={isLoading}
               className="group w-full text-left"
             >
-              <div className="flex items-center justify-between gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50 disabled:opacity-50">
-                <div className="flex-1 space-y-1">
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-gray-900">
                       {option.label}
@@ -112,18 +112,20 @@ export function PollDisplay({ poll, userId }: PollDisplayProps) {
                       <span className="text-lg">✓</span>
                     )}
                   </div>
+                  <div className="text-xs font-medium text-gray-600">
+                    <span>{percentage > 0 ? percentage.toFixed(0) : 0}%</span>
+                    <span className="ml-2">({voteCount})</span>
+                  </div>
+                </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
                   <div
-                    className={`h-2 w-full rounded-full transition-colors ${
+                    className={`h-full rounded-full transition-all ${
                       isSelected
                         ? "bg-blue-500"
-                        : "bg-gray-200"
+                        : "bg-gray-400"
                     }`}
-                    style={{ width: "100%", maxWidth: `${Math.max(100 / poll.poll_options.length, percentage * 4)}px` }}
+                    style={{ width: `${percentage}%` }}
                   />
-                </div>
-                <div className="min-w-fit text-right text-xs font-medium text-gray-600">
-                  <div>{percentage > 0 ? percentage.toFixed(0) : 0}%</div>
-                  <div>{voteCount}</div>
                 </div>
               </div>
             </button>

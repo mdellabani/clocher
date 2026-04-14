@@ -31,6 +31,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
+import { PollDisplay } from "@/components/poll-display";
 import {
   getPostById,
   getComments,
@@ -39,10 +40,11 @@ import {
   getRsvpCounts,
   setRsvp,
   removeRsvp,
+  getPollByPostId,
   POST_TYPE_LABELS,
   POST_TYPE_COLORS,
 } from "@rural-community-platform/shared";
-import type { PostType, RsvpStatus } from "@rural-community-platform/shared";
+import type { PostType, RsvpStatus, Poll } from "@rural-community-platform/shared";
 
 type PostDetail = {
   id: string;
@@ -90,6 +92,7 @@ export default function PostDetailScreen() {
   const { profile, isAdmin } = useAuth();
   const theme = useTheme();
   const [post, setPost] = useState<PostDetail | null>(null);
+  const [poll, setPoll] = useState<Poll | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [rsvpCounts, setRsvpCounts] = useState({ going: 0, maybe: 0, not_going: 0 });
   const [userRsvp, setUserRsvp] = useState<string | null>(null);
@@ -125,11 +128,17 @@ export default function PostDetailScreen() {
     }
   }, [id, profile]);
 
+  const loadPoll = useCallback(async () => {
+    if (!id) return;
+    const { data } = await getPollByPostId(supabase, id);
+    if (data) setPoll(data as unknown as Poll);
+  }, [id]);
+
   useEffect(() => {
-    Promise.all([loadPost(), loadComments(), loadRsvps()]).then(() =>
-      setLoading(false)
+    Promise.all([loadPost(), loadComments(), loadRsvps(), loadPoll()]).then(
+      () => setLoading(false)
     );
-  }, [loadPost, loadComments, loadRsvps]);
+  }, [loadPost, loadComments, loadRsvps, loadPoll]);
 
   async function handleRsvp(status: RsvpStatus) {
     if (!profile || !id) return;
@@ -299,6 +308,15 @@ export default function PostDetailScreen() {
               />
             ))}
           </View>
+        )}
+
+        {/* Poll */}
+        {poll && profile && (
+          <PollDisplay
+            poll={poll}
+            userId={profile.id}
+            onVoteChange={loadPoll}
+          />
         )}
 
         {/* RSVP buttons (event only) */}

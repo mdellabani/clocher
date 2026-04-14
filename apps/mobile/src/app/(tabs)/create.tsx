@@ -24,9 +24,9 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
 import { ImagePickerButton } from "@/components/image-picker-button";
-import { createPostSchema } from "@rural-community-platform/shared";
+import { createPostSchema, createPoll } from "@rural-community-platform/shared";
 import { POST_TYPE_LABELS, POST_TYPE_COLORS } from "@rural-community-platform/shared";
-import type { PostType } from "@rural-community-platform/shared";
+import type { PostType, CreatePollInput } from "@rural-community-platform/shared";
 import type { ImagePickerAsset } from "expo-image-picker";
 
 const ADMIN_POST_TYPES: PostType[] = ["annonce", "evenement", "entraide", "discussion", "service"];
@@ -51,6 +51,11 @@ export default function CreatePostScreen() {
   const [eventLocation, setEventLocation] = useState("");
   const [image, setImage] = useState<ImagePickerAsset | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPoll, setShowPoll] = useState(false);
+  const [pollType, setPollType] = useState<"vote" | "participation">("vote");
+  const [pollQuestion, setPollQuestion] = useState("");
+  const [pollOptions, setPollOptions] = useState(["", ""]);
+  const [pollAllowMultiple, setPollAllowMultiple] = useState(false);
 
   async function handleSubmit() {
     const parsed = createPostSchema.safeParse({
@@ -120,6 +125,26 @@ export default function CreatePostScreen() {
       }
     }
 
+    // Create poll if enabled
+    if (showPoll && pollQuestion.trim()) {
+      const validOptions = pollOptions
+        .filter((opt) => opt.trim().length > 0);
+
+      if (validOptions.length >= 2) {
+        const pollData: CreatePollInput = {
+          question: pollQuestion,
+          poll_type: pollType,
+          allow_multiple: pollAllowMultiple,
+          options: validOptions,
+        };
+
+        const pollResult = await createPoll(supabase, post.id, pollData);
+        if (pollResult.error) {
+          Alert.alert("Avertissement", "La publication a été créée mais le sondage a échoué");
+        }
+      }
+    }
+
     setLoading(false);
     setTitle("");
     setBody("");
@@ -127,6 +152,10 @@ export default function CreatePostScreen() {
     setEventLocation("");
     setImage(null);
     setType("discussion");
+    setShowPoll(false);
+    setPollQuestion("");
+    setPollOptions(["", ""]);
+    setPollAllowMultiple(false);
 
     router.navigate("/(tabs)/feed");
   }
@@ -225,6 +254,180 @@ export default function CreatePostScreen() {
             placeholderTextColor="#a1a1aa"
           />
         </>
+      )}
+
+      {/* Poll toggle */}
+      <TouchableOpacity
+        style={[
+          styles.pollToggle,
+          showPoll && { backgroundColor: selectedTypeColor + "18" },
+        ]}
+        onPress={() => setShowPoll(!showPoll)}
+      >
+        <View style={styles.pollToggleCheckbox}>
+          {showPoll && (
+            <View
+              style={[
+                styles.pollToggleCheckboxInner,
+                { backgroundColor: selectedTypeColor },
+              ]}
+            />
+          )}
+        </View>
+        <Text style={[styles.pollToggleText, showPoll && { color: selectedTypeColor }]}>
+          Ajouter un sondage
+        </Text>
+      </TouchableOpacity>
+
+      {/* Poll form */}
+      {showPoll && (
+        <View style={styles.pollFormContainer}>
+          {/* Poll type selector */}
+          <Text style={styles.label}>Type de sondage</Text>
+          <View style={styles.pollTypeRow}>
+            <TouchableOpacity
+              style={[
+                styles.pollTypeButton,
+                pollType === "vote" && {
+                  backgroundColor: selectedTypeColor,
+                  borderColor: selectedTypeColor,
+                },
+              ]}
+              onPress={() => {
+                setPollType("vote");
+                setPollQuestion("");
+                setPollOptions(["", ""]);
+                setPollAllowMultiple(false);
+              }}
+            >
+              <Text
+                style={[
+                  styles.pollTypeButtonText,
+                  pollType === "vote" && styles.pollTypeButtonTextActive,
+                ]}
+              >
+                Vote
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.pollTypeButton,
+                pollType === "participation" && {
+                  backgroundColor: selectedTypeColor,
+                  borderColor: selectedTypeColor,
+                },
+              ]}
+              onPress={() => {
+                setPollType("participation");
+                setPollQuestion("Qui participe ?");
+                setPollOptions(["Je participe", "Peut-être", "Pas disponible"]);
+                setPollAllowMultiple(false);
+              }}
+            >
+              <Text
+                style={[
+                  styles.pollTypeButtonText,
+                  pollType === "participation" && styles.pollTypeButtonTextActive,
+                ]}
+              >
+                Participation
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {pollType === "vote" ? (
+            <>
+              {/* Question */}
+              <Text style={styles.label}>Question</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Quel est votre avis ?"
+                value={pollQuestion}
+                onChangeText={setPollQuestion}
+                maxLength={200}
+                placeholderTextColor="#a1a1aa"
+              />
+
+              {/* Options */}
+              <Text style={styles.label}>Options (min 2, max 6)</Text>
+              {pollOptions.map((option, index) => (
+                <View key={index} style={styles.optionRow}>
+                  <TextInput
+                    style={styles.optionInput}
+                    placeholder={`Option ${index + 1}`}
+                    value={option}
+                    onChangeText={(value) => {
+                      const newOptions = [...pollOptions];
+                      newOptions[index] = value;
+                      setPollOptions(newOptions);
+                    }}
+                    maxLength={100}
+                    placeholderTextColor="#a1a1aa"
+                  />
+                  {pollOptions.length > 2 && (
+                    <TouchableOpacity
+                      style={styles.removeButton}
+                      onPress={() => {
+                        const newOptions = pollOptions.filter(
+                          (_, i) => i !== index
+                        );
+                        setPollOptions(newOptions);
+                      }}
+                    >
+                      <Text style={styles.removeButtonText}>Supprimer</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              ))}
+
+              {/* Add option button */}
+              {pollOptions.length < 6 && (
+                <TouchableOpacity
+                  style={styles.addOptionButton}
+                  onPress={() => setPollOptions([...pollOptions, ""])}
+                >
+                  <Text style={[styles.addOptionButtonText, { color: selectedTypeColor }]}>
+                    + Ajouter une option
+                  </Text>
+                </TouchableOpacity>
+              )}
+
+              {/* Allow multiple toggle */}
+              <TouchableOpacity
+                style={styles.multipleToggle}
+                onPress={() => setPollAllowMultiple(!pollAllowMultiple)}
+              >
+                <View style={styles.pollToggleCheckbox}>
+                  {pollAllowMultiple && (
+                    <View
+                      style={[
+                        styles.pollToggleCheckboxInner,
+                        { backgroundColor: selectedTypeColor },
+                      ]}
+                    />
+                  )}
+                </View>
+                <Text style={styles.multipleToggleText}>Choix multiple</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <View style={styles.participationInfo}>
+              <Text style={styles.participationInfoTitle}>
+                Question : Qui participe ?
+              </Text>
+              <Text style={styles.participationInfoDesc}>
+                Les options sont définies automatiquement pour ce type de sondage.
+              </Text>
+              <View style={styles.participationOptionsList}>
+                {["Je participe", "Peut-être", "Pas disponible"].map((opt) => (
+                  <View key={opt} style={styles.participationOptionBadge}>
+                    <Text style={styles.participationOptionText}>{opt}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+        </View>
       )}
 
       {/* Service notice */}
@@ -332,5 +535,149 @@ const styles = StyleSheet.create({
     fontFamily: "DMSans_400Regular",
     fontSize: 12,
     color: "#b45309",
+  },
+  pollToggle: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    padding: 12,
+    borderRadius: 10,
+    marginTop: 14,
+    borderWidth: 1,
+    borderColor: "#e4e4e7",
+    backgroundColor: "#FFFFFF",
+  },
+  pollToggleCheckbox: {
+    width: 18,
+    height: 18,
+    borderRadius: 4,
+    borderWidth: 1.5,
+    borderColor: "#e4e4e7",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  pollToggleCheckboxInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 2,
+  },
+  pollToggleText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 14,
+    color: "#3f3f46",
+  },
+  pollFormContainer: {
+    backgroundColor: "#fafafa",
+    borderRadius: 10,
+    padding: 14,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: "#f0f0f0",
+  },
+  pollTypeRow: {
+    flexDirection: "row",
+    gap: 8,
+    marginBottom: 16,
+  },
+  pollTypeButton: {
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#e4e4e7",
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+  },
+  pollTypeButtonText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 13,
+    color: "#52525b",
+  },
+  pollTypeButtonTextActive: {
+    color: "#FFFFFF",
+    fontFamily: "DMSans_600SemiBold",
+  },
+  optionRow: {
+    flexDirection: "row",
+    gap: 8,
+    marginBottom: 8,
+    alignItems: "center",
+  },
+  optionInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#e4e4e7",
+    borderRadius: 8,
+    padding: 10,
+    fontFamily: "DMSans_400Regular",
+    fontSize: 14,
+    backgroundColor: "#FFFFFF",
+    color: "#18181b",
+  },
+  removeButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: "#fecaca",
+    backgroundColor: "#fee2e2",
+  },
+  removeButtonText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 12,
+    color: "#dc2626",
+  },
+  addOptionButton: {
+    paddingVertical: 10,
+    marginBottom: 12,
+  },
+  addOptionButtonText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 13,
+  },
+  multipleToggle: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 8,
+  },
+  multipleToggleText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 13,
+    color: "#3f3f46",
+  },
+  participationInfo: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
+    padding: 12,
+  },
+  participationInfoTitle: {
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 13,
+    color: "#18181b",
+    marginBottom: 6,
+  },
+  participationInfoDesc: {
+    fontFamily: "DMSans_400Regular",
+    fontSize: 12,
+    color: "#6b7280",
+    marginBottom: 10,
+  },
+  participationOptionsList: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+  },
+  participationOptionBadge: {
+    backgroundColor: "#f3f4f6",
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  participationOptionText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 12,
+    color: "#52525b",
   },
 });
