@@ -10,13 +10,13 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { Plus } from "lucide-react-native";
+import { Plus, Leaf } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
 import { PostCard } from "@/components/post-card";
 import { FeedHeader } from "@/components/feed-header";
-import { getPosts, getEpciPosts, POST_TYPE_LABELS } from "@rural-community-platform/shared";
+import { getPosts, getEpciPosts, POST_TYPE_LABELS, getProducers } from "@rural-community-platform/shared";
 import type { Post, PostType } from "@rural-community-platform/shared";
 
 // --- Filter options ---
@@ -69,6 +69,7 @@ export default function FeedScreen() {
   const theme = useTheme();
   const router = useRouter();
   const [posts, setPosts] = useState<Post[]>([]);
+  const [producerCount, setProducerCount] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [scope, setScope] = useState<"commune" | "epci">("commune");
@@ -85,6 +86,10 @@ export default function FeedScreen() {
         : await getPosts(supabase, profile.commune_id);
 
     if (data) setPosts(data as Post[]);
+
+    // Load producer count
+    const { data: producers } = await getProducers(supabase);
+    if (producers) setProducerCount(producers.length);
   }, [profile?.commune_id, profile?.communes?.epci_id, scope]);
 
   useEffect(() => {
@@ -166,6 +171,28 @@ export default function FeedScreen() {
         ListHeaderComponent={
           <>
             <FeedHeader />
+
+            {/* Producers banner */}
+            <TouchableOpacity
+              style={[styles.producerBanner, { backgroundColor: "#ecfdf5", borderColor: "#bbf7d0" }]}
+              onPress={() => router.push("/producteurs")}
+              activeOpacity={0.7}
+            >
+              <View style={styles.producerBannerContent}>
+                <View style={styles.producerBannerLeft}>
+                  <View style={styles.producerBannerIcon}>
+                    <Leaf size={16} color="#16a34a" />
+                  </View>
+                  <View>
+                    <Text style={styles.producerBannerTitle}>Producteurs locaux</Text>
+                    <Text style={styles.producerBannerSubtitle}>
+                      {producerCount} producteur{producerCount !== 1 ? "s" : ""} · Circuit court
+                    </Text>
+                  </View>
+                </View>
+                <Text style={styles.producerBannerArrow}>→</Text>
+              </View>
+            </TouchableOpacity>
 
             {/* Scope toggle */}
             <View style={styles.toggleContainer}>
@@ -426,5 +453,48 @@ const styles = StyleSheet.create({
     fontFamily: "DMSans_600SemiBold",
     fontSize: 14,
     color: "#FFFFFF",
+  },
+  producerBanner: {
+    marginHorizontal: 16,
+    marginTop: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+  },
+  producerBannerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  producerBannerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    flex: 1,
+  },
+  producerBannerIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: "#f0fdf4",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  producerBannerTitle: {
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 14,
+    color: "#16a34a",
+  },
+  producerBannerSubtitle: {
+    fontFamily: "DMSans_400Regular",
+    fontSize: 12,
+    color: "#4ade80",
+    marginTop: 2,
+  },
+  producerBannerArrow: {
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 16,
+    color: "#16a34a",
   },
 });
