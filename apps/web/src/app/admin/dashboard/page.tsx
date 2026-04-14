@@ -3,8 +3,10 @@ import { createClient } from "@/lib/supabase/server";
 import {
   getProfile,
   getPendingUsers,
+  getPendingProducers,
 } from "@rural-community-platform/shared";
 import { PendingUsers } from "@/components/admin/pending-users";
+import { PendingProducers } from "@/components/admin/pending-producers";
 import { PostManagement } from "@/components/admin/post-management";
 import { SummaryCards } from "@/components/admin/summary-cards";
 import { ThemeInjector } from "@/components/theme-injector";
@@ -35,6 +37,7 @@ export default async function AdminDashboardPage({
   if (!profile || profile.role !== "admin") redirect("/app/feed");
 
   const { data: pendingUsers } = await getPendingUsers(supabase, profile.commune_id);
+  const { data: pendingProducers } = await getPendingProducers(supabase, profile.commune_id);
 
   // Count posts this week (for summary card)
   const oneWeekAgo = new Date();
@@ -92,12 +95,13 @@ export default async function AdminDashboardPage({
       </div>
 
       <SummaryCards
-        pendingCount={pendingUsers?.length ?? 0}
+        pendingCount={(pendingUsers?.length ?? 0) + (pendingProducers?.length ?? 0)}
         postsThisWeek={postsThisWeek ?? 0}
         openReports={0}
       />
 
       <PendingUsers users={pendingUsers ?? []} />
+      <PendingProducers producers={pendingProducers ?? []} />
       <FeedFilters types={selectedTypes} date={dateFilter} />
 
       <PostManagement
