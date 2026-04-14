@@ -1016,3 +1016,31 @@ Disponible cette semaine, contactez-moi.',
   now() + interval '7 days',
   now() - interval '2 hours'
 );
+
+-- ================================================
+-- POLLS
+-- ================================================
+
+-- Vote poll on pétanque discussion (Saint-Médard)
+INSERT INTO polls (id, post_id, question, poll_type, allow_multiple) VALUES
+  ('00000000-0000-0000-0000-000000005001', '00000000-0000-0000-0000-000000001017', 'Quel jour vous arrange le mieux ?', 'vote', false);
+
+INSERT INTO poll_options (id, poll_id, label, position) VALUES
+  ('00000000-0000-0000-0000-000000006001', '00000000-0000-0000-0000-000000005001', 'Samedi 3 mai', 0),
+  ('00000000-0000-0000-0000-000000006002', '00000000-0000-0000-0000-000000005001', 'Dimanche 4 mai', 1),
+  ('00000000-0000-0000-0000-000000006003', '00000000-0000-0000-0000-000000005001', 'Les deux me vont', 2);
+
+INSERT INTO poll_votes (poll_option_id, user_id) VALUES
+  ('00000000-0000-0000-0000-000000006002', '00000000-0000-0000-0000-000000000102');
+
+-- Participation poll on BBQ Arthez discussion
+INSERT INTO polls (id, post_id, question, poll_type, allow_multiple) VALUES
+  ('00000000-0000-0000-0000-000000005002', '00000000-0000-0000-0000-000000002006', 'Qui peut aider à l''accueil ?', 'participation', false);
+
+INSERT INTO poll_options (id, poll_id, label, position) VALUES
+  ('00000000-0000-0000-0000-000000006004', '00000000-0000-0000-0000-000000005002', 'Je participe', 0),
+  ('00000000-0000-0000-0000-000000006005', '00000000-0000-0000-0000-000000005002', 'Peut-être', 1),
+  ('00000000-0000-0000-0000-000000006006', '00000000-0000-0000-0000-000000005002', 'Pas disponible', 2);
+
+INSERT INTO poll_votes (poll_option_id, user_id) VALUES
+  ('00000000-0000-0000-0000-000000006004', '00000000-0000-0000-0000-000000000202');

@@ -23,6 +23,8 @@ import {
 import { POST_TYPE_LABELS } from "@rural-community-platform/shared";
 import type { PostType } from "@rural-community-platform/shared";
 import { createPostAction } from "@/app/app/feed/actions";
+import { PollForm } from "@/components/poll-form";
+import type { PollFormData } from "@/components/poll-form";
 
 const POST_TYPES_FOR_RESIDENTS: PostType[] = [
   "evenement",
@@ -44,6 +46,8 @@ export function CreatePostDialog({ isAdmin }: { isAdmin: boolean }) {
   const [type, setType] = useState<PostType>("discussion");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [includePoll, setIncludePoll] = useState(false);
+  const [pollData, setPollData] = useState<PollFormData | null>(null);
 
   const availableTypes = isAdmin ? ALL_POST_TYPES : POST_TYPES_FOR_RESIDENTS;
 
@@ -53,6 +57,9 @@ export function CreatePostDialog({ isAdmin }: { isAdmin: boolean }) {
     setError(null);
     const formData = new FormData(e.currentTarget);
     formData.set("type", type);
+    if (includePoll && pollData) {
+      formData.set("poll_data", JSON.stringify(pollData));
+    }
     const result = await createPostAction(formData);
     if (result.error) {
       setError(result.error);
@@ -106,6 +113,24 @@ export function CreatePostDialog({ isAdmin }: { isAdmin: boolean }) {
               rows={5}
             />
           </div>
+          <div className="flex items-center gap-2">
+            <input
+              id="include-poll"
+              type="checkbox"
+              checked={includePoll}
+              onChange={(e) => {
+                setIncludePoll(e.target.checked);
+                if (!e.target.checked) setPollData(null);
+              }}
+              className="h-4 w-4 rounded border border-gray-300"
+            />
+            <label htmlFor="include-poll" className="text-sm font-medium">
+              Ajouter un sondage
+            </label>
+          </div>
+          {includePoll && (
+            <PollForm onPollChange={setPollData} />
+          )}
           {type === "evenement" && (
             <>
               <div className="space-y-2">

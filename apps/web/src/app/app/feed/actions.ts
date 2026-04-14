@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { createPostSchema } from "@rural-community-platform/shared";
+import { createPostSchema, createPoll } from "@rural-community-platform/shared";
+import type { CreatePollInput } from "@rural-community-platform/shared";
 
 export async function createPostAction(formData: FormData) {
   const supabase = await createClient();
@@ -44,14 +45,30 @@ export async function createPostAction(formData: FormData) {
     expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
   }
 
-  const { error } = await supabase.from("posts").insert({
-    ...parsed.data,
-    commune_id: profile.commune_id,
-    author_id: user.id,
-    expires_at: expiresAt,
-  });
+  const { data: post, error } = await supabase
+    .from("posts")
+    .insert({
+      ...parsed.data,
+      commune_id: profile.commune_id,
+      author_id: user.id,
+      expires_at: expiresAt,
+    })
+    .select()
+    .single();
 
-  if (error) return { error: "Erreur lors de la publication" };
+  if (error || !post) return { error: "Erreur lors de la publication" };
+
+  // Create poll if provided
+  const pollDataStr = formData.get("poll_data") as string | null;
+  if (pollDataStr) {
+    const pollData: CreatePollInput = JSON.parse(pollDataStr);
+    const { error: pollError } = await createPoll(supabase, post.id, pollData);
+    if (pollError) {
+      // Post was created but poll failed — still return success
+      // (post is visible, poll creation failed)
+      console.error("Poll creation error:", pollError);
+    }
+  }
 
   revalidatePath("/app/feed");
   return { error: null };

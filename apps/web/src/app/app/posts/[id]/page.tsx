@@ -6,6 +6,7 @@ import {
   getRsvpCounts,
   getRsvps,
   getProfile,
+  getPollByPostId,
 } from "@rural-community-platform/shared";
 import type { PostType, RsvpStatus } from "@rural-community-platform/shared";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import { PostTypeBadge } from "@/components/post-type-badge";
 import { CommentSection } from "@/components/comment-section";
 import { RsvpButtons } from "@/components/rsvp-buttons";
 import { DeletePostButton } from "@/components/delete-post-button";
+import { PollDisplay } from "@/components/poll-display";
 
 export default async function PostDetailPage({
   params,
@@ -37,6 +39,7 @@ export default async function PostDetailPage({
 
   const { data: comments } = await getComments(supabase, id);
   const counts = await getRsvpCounts(supabase, id);
+  const { data: poll } = await getPollByPostId(supabase, id);
 
   let currentRsvpStatus: RsvpStatus | null = null;
   if (post.type === "evenement") {
@@ -137,6 +140,8 @@ export default async function PostDetailPage({
               />
             </div>
           )}
+
+          {poll && <PollDisplay poll={poll} userId={user.id} />}
         </CardContent>
       </Card>
 
