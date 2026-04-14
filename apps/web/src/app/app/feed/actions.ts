@@ -39,10 +39,16 @@ export async function createPostAction(formData: FormData) {
     };
   }
 
+  let expiresAt: string | null = null;
+  if (parsed.data.type === "service") {
+    expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+  }
+
   const { error } = await supabase.from("posts").insert({
     ...parsed.data,
     commune_id: profile.commune_id,
     author_id: user.id,
+    expires_at: expiresAt,
   });
 
   if (error) return { error: "Erreur lors de la publication" };

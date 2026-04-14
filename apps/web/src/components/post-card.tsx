@@ -8,6 +8,17 @@ export function PostCard({ post }: { post: Post }) {
   const rsvpCount =
     post.rsvps?.filter((r) => r.status === "going").length ?? 0;
 
+  const getExpiryText = () => {
+    if (!post.expires_at) return null;
+    const expiryDate = new Date(post.expires_at);
+    const now = new Date();
+    const daysRemaining = Math.ceil(
+      (expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    if (daysRemaining < 1) return "Expire aujourd'hui";
+    return `Expire dans ${daysRemaining}j`;
+  };
+
   return (
     <Link href={`/app/posts/${post.id}`} className="block">
       <div
@@ -66,6 +77,14 @@ export function PostCard({ post }: { post: Post }) {
                 <span>·</span>
                 <span>
                   {rsvpCount} participant{rsvpCount > 1 ? "s" : ""}
+                </span>
+              </>
+            )}
+            {post.type === "service" && post.expires_at && (
+              <>
+                <span>·</span>
+                <span className="inline-flex items-center rounded bg-amber-100 px-2 py-0.5 font-medium text-amber-700">
+                  {getExpiryText()}
                 </span>
               </>
             )}

@@ -942,3 +942,77 @@ INSERT INTO rsvps (post_id, user_id, status) VALUES
   ('00000000-0000-0000-0000-000000003004', '00000000-0000-0000-0000-000000000302', 'going'),
   ('00000000-0000-0000-0000-000000003005', '00000000-0000-0000-0000-000000000301', 'going'),
   ('00000000-0000-0000-0000-000000003005', '00000000-0000-0000-0000-000000000302', 'maybe');
+
+-- ================================================
+-- SERVICE POSTS (all communes)
+-- ================================================
+
+-- Saint-Médard: Tonte de pelouse
+INSERT INTO posts (id, commune_id, author_id, type, title, body, expires_at, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000001018',
+  '00000000-0000-0000-0000-000000000010',
+  '00000000-0000-0000-0000-000000000101',
+  'service',
+  'Tonte de pelouse — Disponible ce week-end',
+  'Je propose de tondre votre pelouse ce samedi ou dimanche. J''ai ma propre tondeuse.
+
+Tarif : 20€ pour un terrain standard, 30€ pour les grands terrains.
+
+Contactez-moi ici ou par commentaire.',
+  now() + interval '7 days',
+  now() - interval '1 hour'
+);
+
+-- Saint-Médard: Garde d'enfants
+INSERT INTO posts (id, commune_id, author_id, type, title, body, expires_at, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000001019',
+  '00000000-0000-0000-0000-000000000010',
+  '00000000-0000-0000-0000-000000000102',
+  'service',
+  'Garde d''enfants mercredi après-midi',
+  'Je suis disponible les mercredis après-midi pour garder vos enfants (3-10 ans).
+
+Expérience : maman de 3 enfants, ancienne assistante maternelle.
+Tarif : 8€/heure, goûter inclus.
+
+Je me déplace sur Saint-Médard et alentours.',
+  now() + interval '7 days',
+  now() - interval '3 hours'
+);
+
+-- Arthez: Cours de maths
+INSERT INTO posts (id, commune_id, author_id, type, title, body, expires_at, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000002010',
+  '00000000-0000-0000-0000-000000000011',
+  '00000000-0000-0000-0000-000000000201',
+  'service',
+  'Soutien scolaire maths — Collège et lycée',
+  'Professeure à la retraite, je propose du soutien en mathématiques pour collégiens et lycéens.
+
+Tarif : 15€/heure, chez moi ou à la médiathèque.
+Disponible lundi, mardi et jeudi après-midi.',
+  now() + interval '7 days',
+  now() - interval '5 hours'
+);
+
+-- Morlanne: Petit bricolage
+INSERT INTO posts (id, commune_id, author_id, type, title, body, expires_at, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000003010',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000301',
+  'service',
+  'Petit bricolage et réparations — Disponible cette semaine',
+  'Bricoleur du dimanche mais efficace ! Je peux vous aider pour :
+- Étagères, fixations murales
+- Petite plomberie (robinet, joint)
+- Montage de meubles
+
+Tarif libre (ce que vous estimez juste). Matériel à votre charge.
+Disponible cette semaine, contactez-moi.',
+  now() + interval '7 days',
+  now() - interval '2 hours'
+);

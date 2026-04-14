@@ -9,6 +9,7 @@ const TYPE_OPTIONS: { value: PostType; label: string }[] = [
   { value: "evenement", label: POST_TYPE_LABELS.evenement },
   { value: "entraide", label: POST_TYPE_LABELS.entraide },
   { value: "discussion", label: POST_TYPE_LABELS.discussion },
+  { value: "service", label: POST_TYPE_LABELS.service },
 ];
 
 const DATE_OPTIONS: { value: string; label: string }[] = [

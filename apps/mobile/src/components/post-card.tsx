@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { Megaphone, Calendar, HeartHandshake, MessageSquare, Pin, CalendarDays } from "lucide-react-native";
+import { Megaphone, Calendar, HeartHandshake, MessageSquare, Pin, CalendarDays, Wrench } from "lucide-react-native";
 import { useTheme } from "@/lib/theme-context";
 import { POST_TYPE_COLORS, CARD } from "@/constants/colors";
 import type { Post, PostType } from "@rural-community-platform/shared";
@@ -12,6 +12,7 @@ const TYPE_ICONS: Record<string, typeof Megaphone> = {
   evenement: Calendar,
   entraide: HeartHandshake,
   discussion: MessageSquare,
+  service: Wrench,
 };
 
 interface PostCardProps {
@@ -78,6 +79,20 @@ export function PostCard({ post }: PostCardProps) {
                 month: "long",
               })}
               {post.event_location ? ` · ${post.event_location}` : ""}
+            </Text>
+          </View>
+        )}
+
+        {/* Expiry badge for service posts */}
+        {post.expires_at && (
+          <View style={styles.expiryBox}>
+            <Text style={styles.expiryText}>
+              {(() => {
+                const days = Math.ceil((new Date(post.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+                if (days <= 0) return "Expiré";
+                if (days === 1) return "Expire aujourd'hui";
+                return `Expire dans ${days}j`;
+              })()}
             </Text>
           </View>
         )}
@@ -192,5 +207,18 @@ const styles = StyleSheet.create({
     fontFamily: "DMSans_500Medium",
     fontSize: 12,
     color: "#a1a1aa",
+  },
+  expiryBox: {
+    backgroundColor: "#fffbeb",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    alignSelf: "flex-start",
+    marginBottom: 10,
+  },
+  expiryText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 11,
+    color: "#b45309",
   },
 });

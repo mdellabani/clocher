@@ -15,6 +15,7 @@ import {
   Calendar,
   HeartHandshake,
   MessageSquare,
+  Wrench,
   CalendarDays,
   MapPin,
   ImageIcon,
@@ -28,14 +29,15 @@ import { POST_TYPE_LABELS, POST_TYPE_COLORS } from "@rural-community-platform/sh
 import type { PostType } from "@rural-community-platform/shared";
 import type { ImagePickerAsset } from "expo-image-picker";
 
-const ADMIN_POST_TYPES: PostType[] = ["annonce", "evenement", "entraide", "discussion"];
-const RESIDENT_POST_TYPES: PostType[] = ["evenement", "entraide", "discussion"];
+const ADMIN_POST_TYPES: PostType[] = ["annonce", "evenement", "entraide", "discussion", "service"];
+const RESIDENT_POST_TYPES: PostType[] = ["evenement", "entraide", "discussion", "service"];
 
 const TYPE_ICONS: Record<PostType, typeof Megaphone> = {
   annonce: Megaphone,
   evenement: Calendar,
   entraide: HeartHandshake,
   discussion: MessageSquare,
+  service: Wrench,
 };
 
 export default function CreatePostScreen() {
@@ -78,12 +80,17 @@ export default function CreatePostScreen() {
 
     setLoading(true);
 
+    const expiresAt = type === "service"
+      ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+      : null;
+
     const { data: post, error } = await supabase
       .from("posts")
       .insert({
         ...parsed.data,
         commune_id: profile.commune_id,
         author_id: profile.id,
+        expires_at: expiresAt,
       })
       .select()
       .single();
@@ -220,6 +227,15 @@ export default function CreatePostScreen() {
         </>
       )}
 
+      {/* Service notice */}
+      {type === "service" && (
+        <View style={styles.serviceNotice}>
+          <Text style={styles.serviceNoticeText}>
+            Les annonces de service expirent automatiquement après 7 jours.
+          </Text>
+        </View>
+      )}
+
       {/* Photo */}
       <Text style={styles.label}>
         <ImageIcon size={13} color={theme.muted} />
@@ -305,5 +321,16 @@ const styles = StyleSheet.create({
     fontFamily: "DMSans_600SemiBold",
     color: "#FFFFFF",
     fontSize: 15,
+  },
+  serviceNotice: {
+    backgroundColor: "#fffbeb",
+    borderRadius: 10,
+    padding: 12,
+    marginTop: 14,
+  },
+  serviceNoticeText: {
+    fontFamily: "DMSans_400Regular",
+    fontSize: 12,
+    color: "#b45309",
   },
 });

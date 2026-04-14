@@ -36,6 +36,9 @@ export default async function FeedPage({
     .order("is_pinned", { ascending: false })
     .order("created_at", { ascending: false });
 
+  // Expiration filter (active service posts only)
+  query = query.or("expires_at.is.null,expires_at.gt." + new Date().toISOString());
+
   // Type filter (multi-select)
   if (selectedTypes.length > 0) {
     query = query.in("type", selectedTypes);

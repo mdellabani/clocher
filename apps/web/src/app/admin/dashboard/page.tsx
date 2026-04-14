@@ -62,7 +62,8 @@ export default async function AdminDashboardPage({
   let countQuery = supabase
     .from("posts")
     .select("id", { count: "exact", head: true })
-    .eq("commune_id", profile.commune_id);
+    .eq("commune_id", profile.commune_id)
+    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString());
   if (selectedTypes.length > 0) countQuery = countQuery.in("type", selectedTypes);
   if (dateSince) countQuery = countQuery.gte("created_at", dateSince);
   const { count: totalCount } = await countQuery;
@@ -74,6 +75,7 @@ export default async function AdminDashboardPage({
     .from("posts")
     .select("id, title, type, is_pinned, created_at, profiles!author_id(display_name)")
     .eq("commune_id", profile.commune_id)
+    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
     .order("created_at", { ascending: false })
     .range(from, to);
   if (selectedTypes.length > 0) postsQuery = postsQuery.in("type", selectedTypes);

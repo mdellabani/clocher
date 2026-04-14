@@ -28,12 +28,14 @@ const POST_TYPES_FOR_RESIDENTS: PostType[] = [
   "evenement",
   "entraide",
   "discussion",
+  "service",
 ];
 const ALL_POST_TYPES: PostType[] = [
   "annonce",
   "evenement",
   "entraide",
   "discussion",
+  "service",
 ];
 
 export function CreatePostDialog({ isAdmin }: { isAdmin: boolean }) {
@@ -123,6 +125,11 @@ export function CreatePostDialog({ isAdmin }: { isAdmin: boolean }) {
                 />
               </div>
             </>
+          )}
+          {type === "service" && (
+            <p className="rounded-lg bg-amber-50 p-3 text-xs text-amber-700">
+              Les annonces de service expirent automatiquement après 7 jours.
+            </p>
           )}
           <input type="hidden" name="epci_visible" value="false" />
           {error && <p className="text-sm text-red-600">{error}</p>}
