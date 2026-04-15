@@ -10,6 +10,7 @@ type ProfileWithCommune = Profile & {
     slug: string;
     epci_id: string | null;
     theme: string | null;
+    custom_primary_color: string | null;
     motto: string | null;
     code_postal: string | null;
   };
@@ -58,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function loadProfile(userId: string) {
     const { data } = await supabase
       .from("profiles")
-      .select("*, communes(name, slug, epci_id, theme, motto, code_postal)")
+      .select("*, communes(name, slug, epci_id, theme, custom_primary_color, motto, code_postal)")
       .eq("id", userId)
       .single();
     setProfile(data as ProfileWithCommune | null);
@@ -66,7 +67,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <ThemeProvider theme={profile?.communes?.theme ?? null}>
+    <ThemeProvider
+      theme={profile?.communes?.theme ?? null}
+      customPrimaryColor={profile?.communes?.custom_primary_color ?? null}
+    >
       <AuthContext.Provider
         value={{
           session,
