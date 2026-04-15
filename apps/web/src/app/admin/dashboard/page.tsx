@@ -19,6 +19,9 @@ import { CommuneMembers } from "@/components/admin/community-members";
 import { AuditLogView } from "@/app/moderation/audit-log-view";
 import { InviteCodeManager } from "@/components/admin/invite-code-manager";
 import { ThemeCustomizer } from "@/components/admin/theme-customizer";
+import { CommuneInfoForm } from "@/components/admin/commune-info-form";
+import { AssociationsManager } from "@/components/admin/associations-manager";
+import { CouncilDocuments } from "@/components/admin/council-documents";
 
 export default async function AdminDashboardPage({
   searchParams,
@@ -49,9 +52,15 @@ export default async function AdminDashboardPage({
 
   const { data: commune } = await supabase
     .from("communes")
-    .select("invite_code, theme, custom_primary_color, logo_url")
+    .select("invite_code, theme, custom_primary_color, logo_url, address, phone, email, opening_hours, associations")
     .eq("id", profile.commune_id)
     .single();
+
+  const { data: councilDocs } = await supabase
+    .from("council_documents")
+    .select("id, title, category, document_date, storage_path")
+    .eq("commune_id", profile.commune_id)
+    .order("document_date", { ascending: false });
 
   // Count posts this week (for summary card)
   const oneWeekAgo = new Date();
@@ -121,6 +130,15 @@ export default async function AdminDashboardPage({
         currentCustomColor={commune?.custom_primary_color ?? null}
         currentLogoUrl={commune?.logo_url ?? null}
       />
+
+      <CommuneInfoForm
+        address={commune?.address ?? null}
+        phone={commune?.phone ?? null}
+        email={commune?.email ?? null}
+        openingHours={(commune?.opening_hours as Record<string, string>) ?? {}}
+      />
+      <AssociationsManager associations={(commune?.associations as any[]) ?? []} />
+      <CouncilDocuments documents={(councilDocs ?? []) as any[]} />
 
       <PendingUsers users={pendingUsers ?? []} />
       <PendingProducers producers={pendingProducers ?? []} />
