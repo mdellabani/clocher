@@ -50,14 +50,12 @@ npx supabase stop                                    # stop local Supabase
 - **Post types:** `annonce` (admin only), `evenement`, `entraide`, `discussion`, `service` (7-day auto-expiry).
 - **Feed pagination:** cursor-based (`created_at`), 20 posts/page, pinned posts loaded separately.
 - **Moderation:** posts have `is_hidden` column. Reports auto-hide at 3 flags. Word filter auto-hides on match. All actions logged in `audit_log`.
+- **Migrations:** Pre-launch, we use a single consolidated migration (`001_initial_schema.sql`). When the schema changes, update the single migration and run `npx supabase db reset`. After launch (when production has real data), freeze the schema and start using incremental migrations.
 
 ## Database Schema
 
-Migrations in `supabase/migrations/`:
-- `001_initial_schema.sql` — full schema: communes, profiles, posts, comments, rsvps, polls, producers, reports, audit_log, word_filters, push_tokens, post_images, storage buckets (post-images, avatars), all RLS policies, functions, triggers, and indexes
-- `006_v2_commune_website.sql` — commune contact fields (address, phone, email, opening_hours), custom_primary_color, associations JSONB, council_documents table, council-documents storage bucket
-- `007_custom_domains.sql` — custom_domain, domain_verified columns on communes
-- `008_page_sections.sql` — page_sections table for website customization, website-images storage bucket
+Single consolidated migration in `supabase/migrations/`:
+- `001_initial_schema.sql` — full schema: communes (with contact fields, custom_primary_color, custom_domain, associations, opening_hours), profiles, posts, comments, rsvps, polls, producers, reports, audit_log, word_filters, push_tokens, post_images, council_documents, page_sections, storage buckets (post-images, avatars, council-documents, website-images), all RLS policies, functions, triggers, and indexes
 
 ## Environment Variables
 

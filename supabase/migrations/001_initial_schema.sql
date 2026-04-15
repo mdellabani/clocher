@@ -103,7 +103,6 @@ CREATE TABLE IF NOT EXISTS "public"."communes" (
     "slug" "text" NOT NULL,
     "code_postal" "text",
     "logo_url" "text",
-    "primary_color" "text" DEFAULT '#1e40af'::"text",
     "invite_code" "text" DEFAULT "encode"("extensions"."gen_random_bytes"(6), 'hex'::"text") NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "theme" "text" DEFAULT 'terre_doc'::"text" NOT NULL,
@@ -112,6 +111,14 @@ CREATE TABLE IF NOT EXISTS "public"."communes" (
     "description" "text",
     "blason_url" "text",
     "infos_pratiques" "jsonb" DEFAULT '{}'::"jsonb",
+    "address" "text",
+    "phone" "text",
+    "email" "text",
+    "opening_hours" "jsonb" DEFAULT '{}'::"jsonb",
+    "custom_primary_color" "text",
+    "associations" "jsonb" DEFAULT '[]'::"jsonb",
+    "custom_domain" "text",
+    "domain_verified" boolean DEFAULT false,
     CONSTRAINT "communes_theme_check" CHECK (("theme" = ANY (ARRAY['terre_doc'::"text", 'provence'::"text", 'atlantique'::"text", 'alpin'::"text", 'ble_dore'::"text", 'corse'::"text", 'champagne'::"text", 'ardoise'::"text"])))
 );
 ALTER TABLE "public"."communes" OWNER TO "postgres";
@@ -683,6 +690,89 @@ CREATE POLICY "Authenticated users can upload avatars" ON "storage"."objects" FO
 CREATE POLICY "Anyone can view avatars" ON "storage"."objects" FOR SELECT USING (("bucket_id" = 'avatars'));
 CREATE POLICY "Users can update own avatars" ON "storage"."objects" FOR UPDATE TO "authenticated" USING (("bucket_id" = 'avatars'));
 CREATE POLICY "Users can delete own avatars" ON "storage"."objects" FOR DELETE TO "authenticated" USING (("bucket_id" = 'avatars'));
+
+-- ============================================================
+-- Council documents
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS "public"."council_documents" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "commune_id" "uuid" NOT NULL,
+    "title" "text" NOT NULL,
+    "category" "text" NOT NULL,
+    "document_date" "date" NOT NULL,
+    "storage_path" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    CONSTRAINT "council_documents_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "council_documents_category_check" CHECK (("category" = ANY (ARRAY['deliberation'::"text", 'pv'::"text", 'compte_rendu'::"text"])))
+);
+
+ALTER TABLE "public"."council_documents" OWNER TO "postgres";
+
+CREATE INDEX "idx_council_documents_commune_id" ON "public"."council_documents" USING "btree" ("commune_id");
+
+ALTER TABLE ONLY "public"."council_documents"
+    ADD CONSTRAINT "council_documents_commune_id_fkey" FOREIGN KEY ("commune_id") REFERENCES "public"."communes"("id");
+
+ALTER TABLE "public"."council_documents" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view council documents" ON "public"."council_documents" FOR SELECT TO "anon", "authenticated" USING (true);
+CREATE POLICY "Admins can insert council documents" ON "public"."council_documents" FOR INSERT TO "authenticated" WITH CHECK (("commune_id" = "public"."auth_commune_id"() AND "public"."is_commune_admin"()));
+CREATE POLICY "Admins can delete council documents" ON "public"."council_documents" FOR DELETE TO "authenticated" USING (("commune_id" = "public"."auth_commune_id"() AND "public"."is_commune_admin"()));
+
+GRANT ALL ON TABLE "public"."council_documents" TO "anon";
+GRANT ALL ON TABLE "public"."council_documents" TO "authenticated";
+GRANT ALL ON TABLE "public"."council_documents" TO "service_role";
+
+-- ============================================================
+-- Page sections (website customization)
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS "public"."page_sections" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "commune_id" "uuid" NOT NULL,
+    "page" "text" NOT NULL DEFAULT 'homepage',
+    "section_type" "text" NOT NULL,
+    "visible" boolean NOT NULL DEFAULT true,
+    "sort_order" integer NOT NULL DEFAULT 0,
+    "content" "jsonb" NOT NULL DEFAULT '{}'::"jsonb",
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    CONSTRAINT "page_sections_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "page_sections_section_type_check" CHECK (("section_type" = ANY (ARRAY['hero'::"text", 'welcome'::"text", 'highlights'::"text", 'news'::"text", 'events'::"text", 'gallery'::"text", 'links'::"text", 'text'::"text", 'services'::"text"])))
+);
+
+ALTER TABLE "public"."page_sections" OWNER TO "postgres";
+
+CREATE INDEX "idx_page_sections_commune_page" ON "public"."page_sections" USING "btree" ("commune_id", "page", "sort_order");
+
+ALTER TABLE ONLY "public"."page_sections"
+    ADD CONSTRAINT "page_sections_commune_id_fkey" FOREIGN KEY ("commune_id") REFERENCES "public"."communes"("id");
+
+ALTER TABLE "public"."page_sections" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view page sections" ON "public"."page_sections" FOR SELECT TO "anon", "authenticated" USING (true);
+CREATE POLICY "Admins can insert page sections" ON "public"."page_sections" FOR INSERT TO "authenticated" WITH CHECK (("commune_id" = "public"."auth_commune_id"() AND "public"."is_commune_admin"()));
+CREATE POLICY "Admins can update page sections" ON "public"."page_sections" FOR UPDATE TO "authenticated" USING (("commune_id" = "public"."auth_commune_id"() AND "public"."is_commune_admin"()));
+CREATE POLICY "Admins can delete page sections" ON "public"."page_sections" FOR DELETE TO "authenticated" USING (("commune_id" = "public"."auth_commune_id"() AND "public"."is_commune_admin"()));
+
+GRANT ALL ON TABLE "public"."page_sections" TO "anon";
+GRANT ALL ON TABLE "public"."page_sections" TO "authenticated";
+GRANT ALL ON TABLE "public"."page_sections" TO "service_role";
+
+-- Custom domain index
+CREATE INDEX "idx_communes_custom_domain" ON "public"."communes" USING "btree" ("custom_domain") WHERE ("custom_domain" IS NOT NULL);
+
+-- Additional storage buckets
+INSERT INTO "storage"."buckets" ("id", "name", "public") VALUES ('council-documents', 'council-documents', true) ON CONFLICT ("id") DO NOTHING;
+INSERT INTO "storage"."buckets" ("id", "name", "public") VALUES ('website-images', 'website-images', true) ON CONFLICT ("id") DO NOTHING;
+
+CREATE POLICY "Authenticated users can upload council documents" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK (("bucket_id" = 'council-documents'));
+CREATE POLICY "Anyone can view council documents files" ON "storage"."objects" FOR SELECT USING (("bucket_id" = 'council-documents'));
+CREATE POLICY "Admins can delete council documents files" ON "storage"."objects" FOR DELETE TO "authenticated" USING (("bucket_id" = 'council-documents'));
+
+CREATE POLICY "Authenticated users can upload website images" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK (("bucket_id" = 'website-images'));
+CREATE POLICY "Anyone can view website images" ON "storage"."objects" FOR SELECT USING (("bucket_id" = 'website-images'));
+CREATE POLICY "Authenticated users can delete website images" ON "storage"."objects" FOR DELETE TO "authenticated" USING (("bucket_id" = 'website-images'));
 
 -- Restore search_path so seed.sql can use unqualified table names
 SET search_path = public, extensions;
