@@ -56,6 +56,7 @@ npx supabase stop                                    # stop local Supabase
 Migrations in `supabase/migrations/`:
 - `001_initial_schema.sql` — full schema: communes, profiles, posts, comments, rsvps, polls, producers, reports, audit_log, word_filters, push_tokens, post_images, storage buckets (post-images, avatars), all RLS policies, functions, triggers, and indexes
 - `006_v2_commune_website.sql` — commune contact fields (address, phone, email, opening_hours), custom_primary_color, associations JSONB, council_documents table, council-documents storage bucket
+- `007_custom_domains.sql` — custom_domain, domain_verified columns on communes
 
 ## Environment Variables
 
@@ -63,13 +64,15 @@ Migrations in `supabase/migrations/`:
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=       # server-side only, never exposed to client
+PLATFORM_DOMAIN=app.example.fr           # main platform domain for subdomain routing
+NEXT_PUBLIC_PLATFORM_DOMAIN=app.example.fr  # same, exposed to client for display
 ```
 
 ## Current Status
 
 - **v1 complete**: auth (with password reset, invite codes), feed (paginated with images), post detail, events (calendar), mon espace, infos pratiques, admin panel, public commune site, image upload with resize (posts + avatars), push notifications (Expo, annonce + evenement), moderation
-- **v2 complete**: commune website (bulletin municipal, conseil municipal, mentions légales), theme customization (custom colors with WCAG check, logo upload), structured contact data, associations management, admin panel (commune info, associations, council docs, theme), data cleanup (removed unstructured parsing)
-- **Remaining**: custom domain support (macommune.fr), AI council document summaries
+- **v2 complete**: commune website (bulletin municipal, conseil municipal, mentions légales), theme customization (custom colors with WCAG check, logo upload), structured contact data, associations management, admin panel (commune info, associations, council docs, theme), data cleanup, custom domain support (subdomains + custom domains with DNS verification)
+- **Remaining**: AI council document summaries
 - **Not started**: v3 (mairie tools), v4 (services directory), v5 (group buying), v6 (carpooling)
 
 ## Design Specs & Plans
