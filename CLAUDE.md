@@ -53,12 +53,8 @@ npx supabase stop                                    # stop local Supabase
 
 ## Database Schema
 
-5 migrations in `supabase/migrations/`:
-- `001_initial_schema.sql` — communes, profiles, posts, comments, rsvps, RLS, helper functions
-- `002_design_fields.sql` — theme, motto, description fields on communes
-- `003_features_v2.sql` — service posts (expires_at), producers, polls (poll_options, poll_votes)
-- `004_moderation.sql` — reports, audit_log, word_filters, moderator role, is_hidden, auto-hide trigger
-- `005_push_tokens_and_avatars.sql` — push_tokens table (multi-device), avatars storage bucket
+Single consolidated migration in `supabase/migrations/`:
+- `001_initial_schema.sql` — full schema: communes, profiles, posts, comments, rsvps, polls, producers, reports, audit_log, word_filters, push_tokens, post_images, storage buckets (post-images, avatars), all RLS policies, functions, triggers, and indexes
 
 ## Environment Variables
 

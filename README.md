@@ -26,28 +26,30 @@ npx supabase db reset
 
 This applies migrations and seeds the database with demo data.
 
-### 3. Start the web app
+### 3. Start both apps
 
 ```bash
-pnpm --filter @rural-community-platform/web dev
+pnpm dev
 ```
 
-Open **http://localhost:3000**
+This runs Turborepo's `dev` task, starting the **web** and **mobile** apps in parallel.
 
-### 4. Start the mobile app
+- Web: **http://localhost:3000**
+- Mobile: scan the QR code with Expo Go (phone must be on same WiFi)
 
-Update `apps/mobile/.env.local` with your machine's local IP:
+To run just one:
+```bash
+pnpm --filter @rural-community-platform/web dev   # web only
+cd apps/mobile && npx expo start --clear           # mobile only
+```
+
+### 4. Mobile env setup
+
+Before running mobile for the first time, update `apps/mobile/.env.local` with your machine's local IP:
 ```
 EXPO_PUBLIC_SUPABASE_URL=http://<YOUR_LOCAL_IP>:54321
 EXPO_PUBLIC_SUPABASE_ANON_KEY=<anon key from supabase start output>
 ```
-
-Then:
-```bash
-cd apps/mobile && npx expo start --clear
-```
-
-Scan the QR code with Expo Go (phone must be on same WiFi).
 
 ### 5. Supabase Studio
 
@@ -117,8 +119,9 @@ supabase/           Postgres schema, RLS policies, Edge Functions, seed data
 ## Useful Commands
 
 ```bash
-pnpm --filter @rural-community-platform/web dev     # web dev server
-pnpm --filter @rural-community-platform/mobile start # expo dev server
+pnpm dev                                             # start web + mobile in parallel
+pnpm --filter @rural-community-platform/web dev     # web dev server only
+pnpm --filter @rural-community-platform/mobile start # expo dev server only
 npx supabase start                                   # start local supabase
 npx supabase stop                                    # stop local supabase
 npx supabase db reset                                # reset DB + apply migrations + seed
