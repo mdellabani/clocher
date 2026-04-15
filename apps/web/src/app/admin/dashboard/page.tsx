@@ -22,6 +22,7 @@ import { ThemeCustomizer } from "@/components/admin/theme-customizer";
 import { CommuneInfoForm } from "@/components/admin/commune-info-form";
 import { AssociationsManager } from "@/components/admin/associations-manager";
 import { CouncilDocuments } from "@/components/admin/council-documents";
+import { DomainManager } from "@/components/admin/domain-manager";
 
 export default async function AdminDashboardPage({
   searchParams,
@@ -52,7 +53,7 @@ export default async function AdminDashboardPage({
 
   const { data: commune } = await supabase
     .from("communes")
-    .select("invite_code, theme, custom_primary_color, logo_url, address, phone, email, opening_hours, associations")
+    .select("slug, invite_code, theme, custom_primary_color, logo_url, address, phone, email, opening_hours, associations, custom_domain, domain_verified")
     .eq("id", profile.commune_id)
     .single();
 
@@ -124,6 +125,12 @@ export default async function AdminDashboardPage({
       />
 
       <InviteCodeManager currentCode={commune?.invite_code ?? ""} />
+
+      <DomainManager
+        slug={commune?.slug ?? ""}
+        customDomain={commune?.custom_domain ?? null}
+        domainVerified={commune?.domain_verified ?? false}
+      />
 
       <ThemeCustomizer
         currentTheme={commune?.theme ?? "terre_doc"}
