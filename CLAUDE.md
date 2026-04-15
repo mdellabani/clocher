@@ -53,11 +53,12 @@ npx supabase stop                                    # stop local Supabase
 
 ## Database Schema
 
-4 migrations in `supabase/migrations/`:
+5 migrations in `supabase/migrations/`:
 - `001_initial_schema.sql` — communes, profiles, posts, comments, rsvps, RLS, helper functions
 - `002_design_fields.sql` — theme, motto, description fields on communes
 - `003_features_v2.sql` — service posts (expires_at), producers, polls (poll_options, poll_votes)
 - `004_moderation.sql` — reports, audit_log, word_filters, moderator role, is_hidden, auto-hide trigger
+- `005_push_tokens_and_avatars.sql` — push_tokens table (multi-device), avatars storage bucket
 
 ## Environment Variables
 
@@ -69,9 +70,10 @@ SUPABASE_SERVICE_ROLE_KEY=       # server-side only, never exposed to client
 
 ## Current Status
 
-- **v1 ~90%**: auth, feed (paginated), post detail, events (calendar), mon espace, infos pratiques (redesigned), admin panel, public commune site
-- **v2 ~90%**: service posts, polls, producers directory, reporting, moderator role, word filter, rate limiting, audit log
-- **Remaining**: push notifications, password reset, image upload, alertes tab, commune onboarding UI, map view
+- **v1 complete**: auth (with password reset, invite codes), feed (paginated with images), post detail, events (calendar), mon espace, infos pratiques, admin panel, public commune site, image upload with resize (posts + avatars), push notifications (Expo, annonce + evenement), moderation (reports, word filter, audit log, moderator role)
+- **v2 ~80%**: commune website pages (accueil, events, infos pratiques) — missing: bulletin municipal, conseil municipal, associations, contact, legal mentions
+- **Remaining v2**: bulletin municipal digital, conseil municipal section, associations page, contact page, legal mentions, custom domain support
+- **Not started**: v3 (mairie tools), v4 (services directory), v5 (group buying), v6 (carpooling)
 
 ## Design Specs & Plans
 
