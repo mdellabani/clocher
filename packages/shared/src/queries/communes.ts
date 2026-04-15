@@ -22,3 +22,12 @@ export async function getAllCommunes(client: Client) {
 export async function getCommuneByInviteCode(client: Client, inviteCode: string) {
   return client.from("communes").select("id, name, slug").eq("invite_code", inviteCode).single();
 }
+
+export async function getCommuneByDomain(client: Client, domain: string) {
+  return client
+    .from("communes")
+    .select("id, slug, custom_domain, domain_verified")
+    .eq("custom_domain", domain)
+    .eq("domain_verified", true)
+    .single();
+}
