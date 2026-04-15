@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
+  Linking,
   Platform,
   ScrollView,
   StyleSheet,
@@ -123,6 +124,17 @@ export default function LoginScreen() {
             </LinearGradient>
           </TouchableOpacity>
 
+          {/* Forgot password */}
+          <TouchableOpacity
+            style={styles.forgotContainer}
+            onPress={() => {
+              const baseUrl = process.env.EXPO_PUBLIC_WEB_URL ?? "http://localhost:3000";
+              Linking.openURL(`${baseUrl}/auth/forgot-password`);
+            }}
+          >
+            <Text style={styles.forgotText}>Mot de passe oublié ?</Text>
+          </TouchableOpacity>
+
           {/* Signup link */}
           <TouchableOpacity
             style={styles.linkContainer}
@@ -235,5 +247,13 @@ const styles = StyleSheet.create({
   },
   linkBold: {
     fontFamily: "DMSans_600SemiBold",
+  },
+
+  forgotContainer: { marginTop: 12, alignSelf: "center" },
+  forgotText: {
+    fontFamily: "DMSans_400Regular",
+    fontSize: 13,
+    color: "#71717a",
+    textDecorationLine: "underline",
   },
 });
