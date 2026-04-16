@@ -30,7 +30,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     const inAuthGroup = segments[0] === "auth";
 
     if (!session && !inAuthGroup) {
-      router.replace("/auth/login");
+      router.replace("/auth/welcome");
     } else if (session && inAuthGroup && profile?.status === "active") {
       router.replace("/(tabs)/feed");
     }
@@ -73,6 +73,7 @@ export default function RootLayout() {
             }}
           >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="auth/welcome" options={{ headerShown: false }} />
             <Stack.Screen name="auth/login" options={{ title: "Connexion", headerShown: false }} />
             <Stack.Screen name="auth/signup" options={{ title: "Inscription", headerShown: false }} />
             <Stack.Screen name="post/[id]" options={{ title: "Publication" }} />
