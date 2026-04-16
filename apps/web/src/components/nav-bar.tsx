@@ -18,7 +18,26 @@ export function NavBar() {
     router.refresh();
   }
 
-  if (loading) return null;
+  if (loading) {
+    return (
+      <nav
+        className="relative overflow-hidden"
+        style={{
+          background:
+            "linear-gradient(145deg, var(--theme-gradient-1), var(--theme-gradient-2), var(--theme-gradient-3))",
+        }}
+      >
+        <div className="mx-auto max-w-5xl px-5 pt-4 pb-3">
+          <div className="h-7 w-40 rounded bg-white/20 animate-pulse" />
+          <div className="mt-3 flex gap-2">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-7 w-20 rounded bg-white/10 animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   const navLinkClass = (href: string) => {
     const isActive = pathname === href || pathname.startsWith(href + "/");
