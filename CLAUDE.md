@@ -77,6 +77,8 @@ NEXT_PUBLIC_PLATFORM_DOMAIN=app.example.fr  # same, exposed to client for displa
 - **Ops complete**: PostHog monitoring (web + mobile), feedback via GitHub Issues API, deployment guide (Supabase/Vercel/EAS), quota-check cron, dual environments (demo + prod)
 - **UX complete**: unified feed filtering (type/date/commune), mobile admin hub (4 sections), EPCI feed with commune labels, show password toggle, filter bottom sheet (mobile)
 - **Onboarding complete**: commune registration (`/auth/register-commune`) with super-admin approval (`/super-admin`), generated database types
+- **Public surface complete**: web landing page at `/` (hero, features, how-it-works, communes grid, footer), mobile welcome screen as default for signed-out users
+- **Bugfix wave 2026-04-16**: self-read RLS policy for profiles (fixes admin tab missing post-approval), `search_path` hardening on SECURITY DEFINER functions, theme changes apply across pages without reload, homogeneous post-card thumbnail slot, silent token refresh in middleware (sessions never expire silently), mobile PostHog wiring fix
 - **Remaining**: custom pages (Phase 2 of website customization), AI council document summaries
 - **Not started**: v3 (mairie tools), v4 (services directory), v5 (group buying), v6 (carpooling)
 
@@ -85,3 +87,4 @@ NEXT_PUBLIC_PLATFORM_DOMAIN=app.example.fr  # same, exposed to client for displa
 - `docs/superpowers/specs/2026-04-12-architecture-design.md` — original architecture
 - `docs/superpowers/specs/2026-04-14-features-v2-design.md` — service posts, producers, polls, infos pratiques
 - `docs/superpowers/specs/2026-04-14-moderation-pagination-design.md` — reporting, moderation, word filter, pagination
+- `docs/superpowers/specs/2026-04-16-bugfixes-design.md` — landing pages + admin/theme/image/session bugfixes (April 2026)
