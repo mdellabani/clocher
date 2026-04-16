@@ -70,6 +70,7 @@ npx supabase stop                                    # stop local Supabase
 Migrations in `supabase/migrations/`:
 - `001_initial_schema.sql` — full initial schema: communes (with contact fields, custom_primary_color, custom_domain, associations, opening_hours), profiles, posts, comments, rsvps, polls, producers, reports, audit_log, word_filters, push_tokens, post_images, council_documents, page_sections, storage buckets (post-images, avatars, council-documents, website-images), all RLS policies, functions, triggers, and indexes
 - `20260417000000_admin_can_update_own_commune.sql` — RLS UPDATE policy on `public.communes` so admins can save theme/logo/contact/opening_hours/associations/custom_domain
+- `20260417000100_moderators_can_moderate_posts.sql` — RLS UPDATE/DELETE on `public.posts` for moderators so the moderation UI hide/unhide/delete actually affects rows
 - All future schema changes go in their own timestamped file — never edit `001_initial_schema.sql` again post-launch.
 
 ## Environment Variables

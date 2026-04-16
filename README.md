@@ -132,4 +132,38 @@ npx supabase gen types typescript --local > packages/shared/src/types/database.t
 
 ## Deployment & Configuration
 
-- Supabase auth settings (sessions never expire): see [`docs/supabase-auth-settings.md`](docs/supabase-auth-settings.md)
+### Supabase auth settings
+
+Sessions never expire silently — see [`docs/supabase-auth-settings.md`](docs/supabase-auth-settings.md) for the dashboard configuration to apply once per environment.
+
+### Updating the remote database (demo or prod)
+
+Two paths depending on what changed.
+
+**Default — incremental migration (additive, safe, no data loss):**
+
+For any new schema change, add a new timestamped file under `supabase/migrations/` (e.g. `20260417000000_add_xyz.sql`), test locally with `npx supabase db reset`, then deploy:
+
+```bash
+# demo
+npx supabase link --project-ref vdfyugekbtanrlveihlm
+npx supabase db push
+
+# prod
+npx supabase link --project-ref tsfmyrtmuravhzearntn
+npx supabase db push
+```
+
+`db push` only applies migration files that aren't already on the remote. Existing data is untouched. **Use this for every normal schema change.**
+
+**Full overwrite (only when you've edited an existing migration file):**
+
+```bash
+./scripts/db-deploy.sh demo   # demo: reset schema + reapply seed (data is throwaway)
+./scripts/db-deploy.sh prod   # prod: dump public.* + storage.objects -> reset schema -> restore
+./scripts/db-deploy.sh        # both, demo first, prompts before prod
+```
+
+The script overwrites the remote schema (drops `public`, reapplies all migrations). On demo it reapplies the seed; on prod it backs up data first to `db-backups/<timestamp>.sql` (gitignored) then restores after the reset. **Don't run this for routine changes — `db push` is safer and faster.**
+
+Project refs are hardcoded in the script (not secret — visible in dashboard URLs). The supabase CLI handles auth via your `supabase login` token.
