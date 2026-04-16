@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 function slugify(name: string): string {
   return name
@@ -19,7 +19,8 @@ export async function registerCommuneAction(data: {
   display_name: string;
   role_description?: string;
 }) {
-  const supabase = await createClient();
+  // Use service role client to bypass RLS (no user is logged in during registration)
+  const supabase = createServiceClient();
 
   // Generate slug from name + code postal for uniqueness
   const baseSlug = slugify(data.commune_name);
@@ -52,9 +53,10 @@ export async function registerCommuneAction(data: {
   }
 
   // Create the auth user
-  const { data: authData, error: authError } = await supabase.auth.signUp({
+  const { data: authData, error: authError } = await supabase.auth.admin.createUser({
     email: data.email,
     password: data.password,
+    email_confirm: true,
   });
 
   if (authError || !authData.user) {
