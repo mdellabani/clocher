@@ -54,7 +54,7 @@ export default function ProfileScreen() {
         onPress: async () => {
           await unregisterPushToken();
           await supabase.auth.signOut();
-          router.replace("/auth/login");
+          router.replace("/auth/welcome");
         },
       },
     ]);
