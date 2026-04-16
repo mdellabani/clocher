@@ -35,11 +35,13 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const supabase = createClient();
+
     async function load() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) {
+        setProfile(null);
         setLoading(false);
         return;
       }
@@ -54,7 +56,18 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
       setProfile(data as ProfileWithCommune | null);
       setLoading(false);
     }
+
     load();
+
+    // Re-fetch on sign-in / sign-out so the navbar (and anything else
+    // reading useProfile) reflects the current auth state without
+    // needing a full page reload.
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "TOKEN_REFRESHED") {
+        load();
+      }
+    });
+    return () => sub.subscription.unsubscribe();
   }, []);
 
   return (
