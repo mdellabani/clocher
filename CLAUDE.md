@@ -53,7 +53,7 @@ npx supabase stop                                    # stop local Supabase
 - **Post types:** `annonce` (admin only), `evenement`, `entraide`, `discussion`, `service` (7-day auto-expiry).
 - **Feed pagination:** cursor-based (`created_at`), 20 posts/page, pinned posts loaded separately.
 - **Moderation:** posts have `is_hidden` column. Reports auto-hide at 3 flags. Word filter auto-hides on match. All actions logged in `audit_log`.
-- **Migrations:** Pre-launch, we use a single consolidated migration (`001_initial_schema.sql`). When the schema changes, update the single migration and run `npx supabase db reset`. After launch (when production has real data), freeze the schema and start using incremental migrations.
+- **Migrations:** Add a new timestamped file in `supabase/migrations/` for every schema change (e.g. `20260417_add_xyz.sql`). Locally: `npx supabase db reset` to drop + reapply everything. To deploy a schema change to remote: `./scripts/db-deploy.sh demo|prod|<no arg>` — the script overwrites the remote schema by resetting it, reapplies the seed on demo, and dumps + restores `public` + `storage.objects` data on prod (backups land in `db-backups/`).
 
 ## Database Schema
 
