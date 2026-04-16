@@ -53,12 +53,24 @@ npx supabase stop                                    # stop local Supabase
 - **Post types:** `annonce` (admin only), `evenement`, `entraide`, `discussion`, `service` (7-day auto-expiry).
 - **Feed pagination:** cursor-based (`created_at`), 20 posts/page, pinned posts loaded separately.
 - **Moderation:** posts have `is_hidden` column. Reports auto-hide at 3 flags. Word filter auto-hides on match. All actions logged in `audit_log`.
-- **Migrations:** Add a new timestamped file in `supabase/migrations/` for every schema change (e.g. `20260417_add_xyz.sql`). Locally: `npx supabase db reset` to drop + reapply everything. To deploy a schema change to remote: `./scripts/db-deploy.sh demo|prod|<no arg>` — the script overwrites the remote schema by resetting it, reapplies the seed on demo, and dumps + restores `public` + `storage.objects` data on prod (backups land in `db-backups/`).
+- **Migrations:** Add a new timestamped file in `supabase/migrations/` for every schema change (e.g. `20260417000000_add_xyz.sql`).
+  - **Locally:** `npx supabase db reset` to drop + reapply all migrations + seed.
+  - **Deploy to remote — incremental (default, safe, additive):**
+    ```
+    npx supabase link --project-ref <demo-or-prod-ref>
+    npx supabase db push
+    ```
+    Applies only new migration files. No data loss. **Always use this for normal schema changes.**
+  - **Deploy to remote — full overwrite (only when push can't apply changes, e.g. you edited an existing migration file):**
+    `./scripts/db-deploy.sh demo|prod|<no arg>` — resets the remote schema, reapplies seed on demo, dumps + restores `public` + `storage.objects` data on prod (backups land in `db-backups/`, gitignored). Destructive on schema; preserves data on prod via backup/restore.
+- **Writing RLS policies:** every table that admins/users write to needs explicit `INSERT`/`UPDATE`/`DELETE` policies — RLS denies by default, and Supabase clients silently filter blocked rows (zero rows affected, no error). When adding a write path in app code, also add the matching policy in the same migration.
 
 ## Database Schema
 
-Single consolidated migration in `supabase/migrations/`:
-- `001_initial_schema.sql` — full schema: communes (with contact fields, custom_primary_color, custom_domain, associations, opening_hours), profiles, posts, comments, rsvps, polls, producers, reports, audit_log, word_filters, push_tokens, post_images, council_documents, page_sections, storage buckets (post-images, avatars, council-documents, website-images), all RLS policies, functions, triggers, and indexes
+Migrations in `supabase/migrations/`:
+- `001_initial_schema.sql` — full initial schema: communes (with contact fields, custom_primary_color, custom_domain, associations, opening_hours), profiles, posts, comments, rsvps, polls, producers, reports, audit_log, word_filters, push_tokens, post_images, council_documents, page_sections, storage buckets (post-images, avatars, council-documents, website-images), all RLS policies, functions, triggers, and indexes
+- `20260417000000_admin_can_update_own_commune.sql` — RLS UPDATE policy on `public.communes` so admins can save theme/logo/contact/opening_hours/associations/custom_domain
+- All future schema changes go in their own timestamped file — never edit `001_initial_schema.sql` again post-launch.
 
 ## Environment Variables
 
