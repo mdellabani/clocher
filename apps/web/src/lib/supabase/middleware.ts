@@ -23,6 +23,16 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
+  const { pathname } = request.nextUrl;
+  const isProtected = pathname.startsWith("/admin") || pathname.startsWith("/app");
+
+  // Public routes: don't touch Supabase auth at all. Saves a round-trip on
+  // every landing-page hit and avoids spurious refresh attempts when an
+  // anonymous visitor's browser carries a stale auth cookie.
+  if (!isProtected) {
+    return supabaseResponse;
+  }
+
   // getUser also triggers a token refresh under the hood when needed.
   // The cookie writes from refresh are captured by setAll above.
   let { data: { user } } = await supabase.auth.getUser();
@@ -36,14 +46,14 @@ export async function updateSession(request: NextRequest) {
         const { data: refreshed } = await supabase.auth.refreshSession();
         user = refreshed.user ?? null;
       } catch {
-        // Network or token errors: leave user as null and let the existing
-        // redirect-to-login fallback handle it.
+        // Stale or invalid refresh token: leave user as null, fall through
+        // to the redirect below. The bad cookie will be replaced on next
+        // successful login.
       }
     }
   }
 
-  const { pathname } = request.nextUrl;
-  if (!user && (pathname.startsWith("/admin") || pathname.startsWith("/app"))) {
+  if (!user) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/auth/login";
     return NextResponse.redirect(loginUrl);
