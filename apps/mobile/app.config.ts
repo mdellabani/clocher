@@ -55,5 +55,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     eas: {
       projectId: "7618b9c8-3d4d-4bc8-b7df-e2e18cf25b70",
     },
+    posthogKey: process.env.EXPO_PUBLIC_POSTHOG_KEY,
+    posthogHost: process.env.EXPO_PUBLIC_POSTHOG_HOST,
   },
 });
