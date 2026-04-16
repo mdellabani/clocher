@@ -17,7 +17,7 @@ export async function updateThemeAction(theme: string, customPrimaryColor: strin
     .eq("id", profile.commune_id);
 
   if (error) return { error: error.message };
-  revalidatePath("/admin/dashboard");
+  revalidatePath("/", "layout");
   return { error: null };
 }
 
@@ -48,6 +48,6 @@ export async function uploadLogoAction(formData: FormData) {
     .update({ logo_url: logoUrl }).eq("id", profile.commune_id);
 
   if (updateError) return { error: updateError.message };
-  revalidatePath("/admin/dashboard");
+  revalidatePath("/", "layout");
   return { error: null };
 }
