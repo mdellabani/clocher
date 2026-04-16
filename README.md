@@ -129,3 +129,7 @@ npx supabase stop                                    # stop local supabase
 npx supabase db reset                                # reset DB + apply migrations + seed
 npx supabase gen types typescript --local > packages/shared/src/types/database.ts  # regenerate types
 ```
+
+## Deployment & Configuration
+
+- Supabase auth settings (sessions never expire): see [`docs/supabase-auth-settings.md`](docs/supabase-auth-settings.md)

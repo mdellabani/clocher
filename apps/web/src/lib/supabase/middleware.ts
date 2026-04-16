@@ -23,7 +23,19 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  // getUser also triggers a token refresh under the hood when needed.
+  // The cookie writes from refresh are captured by setAll above.
+  let { data: { user } } = await supabase.auth.getUser();
+
+  // Belt-and-suspenders: if no user but a refresh token cookie exists,
+  // make one explicit attempt to refresh before bouncing to login.
+  if (!user) {
+    const hasRefreshCookie = request.cookies.getAll().some(c => c.name.includes("auth-token"));
+    if (hasRefreshCookie) {
+      const { data: refreshed } = await supabase.auth.refreshSession();
+      user = refreshed.user ?? null;
+    }
+  }
 
   const { pathname } = request.nextUrl;
   if (!user && (pathname.startsWith("/admin") || pathname.startsWith("/app"))) {
