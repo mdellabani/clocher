@@ -48,7 +48,7 @@ export function SuperAdminDashboard() {
       getPendingCommunes(),
       getAllCommunesAdmin(),
     ]);
-    if (pendingRes.data) setPending(pendingRes.data as PendingCommune[]);
+    if (pendingRes.data) setPending(pendingRes.data as unknown as PendingCommune[]);
     if (communesRes.data) setCommunes(communesRes.data as CommuneRow[]);
     setLoading(false);
   }
