@@ -70,8 +70,13 @@ deploy_prod() {
   link_project prod "$SUPABASE_PROD_REF"
 
   log "dumping public + storage.objects to $backup"
+  # Note: we intentionally exclude storage.buckets — bucket definitions are
+  # declared in the migration (idempotent), so no need to round-trip them.
+  # Keeping them would cause unique-constraint failures on restore because
+  # the storage schema isn't dropped by `db reset --linked --no-seed`.
   npx supabase db dump --linked --data-only \
     --schema public --schema storage \
+    --exclude-table 'storage.buckets' \
     -f "$backup"
   ok "backup written ($(wc -c <"$backup") bytes)"
 
