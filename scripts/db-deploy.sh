@@ -12,7 +12,8 @@
 #
 # Requirements:
 #   - supabase CLI logged in (`supabase login`)
-#   - env vars set (passwords only — project refs are hardcoded below):
+#   - optional env vars (only needed for unattended/CI runs — interactive
+#     runs will be prompted by the supabase CLI and cached after first use):
 #       SUPABASE_DB_PASSWORD_DEMO   db password for demo
 #       SUPABASE_DB_PASSWORD_PROD   db password for prod
 #
@@ -52,18 +53,21 @@ confirm() {
 }
 
 link_project() {
-  local env="$1" ref="$2" password="$3"
+  local env="$1" ref="$2" password="${3:-}"
   log "linking to $env (project-ref: $ref)"
-  SUPABASE_DB_PASSWORD="$password" npx supabase link --project-ref "$ref" >/dev/null
+  if [ -n "$password" ]; then
+    SUPABASE_DB_PASSWORD="$password" npx supabase link --project-ref "$ref" >/dev/null
+  else
+    # No password in env — let supabase CLI prompt (and cache it).
+    npx supabase link --project-ref "$ref"
+  fi
 }
 
 # ---------- per-env handlers ----------
 
 deploy_demo() {
-  require_env SUPABASE_DB_PASSWORD_DEMO
-
   log "DEMO: reset schema + reapply seed"
-  link_project demo "$SUPABASE_DEMO_REF" "$SUPABASE_DB_PASSWORD_DEMO"
+  link_project demo "$SUPABASE_DEMO_REF" "${SUPABASE_DB_PASSWORD_DEMO:-}"
 
   if ! confirm "About to RESET the demo database (all data lost, seed reapplied). Continue?"; then
     warn "demo skipped"
@@ -75,14 +79,12 @@ deploy_demo() {
 }
 
 deploy_prod() {
-  require_env SUPABASE_DB_PASSWORD_PROD
-
   local stamp
   stamp="$(date +%Y%m%d-%H%M%S)"
   local backup="$BACKUP_DIR/prod-${stamp}.sql"
 
   log "PROD: backup -> reset schema -> restore"
-  link_project prod "$SUPABASE_PROD_REF" "$SUPABASE_DB_PASSWORD_PROD"
+  link_project prod "$SUPABASE_PROD_REF" "${SUPABASE_DB_PASSWORD_PROD:-}"
 
   log "dumping public + storage.objects to $backup"
   npx supabase db dump --linked --data-only \
