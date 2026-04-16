@@ -18,7 +18,7 @@ export async function getPendingCommunes() {
   // Find profiles that are admin + pending (these are commune registration requests)
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, display_name, created_at, status, communes(id, name, slug, code_postal, created_at)")
+    .select("id, display_name, created_at, status, commune_id, communes!commune_id(id, name, slug, code_postal, created_at)")
     .eq("role", "admin")
     .eq("status", "pending")
     .order("created_at", { ascending: true });
