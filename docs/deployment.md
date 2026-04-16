@@ -1,10 +1,29 @@
-# Deployment Guide — Test Environment
+# Deployment Guide
 
-This guide sets up a test environment for the Rural Community Platform across three services:
+This guide covers two environments for the Rural Community Platform:
+
+- **Demo** — seeded with Saint-Médard data, for product demos and testing
+- **Production** — clean database, for real communes and users
+
+Both environments use the same three services:
 
 1. **Supabase Cloud** — Postgres database, auth, storage, edge functions
 2. **Vercel** — Next.js web app (commune public website + admin panel)
 3. **Expo EAS** — React Native mobile app (internal preview builds)
+
+## Dual Environment Strategy
+
+| | Demo | Production |
+|---|---|---|
+| Supabase project | `rural-community-demo` | `rural-community-prod` |
+| Seeded data | Yes (Saint-Médard) | No (clean) |
+| Vercel | Preview deployments | Production deployment |
+| Purpose | Demos, screenshots, testing | Real communes, real users |
+| Commune registration | Not needed (pre-seeded) | Via `/auth/register-commune` |
+
+**Vercel environment variables:** Use Vercel's environment scoping — set demo Supabase keys for "Preview" and production keys for "Production". Both share the same codebase.
+
+**Supabase setup:** Create two separate projects on Supabase Cloud. Link and push schema to both. Only run `seed.sql` on the demo project.
 
 ## Prerequisites
 

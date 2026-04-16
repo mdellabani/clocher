@@ -104,6 +104,15 @@ export default function LoginPage() {
                 Créer un compte
               </a>
             </p>
+
+            <div className="border-t border-border pt-3 mt-1">
+              <p className="text-center text-sm text-muted-foreground">
+                Vous êtes une mairie ?{" "}
+                <a href="/auth/register-commune" className="underline text-foreground font-medium">
+                  Inscrire ma commune
+                </a>
+              </p>
+            </div>
           </form>
         </CardContent>
       </Card>

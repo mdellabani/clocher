@@ -23,6 +23,18 @@ export async function getCommuneByInviteCode(client: Client, inviteCode: string)
   return client.from("communes").select("id, name, slug").eq("invite_code", inviteCode).single();
 }
 
+export async function createCommune(client: Client, data: {
+  name: string;
+  slug: string;
+  code_postal: string;
+}) {
+  return client
+    .from("communes")
+    .insert({ name: data.name, slug: data.slug, code_postal: data.code_postal })
+    .select("id, name, slug, invite_code")
+    .single();
+}
+
 export async function getCommuneByDomain(client: Client, domain: string) {
   return client
     .from("communes")
