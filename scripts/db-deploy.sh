@@ -12,10 +12,8 @@
 #
 # Requirements:
 #   - supabase CLI logged in (`supabase login`)
-#   - env vars set:
-#       SUPABASE_DEMO_REF   project ref of the demo project
-#       SUPABASE_PROD_REF   project ref of the prod project
-#       SUPABASE_DB_PASSWORD_DEMO   db password for demo (used by `supabase link`)
+#   - env vars set (passwords only — project refs are hardcoded below):
+#       SUPABASE_DB_PASSWORD_DEMO   db password for demo
 #       SUPABASE_DB_PASSWORD_PROD   db password for prod
 #
 # Backups land in ./db-backups/<env>-<timestamp>.sql (gitignored).
@@ -24,6 +22,10 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+
+# Project refs (not secret — visible in dashboard URLs).
+SUPABASE_DEMO_REF="${SUPABASE_DEMO_REF:-vdfyugekbtanrlveihlm}"
+SUPABASE_PROD_REF="${SUPABASE_PROD_REF:-tsfmyrtmuravhzearntn}"
 
 BACKUP_DIR="$ROOT/db-backups"
 mkdir -p "$BACKUP_DIR"
@@ -58,7 +60,6 @@ link_project() {
 # ---------- per-env handlers ----------
 
 deploy_demo() {
-  require_env SUPABASE_DEMO_REF
   require_env SUPABASE_DB_PASSWORD_DEMO
 
   log "DEMO: reset schema + reapply seed"
@@ -74,7 +75,6 @@ deploy_demo() {
 }
 
 deploy_prod() {
-  require_env SUPABASE_PROD_REF
   require_env SUPABASE_DB_PASSWORD_PROD
 
   local stamp
