@@ -109,7 +109,8 @@ export function SuperAdminDashboard() {
                     </Button>
                     <Button
                       size="sm"
-                      variant="destructive"
+                      variant="outline"
+                      className="text-red-600 border-red-200 hover:bg-red-50"
                       onClick={() => handleReject(p.id, p.communes?.id ?? "")}
                     >
                       <X size={14} className="mr-1" />
