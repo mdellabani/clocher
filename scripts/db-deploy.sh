@@ -86,7 +86,7 @@ deploy_prod() {
   ok "prod schema reset"
 
   log "restoring data from $backup"
-  npx supabase db psql --linked -f "$backup"
+  npx supabase db query --linked <"$backup"
   ok "prod data restored"
 
   log "backup retained at $backup (delete manually once verified)"
