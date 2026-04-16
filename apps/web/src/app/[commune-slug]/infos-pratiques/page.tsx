@@ -56,7 +56,7 @@ function parseServices(servicesStr?: string): Service[] {
       if (!match) return null;
       return { name: match[1].trim(), location: match[2]?.trim(), phone: match[3].trim() };
     })
-    .filter((s): s is Service => s !== null);
+    .filter((s) => s !== null) as Service[];
 }
 
 

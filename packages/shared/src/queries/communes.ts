@@ -4,11 +4,11 @@ import type { Database } from "../types";
 type Client = SupabaseClient<Database>;
 
 export async function getCommune(client: Client, communeId: string) {
-  return client.from("communes").select("*, epci(name)").eq("id", communeId).single();
+  return client.from("communes").select("*").eq("id", communeId).single();
 }
 
 export async function getCommuneBySlug(client: Client, slug: string) {
-  return client.from("communes").select("*, epci(name)").eq("slug", slug).single();
+  return client.from("communes").select("*").eq("slug", slug).single();
 }
 
 export async function getCommunesByEpci(client: Client, epciId: string) {

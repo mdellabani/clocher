@@ -8,7 +8,7 @@ import {
   getProfile,
   getPollByPostId,
 } from "@rural-community-platform/shared";
-import type { PostType, RsvpStatus } from "@rural-community-platform/shared";
+import type { PostType, RsvpStatus, Poll } from "@rural-community-platform/shared";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PostTypeBadge } from "@/components/post-type-badge";
 import { CommentSection } from "@/components/comment-section";
@@ -39,7 +39,7 @@ export default async function PostDetailPage({
 
   const { data: comments } = await getComments(supabase, id);
   const counts = await getRsvpCounts(supabase, id);
-  const { data: poll } = await getPollByPostId(supabase, id);
+  const { data: poll } = await getPollByPostId(supabase, id) as { data: Poll | null };
 
   let currentRsvpStatus: RsvpStatus | null = null;
   if (post.type === "evenement") {

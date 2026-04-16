@@ -15,6 +15,7 @@ export default async function ModerationDashboardPage() {
 
   // Layout already authenticated and checked role, but we need user for queries
   const { data: profile } = await getProfile(supabase, user!.id);
+  if (!profile) return null;
 
   // Fetch pending reports with post and reporter info
   const { data: pendingReports } = await supabase
@@ -41,7 +42,7 @@ export default async function ModerationDashboardPage() {
     .limit(50);
 
   if (profile.role === "moderator") {
-    auditQuery = auditQuery.eq("actor_id", user.id);
+    auditQuery = auditQuery.eq("actor_id", user!.id);
   }
 
   const { data: auditEntries } = await auditQuery;

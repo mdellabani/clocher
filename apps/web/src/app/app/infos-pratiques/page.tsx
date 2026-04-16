@@ -54,7 +54,7 @@ function parseServices(servicesStr?: string): Service[] {
         phone: match[3].trim(),
       };
     })
-    .filter((s): s is Service => s !== null);
+    .filter((s) => s !== null) as Service[];
 }
 
 

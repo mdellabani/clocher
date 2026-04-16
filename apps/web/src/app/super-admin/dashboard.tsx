@@ -26,7 +26,7 @@ type PendingCommune = {
     slug: string;
     code_postal: string;
     created_at: string;
-  };
+  }[];
 };
 
 type CommuneRow = {
@@ -99,9 +99,9 @@ export function SuperAdminDashboard() {
               <Card key={p.id}>
                 <CardContent className="flex items-center justify-between py-4">
                   <div>
-                    <p className="font-semibold">{p.communes.name}</p>
+                    <p className="font-semibold">{p.communes[0]?.name}</p>
                     <p className="text-sm text-muted-foreground">
-                      {p.communes.code_postal} · Demandé par {p.display_name}
+                      {p.communes[0]?.code_postal} · Demandé par {p.display_name}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {new Date(p.created_at).toLocaleDateString("fr-FR", {
@@ -122,7 +122,7 @@ export function SuperAdminDashboard() {
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={() => handleReject(p.id, p.communes.id)}
+                      onClick={() => handleReject(p.id, p.communes[0]?.id ?? "")}
                     >
                       <X size={14} className="mr-1" />
                       Refuser
