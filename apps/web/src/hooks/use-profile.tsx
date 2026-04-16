@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@rural-community-platform/shared";
 
@@ -15,7 +15,21 @@ type ProfileWithCommune = Profile & {
   };
 };
 
-export function useProfile() {
+type ProfileState = {
+  profile: ProfileWithCommune | null;
+  loading: boolean;
+  isAdmin: boolean;
+  isModerator: boolean;
+};
+
+const ProfileContext = createContext<ProfileState>({
+  profile: null,
+  loading: true,
+  isAdmin: false,
+  isModerator: false,
+});
+
+export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<ProfileWithCommune | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,10 +54,20 @@ export function useProfile() {
     load();
   }, []);
 
-  return {
-    profile,
-    loading,
-    isAdmin: profile?.role === "admin",
-    isModerator: profile?.role === "moderator" || profile?.role === "admin",
-  };
+  return (
+    <ProfileContext.Provider
+      value={{
+        profile,
+        loading,
+        isAdmin: profile?.role === "admin",
+        isModerator: profile?.role === "moderator" || profile?.role === "admin",
+      }}
+    >
+      {children}
+    </ProfileContext.Provider>
+  );
+}
+
+export function useProfile() {
+  return useContext(ProfileContext);
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { PostHogMonitoringProvider } from "@/components/posthog-provider";
+import { ProfileProviderWrapper } from "@/components/profile-provider";
 import { FeedbackFloat } from "@/components/feedback-float";
 import "./globals.css";
 
@@ -20,8 +21,10 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${dmSans.variable} ${dmSans.className} antialiased`}>
         <PostHogMonitoringProvider>
-          {children}
-          <FeedbackFloat />
+          <ProfileProviderWrapper>
+            {children}
+            <FeedbackFloat />
+          </ProfileProviderWrapper>
         </PostHogMonitoringProvider>
       </body>
     </html>
