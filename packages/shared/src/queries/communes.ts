@@ -43,3 +43,12 @@ export async function getCommuneByDomain(client: Client, domain: string) {
     .eq("domain_verified", true)
     .single();
 }
+
+export async function getHomepageSectionsByCommune(client: Client, communeId: string) {
+  return client
+    .from("page_sections")
+    .select("id, section_type, visible, sort_order, content")
+    .eq("commune_id", communeId)
+    .eq("page", "homepage")
+    .order("sort_order", { ascending: true });
+}

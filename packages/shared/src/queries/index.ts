@@ -1,8 +1,8 @@
 export { getPosts, getPostById, createPost, deletePost, togglePinPost, getPostsByType, getPostsPaginated, getPinnedPosts, getEventsByCommune } from "./posts";
 export type { PostListFilters } from "./posts";
-export { getCommune, getCommuneBySlug, getCommunesByEpci, getAllCommunes, getCommuneByInviteCode, getCommuneByDomain, createCommune } from "./communes";
+export { getCommune, getCommuneBySlug, getCommunesByEpci, getAllCommunes, getCommuneByInviteCode, getCommuneByDomain, createCommune, getHomepageSectionsByCommune } from "./communes";
 export { getProfile, createProfile, updateProfile, getMyPosts, getMyComments, getMyRsvps } from "./profiles";
-export { getPendingUsers, approveUser, rejectUser, promoteToAdmin, demoteToResident, promoteToModerator, getCommuneMembers } from "./admin";
+export { getPendingUsers, approveUser, rejectUser, promoteToAdmin, demoteToResident, promoteToModerator, getCommuneMembers, getCouncilDocsByCommune, getPostsThisWeekCount } from "./admin";
 export { getComments, createComment, deleteComment } from "./comments";
 export { getRsvps, setRsvp, removeRsvp, getRsvpCounts } from "./rsvps";
 export type { RsvpStatus } from "./rsvps";

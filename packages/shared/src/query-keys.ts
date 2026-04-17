@@ -30,4 +30,12 @@ export const queryKeys = {
   reports: {
     pending: (communeId: string) => ["reports", "pending", communeId] as const,
   },
+  admin: {
+    pendingUsers: (communeId: string) => ["admin", "pending-users", communeId] as const,
+    pendingProducers: (communeId: string) => ["admin", "pending-producers", communeId] as const,
+    members: (communeId: string) => ["admin", "members", communeId] as const,
+    postsThisWeek: (communeId: string) => ["admin", "posts-this-week", communeId] as const,
+    homepageSections: (communeId: string) => ["admin", "homepage-sections", communeId] as const,
+  },
+  councilDocs: (communeId: string) => ["council-docs", communeId] as const,
 } as const;
