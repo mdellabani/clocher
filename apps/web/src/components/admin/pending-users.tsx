@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@rural-community-platform/shared";
 import { approveUserAction, rejectUserAction } from "@/app/admin/dashboard/actions";
 import { Check, X } from "lucide-react";
 
@@ -12,19 +13,20 @@ interface PendingUser {
 
 interface PendingUsersProps {
   users: PendingUser[];
+  communeId: string;
 }
 
-export function PendingUsers({ users }: PendingUsersProps) {
-  const router = useRouter();
+export function PendingUsers({ users, communeId }: PendingUsersProps) {
+  const qc = useQueryClient();
 
   async function handleApprove(userId: string) {
     await approveUserAction(userId);
-    router.refresh();
+    await qc.invalidateQueries({ queryKey: queryKeys.admin.pendingUsers(communeId) });
   }
 
   async function handleReject(userId: string) {
     await rejectUserAction(userId);
-    router.refresh();
+    await qc.invalidateQueries({ queryKey: queryKeys.admin.pendingUsers(communeId) });
   }
 
   return (
