@@ -7,8 +7,10 @@ export default defineConfig({
     environment: "node",
     include: ["tests/integration/**/*.test.ts"],
     pool: "forks",
-    // @ts-expect-error — singleFork is top-level in Vitest 4, types in this version haven't caught up yet
-    singleFork: true,
+    // Vitest 4: replaces deprecated poolOptions.forks.singleFork.
+    // Forces sequential test-file execution so the integration tests
+    // share a single local Supabase without contention.
+    fileParallelism: false,
     testTimeout: 15_000,
     hookTimeout: 15_000,
     passWithNoTests: true,
