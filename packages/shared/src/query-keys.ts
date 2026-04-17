@@ -15,6 +15,11 @@ export const queryKeys = {
       ["posts", "epci", epciId, communeIds ?? []] as const,
   },
   profile: (userId: string) => ["profile", userId] as const,
+  me: {
+    posts: (userId: string) => ["me", userId, "posts"] as const,
+    comments: (userId: string) => ["me", userId, "comments"] as const,
+    rsvps: (userId: string) => ["me", userId, "rsvps"] as const,
+  },
   commune: (communeId: string) => ["commune", communeId] as const,
   events: (communeId: string) => ["events", communeId] as const,
   comments: (postId: string) => ["comments", postId] as const,
