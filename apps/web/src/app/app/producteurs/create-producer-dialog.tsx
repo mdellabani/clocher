@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@rural-community-platform/shared";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,8 +17,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { PRODUCER_CATEGORIES } from "@rural-community-platform/shared";
 import { createProducerAction } from "./actions";
 
-export function CreateProducerDialog() {
-  const router = useRouter();
+export function CreateProducerDialog({ communeId }: { communeId: string }) {
+  const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -41,12 +42,12 @@ export function CreateProducerDialog() {
 
     setSuccess(true);
     setLoading(false);
-    setTimeout(() => {
+    setTimeout(async () => {
       setOpen(false);
       setSuccess(false);
       setSelectedCategories([]);
       (e.target as HTMLFormElement).reset();
-      router.refresh();
+      await qc.invalidateQueries({ queryKey: queryKeys.producers(communeId) });
     }, 2000);
   }
 

@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { CreateProducerInput } from "@rural-community-platform/shared";
 
@@ -56,6 +55,5 @@ export async function createProducerAction(formData: FormData) {
     return { error: "Erreur lors de la création" };
   }
 
-  revalidatePath("/app/producteurs");
   return { error: null };
 }

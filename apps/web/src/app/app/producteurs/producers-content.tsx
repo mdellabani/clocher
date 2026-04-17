@@ -11,7 +11,7 @@ import type { Producer } from "@rural-community-platform/shared";
 
 type ViewMode = "list" | "grid";
 
-export function ProducersContent({ producers }: { producers: Producer[] }) {
+export function ProducersContent({ producers, communeId }: { producers: Producer[]; communeId: string }) {
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
@@ -102,7 +102,7 @@ export function ProducersContent({ producers }: { producers: Producer[] }) {
             Carte
           </Button>
         </div>
-        <CreateProducerDialog />
+        <CreateProducerDialog communeId={communeId} />
       </div>
 
       {/* Results */}
