@@ -128,7 +128,7 @@ export function DashboardClient({ communeId }: { communeId: string }) {
               page={page}
               perPage={perPage}
             />
-            <CouncilDocuments documents={(councilDocs ?? []) as any[]} />
+            <CouncilDocuments communeId={communeId} documents={(councilDocs ?? []) as any[]} />
           </>
         }
         moderationContent={

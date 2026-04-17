@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { updateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export async function uploadCouncilDocumentAction(formData: FormData) {
@@ -35,7 +35,8 @@ export async function uploadCouncilDocumentAction(formData: FormData) {
   });
   if (insertError) return { error: insertError.message };
 
-  revalidatePath("/admin/dashboard");
+  const { data: commune } = await supabase.from("communes").select("slug").eq("id", profile.commune_id).single();
+  if (commune) updateTag(`commune:${commune.slug}`);
   return { error: null };
 }
 
@@ -44,10 +45,15 @@ export async function deleteCouncilDocumentAction(id: string, storagePath: strin
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Non authentifié" };
 
+  const { data: profile } = await supabase
+    .from("profiles").select("commune_id").eq("id", user.id).single();
+  if (!profile) return { error: "Non autorisé" };
+
   await supabase.storage.from("council-documents").remove([storagePath]);
   const { error } = await supabase.from("council_documents").delete().eq("id", id);
   if (error) return { error: error.message };
 
-  revalidatePath("/admin/dashboard");
+  const { data: commune } = await supabase.from("communes").select("slug").eq("id", profile.commune_id).single();
+  if (commune) updateTag(`commune:${commune.slug}`);
   return { error: null };
 }
