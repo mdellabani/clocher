@@ -8,7 +8,12 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     setupFiles: ["./tests/setup.ts"],
-    include: ["tests/components/**/*.test.{ts,tsx}", "tests/query/**/*.test.ts", "tests/helpers/**/*.test.{ts,tsx}"],
+    include: [
+      "tests/components/**/*.test.{ts,tsx}",
+      "tests/query/**/*.test.ts",
+      "tests/helpers/**/*.test.{ts,tsx}",
+      "tests/hooks/**/*.test.{ts,tsx}",
+    ],
     passWithNoTests: true,
   },
   resolve: {
