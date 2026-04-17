@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@rural-community-platform/shared";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,28 +10,17 @@ import {
   addCommentAction,
   deleteCommentAction,
 } from "@/app/app/posts/[id]/actions";
-
-interface Comment {
-  id: string;
-  body: string;
-  created_at: string;
-  author_id: string;
-  profiles: { display_name: string | null; avatar_url: string | null } | null;
-}
+import { useComments } from "@/hooks/queries/use-comments";
 
 interface CommentSectionProps {
   postId: string;
-  comments: Comment[];
   currentUserId: string;
   isAdmin: boolean;
 }
 
-export function CommentSection({
-  postId,
-  comments,
-  currentUserId,
-  isAdmin,
-}: CommentSectionProps) {
+export function CommentSection({ postId, currentUserId, isAdmin }: CommentSectionProps) {
+  const qc = useQueryClient();
+  const { data: comments = [] } = useComments(postId);
   const [body, setBody] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -43,13 +34,17 @@ export function CommentSection({
         setError(result.error);
       } else {
         setBody("");
+        qc.invalidateQueries({ queryKey: queryKeys.comments(postId) });
       }
     });
   }
 
   function handleDelete(commentId: string) {
     startTransition(async () => {
-      await deleteCommentAction(commentId, postId);
+      const result = await deleteCommentAction(commentId, postId);
+      if (!result.error) {
+        qc.invalidateQueries({ queryKey: queryKeys.comments(postId) });
+      }
     });
   }
 
