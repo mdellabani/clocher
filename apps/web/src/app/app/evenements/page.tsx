@@ -1,52 +1,45 @@
+import { HydrationBoundary } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getProfile } from "@rural-community-platform/shared";
+import {
+  getProfile,
+  getEventsByCommune,
+  queryKeys,
+} from "@rural-community-platform/shared";
+import { prefetchAndDehydrate } from "@/lib/query/prefetch";
 import { ThemeInjector } from "@/components/theme-injector";
-import { EventsContent } from "./events-content";
+import { EventsClient } from "./events-client";
 
 export default async function EvenementsPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
   const { data: profile } = await getProfile(supabase, user.id);
   if (!profile) redirect("/auth/signup");
   if (profile.status === "pending") redirect("/auth/pending");
 
-  // Fetch all events for the commune
-  const { data: events } = await supabase
-    .from("posts")
-    .select(
-      "id, title, body, type, event_date, event_location, created_at, profiles!author_id(display_name), rsvps(status)"
-    )
-    .eq("commune_id", profile.commune_id)
-    .eq("type", "evenement")
-    .order("event_date", { ascending: true, nullsFirst: false });
+  const dehydratedState = await prefetchAndDehydrate(async (qc) => {
+    qc.setQueryData(queryKeys.profile(user.id), profile);
+    await qc.prefetchQuery({
+      queryKey: queryKeys.events(profile.commune_id),
+      queryFn: async () => {
+        const { data } = await getEventsByCommune(supabase, profile.commune_id);
+        return data ?? [];
+      },
+    });
+  });
 
   return (
-    <div className="space-y-4">
-      <ThemeInjector theme={profile.communes?.theme} customPrimaryColor={profile.communes?.custom_primary_color} />
-
-      <h1 className="text-2xl font-semibold text-[var(--foreground)]">Événements</h1>
-
-      <EventsContent
-        events={
-          (events ?? []).map((e) => ({
-            id: e.id,
-            title: e.title,
-            body: e.body,
-            type: e.type,
-            event_date: e.event_date,
-            event_location: e.event_location,
-            created_at: e.created_at,
-            profiles: Array.isArray(e.profiles) ? e.profiles[0] ?? null : e.profiles,
-            rsvps: (e.rsvps ?? []) as { status: string }[],
-          }))
-        }
+    <HydrationBoundary state={dehydratedState}>
+      <ThemeInjector
+        theme={profile.communes?.theme}
+        customPrimaryColor={profile.communes?.custom_primary_color}
       />
-    </div>
+      <h1 className="text-2xl font-semibold text-[var(--foreground)]">Événements</h1>
+      <div className="mt-4">
+        <EventsClient userId={user.id} />
+      </div>
+    </HydrationBoundary>
   );
 }

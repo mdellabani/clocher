@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CalendarDays, MapPin, MessageCircle } from "lucide-react";
+import { CalendarDays, MapPin } from "lucide-react";
 import { EventCalendar } from "@/components/event-calendar";
+import { useProfile } from "@/hooks/queries/use-profile";
+import { useEvents } from "@/hooks/queries/use-events";
 
 interface EventPost {
   id: string;
@@ -13,12 +15,8 @@ interface EventPost {
   event_date: string | null;
   event_location: string | null;
   created_at: string;
-  profiles: { display_name: string } | null;
+  profiles: { display_name: string } | { display_name: string }[] | null;
   rsvps: { status: string }[];
-}
-
-interface EventsContentProps {
-  events: EventPost[];
 }
 
 function formatDate(dateStr: string) {
@@ -36,11 +34,25 @@ function formatTime(dateStr: string) {
   });
 }
 
-export function EventsContent({ events }: EventsContentProps) {
+function firstOrSame<T>(v: T | T[] | null | undefined): T | null {
+  if (!v) return null;
+  return Array.isArray(v) ? (v[0] ?? null) : v;
+}
+
+export function EventsClient({ userId }: { userId: string }) {
+  const { data: profile } = useProfile(userId);
+  const { data: rawEvents } = useEvents(profile?.commune_id ?? "");
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [displayYear, setDisplayYear] = useState(today.getFullYear());
   const [displayMonth, setDisplayMonth] = useState(today.getMonth());
+
+  if (!profile) return null;
+
+  const events = ((rawEvents ?? []) as EventPost[]).map((e) => ({
+    ...e,
+    profiles: firstOrSame(e.profiles),
+  }));
 
   const calendarEvents = events
     .filter((e) => e.event_date != null)
@@ -110,7 +122,6 @@ export function EventsContent({ events }: EventsContentProps) {
               <Link key={event.id} href={`/app/posts/${event.id}`} className="block">
                 <div className="relative rounded-[14px] border border-[#f0e8da] bg-white shadow-[0_2px_8px_rgba(140,120,80,0.08)] transition-all hover:shadow-[0_4px_16px_rgba(140,120,80,0.14)] hover:-translate-y-0.5">
                   <div className="px-5 py-4">
-                    {/* Date badge */}
                     {event.event_date && (
                       <div
                         className="mb-3 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5"
