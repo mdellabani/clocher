@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@rural-community-platform/shared";
 import { Upload, Trash2 } from "lucide-react";
 import {
   THEMES,
@@ -21,10 +23,12 @@ interface ThemeCustomizerProps {
   currentTheme: string;
   currentCustomColor: string | null;
   currentLogoUrl: string | null;
+  communeId: string;
 }
 
-export function ThemeCustomizer({ currentTheme, currentCustomColor, currentLogoUrl }: ThemeCustomizerProps) {
+export function ThemeCustomizer({ currentTheme, currentCustomColor, currentLogoUrl, communeId }: ThemeCustomizerProps) {
   const router = useRouter();
+  const qc = useQueryClient();
   const [theme, setTheme] = useState(currentTheme);
   const [customColor, setCustomColor] = useState(currentCustomColor ?? "");
   const [savedTheme, setSavedTheme] = useState(currentTheme);
@@ -74,7 +78,7 @@ export function ThemeCustomizer({ currentTheme, currentCustomColor, currentLogoU
     }
     setSavedTheme(theme);
     setSavedCustomColor(customColor);
-    router.refresh();
+    qc.invalidateQueries({ queryKey: queryKeys.commune(communeId) });
   }
 
   async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -85,7 +89,7 @@ export function ThemeCustomizer({ currentTheme, currentCustomColor, currentLogoU
     formData.set("logo", file);
     await uploadLogoAction(formData);
     setUploadingLogo(false);
-    router.refresh();
+    qc.invalidateQueries({ queryKey: queryKeys.commune(communeId) });
   }
 
   async function handleLogoRemove() {
@@ -93,7 +97,7 @@ export function ThemeCustomizer({ currentTheme, currentCustomColor, currentLogoU
     setRemovingLogo(true);
     await removeLogoAction();
     setRemovingLogo(false);
-    router.refresh();
+    qc.invalidateQueries({ queryKey: queryKeys.commune(communeId) });
   }
 
   return (

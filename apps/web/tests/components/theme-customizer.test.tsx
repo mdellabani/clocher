@@ -6,6 +6,12 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ refresh: vi.fn() }),
 }));
 
+vi.mock("@tanstack/react-query", () => ({
+  useQueryClient: () => ({
+    invalidateQueries: vi.fn(),
+  }),
+}));
+
 const updateThemeAction = vi.fn().mockResolvedValue({ error: null });
 const uploadLogoAction = vi.fn().mockResolvedValue({ error: null });
 const removeLogoAction = vi.fn().mockResolvedValue({ error: null });
@@ -19,14 +25,14 @@ vi.mock("@/app/admin/dashboard/theme-actions", () => ({
 describe("ThemeCustomizer", () => {
   it("hides 'Aperçu non sauvegardé' pill on mount", () => {
     render(
-      <ThemeCustomizer currentTheme="terre_doc" currentCustomColor={null} currentLogoUrl={null} />,
+      <ThemeCustomizer currentTheme="terre_doc" currentCustomColor={null} currentLogoUrl={null} communeId="test-commune-id" />,
     );
     expect(screen.queryByText("Aperçu non sauvegardé")).not.toBeInTheDocument();
   });
 
   it("shows pill after picking a different theme", () => {
     render(
-      <ThemeCustomizer currentTheme="terre_doc" currentCustomColor={null} currentLogoUrl={null} />,
+      <ThemeCustomizer currentTheme="terre_doc" currentCustomColor={null} currentLogoUrl={null} communeId="test-commune-id" />,
     );
     // Find theme buttons by their role and filter to find one that isn't currently selected (no ring-2 class)
     const themeButtons = screen.getAllByRole("button").filter((btn) => {
@@ -52,7 +58,7 @@ describe("ThemeCustomizer", () => {
 
   it("renders preview override <style> only when picker is dirty", () => {
     const { container } = render(
-      <ThemeCustomizer currentTheme="terre_doc" currentCustomColor={null} currentLogoUrl={null} />,
+      <ThemeCustomizer currentTheme="terre_doc" currentCustomColor={null} currentLogoUrl={null} communeId="test-commune-id" />,
     );
     expect(container.querySelectorAll("style").length).toBe(0);
 
@@ -74,7 +80,7 @@ describe("ThemeCustomizer", () => {
 
   it("hides remove-logo button when no logo present", () => {
     render(
-      <ThemeCustomizer currentTheme="terre_doc" currentCustomColor={null} currentLogoUrl={null} />,
+      <ThemeCustomizer communeId="test-commune-id" currentTheme="terre_doc" currentCustomColor={null} currentLogoUrl={null} />,
     );
     expect(screen.queryByText("Supprimer")).not.toBeInTheDocument();
   });
@@ -82,6 +88,7 @@ describe("ThemeCustomizer", () => {
   it("shows remove-logo button when a logo URL is provided", () => {
     render(
       <ThemeCustomizer
+        communeId="test-commune-id"
         currentTheme="terre_doc"
         currentCustomColor={null}
         currentLogoUrl="https://example.com/logo.png"

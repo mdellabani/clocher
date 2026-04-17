@@ -95,6 +95,7 @@ export function DashboardClient({ communeId }: { communeId: string }) {
               currentTheme={commune?.theme ?? "terre_doc"}
               currentCustomColor={commune?.custom_primary_color ?? null}
               currentLogoUrl={commune?.logo_url ?? null}
+              communeId={communeId}
             />
             <DomainManager
               slug={commune?.slug ?? ""}

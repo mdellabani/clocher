@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { unstable_cache } from "next/cache";
+import { updateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export async function updateThemeAction(theme: string, customPrimaryColor: string | null) {
@@ -17,7 +18,13 @@ export async function updateThemeAction(theme: string, customPrimaryColor: strin
     .eq("id", profile.commune_id);
 
   if (error) return { error: error.message };
-  revalidatePath("/", "layout");
+
+  const { data: commune } = await supabase.from("communes")
+    .select("slug").eq("id", profile.commune_id).single();
+  if (commune) {
+    updateTag(`commune:${commune.slug}`);
+  }
+
   return { error: null };
 }
 
@@ -48,7 +55,13 @@ export async function uploadLogoAction(formData: FormData) {
     .update({ logo_url: logoUrl }).eq("id", profile.commune_id);
 
   if (updateError) return { error: updateError.message };
-  revalidatePath("/", "layout");
+
+  const { data: commune } = await supabase.from("communes")
+    .select("slug").eq("id", profile.commune_id).single();
+  if (commune) {
+    updateTag(`commune:${commune.slug}`);
+  }
+
   return { error: null };
 }
 
@@ -75,6 +88,12 @@ export async function removeLogoAction() {
     .update({ logo_url: null }).eq("id", profile.commune_id);
 
   if (error) return { error: error.message };
-  revalidatePath("/", "layout");
+
+  const { data: commune } = await supabase.from("communes")
+    .select("slug").eq("id", profile.commune_id).single();
+  if (commune) {
+    updateTag(`commune:${commune.slug}`);
+  }
+
   return { error: null };
 }
