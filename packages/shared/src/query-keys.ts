@@ -13,6 +13,8 @@ export const queryKeys = {
     detail: (postId: string) => ["posts", "detail", postId] as const,
     epci: (epciId: string, communeIds?: string[]) =>
       ["posts", "epci", epciId, communeIds ?? []] as const,
+    adminList: (communeId: string, filters: { types?: string[]; dateFilter?: string; page: number; perPage: number }) =>
+      ["posts", "admin-list", communeId, filters] as const,
   },
   profile: (userId: string) => ["profile", userId] as const,
   me: {

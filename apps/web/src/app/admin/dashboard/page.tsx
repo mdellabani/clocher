@@ -9,6 +9,7 @@ import {
   getCommune,
   getCouncilDocsByCommune,
   getPostsThisWeekCount,
+  getAdminPostsPaginated,
   queryKeys,
 } from "@rural-community-platform/shared";
 import { createClient } from "@/lib/supabase/server";
@@ -73,6 +74,10 @@ export default async function AdminDashboardPage() {
       qc.prefetchQuery({
         queryKey: queryKeys.admin.postsThisWeek(communeId),
         queryFn: async () => getPostsThisWeekCount(supabase, communeId),
+      }),
+      qc.prefetchQuery({
+        queryKey: queryKeys.posts.adminList(communeId, { types: [], dateFilter: "", page: 1, perPage: 10 }),
+        queryFn: async () => getAdminPostsPaginated(supabase, communeId, { types: [], dateFilter: "", page: 1, perPage: 10 }),
       }),
     ]);
   });

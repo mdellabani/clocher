@@ -25,6 +25,8 @@ import { useAuditLog } from "@/hooks/queries/use-audit-log";
 import { useCommuneAdmin } from "@/hooks/queries/use-commune-admin";
 import { useCouncilDocs } from "@/hooks/queries/use-council-docs";
 import { usePostsThisWeek } from "@/hooks/queries/use-posts-this-week";
+import { useAdminPosts } from "@/hooks/queries/use-admin-posts";
+import type { AdminPostFilters } from "@rural-community-platform/shared";
 
 function parseCsv(value: string | null): string[] {
   if (!value) return [];
@@ -50,9 +52,8 @@ export function DashboardClient({ communeId }: { communeId: string }) {
   const { data: councilDocs = [] } = useCouncilDocs(communeId);
   const { data: postsThisWeek = 0 } = usePostsThisWeek(communeId);
 
-  // Post list deferred to P5b's useAdminPosts hook
-  const posts: Array<{ id: string; title: string; type: PostType; is_pinned: boolean; created_at: string; profiles: any }> = [];
-  const totalCount = 0;
+  const adminPostFilters: AdminPostFilters = { types: selectedTypes, dateFilter: dateFilter as AdminPostFilters["dateFilter"], page, perPage };
+  const { data: adminPostsData } = useAdminPosts(communeId, adminPostFilters);
 
   return (
     <div>
@@ -121,8 +122,8 @@ export function DashboardClient({ communeId }: { communeId: string }) {
           <>
             <FeedFilters types={selectedTypes} date={dateFilter} />
             <PostManagement
-              posts={posts}
-              totalCount={totalCount}
+              posts={(adminPostsData?.posts ?? []) as Array<{ id: string; title: string; type: PostType; is_pinned: boolean; created_at: string; profiles: { display_name: string } | null }>}
+              totalCount={adminPostsData?.totalCount ?? 0}
               page={page}
               perPage={perPage}
             />

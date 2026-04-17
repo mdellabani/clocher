@@ -121,3 +121,58 @@ export async function getEventsByCommune(client: Client, communeId: string) {
     .eq("type", "evenement")
     .order("event_date", { ascending: true, nullsFirst: false });
 }
+
+export type AdminPostFilters = {
+  types?: string[];
+  dateFilter?: "today" | "week" | "month" | "";
+  page: number;
+  perPage: number;
+};
+
+export async function getAdminPostsPaginated(
+  client: Client,
+  communeId: string,
+  filters: AdminPostFilters,
+) {
+  const { types = [], dateFilter = "", page, perPage } = filters;
+
+  let dateSince: string | null = null;
+  if (dateFilter === "today") {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    dateSince = d.toISOString();
+  } else if (dateFilter === "week") {
+    const d = new Date();
+    d.setDate(d.getDate() - 7);
+    dateSince = d.toISOString();
+  } else if (dateFilter === "month") {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    dateSince = d.toISOString();
+  }
+
+  let countQuery = client
+    .from("posts")
+    .select("id", { count: "exact", head: true })
+    .eq("commune_id", communeId)
+    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString());
+  if (types.length > 0) countQuery = countQuery.in("type", types);
+  if (dateSince) countQuery = countQuery.gte("created_at", dateSince);
+  const { count: totalCount } = await countQuery;
+
+  const from = (page - 1) * perPage;
+  const to = from + perPage - 1;
+
+  let postsQuery = client
+    .from("posts")
+    .select("id, title, type, is_pinned, created_at, profiles!author_id(display_name)")
+    .eq("commune_id", communeId)
+    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
+    .order("created_at", { ascending: false })
+    .range(from, to);
+  if (types.length > 0) postsQuery = postsQuery.in("type", types);
+  if (dateSince) postsQuery = postsQuery.gte("created_at", dateSince);
+  const { data: posts } = await postsQuery;
+
+  return { posts: posts ?? [], totalCount: totalCount ?? 0 };
+}
