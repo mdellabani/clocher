@@ -17,6 +17,16 @@ Mistakes made during development, captured so they don't repeat.
 - After adding any `from(X).update/insert/delete` in a server action, test it end-to-end as a non-superuser role. Don't trust the absence of an `error` field.
 - Optional follow-up: write a small SQL audit script that greps for `from\("([a-z_]+)"\)\.(update|insert|delete)` in `apps/web/src` and joins against `pg_policies` to flag tables that are written by the app but have no matching policy. Run in CI.
 
+## 2026-04-17 — Convention: every write path needs an integration test
+
+After the silent-RLS-failure incident, the test suite at
+`apps/web/tests/integration/` enforces this with a one-shot assertion
+per (action × role) combination. Adding a new server action now means
+adding a matching test file modeled on `theme-actions.test.ts` — it
+takes minutes and catches the silent-failure class before merge.
+
+See `docs/superpowers/specs/2026-04-17-web-test-suite-phase1-design.md`.
+
 ## Template for future entries
 
 ```
