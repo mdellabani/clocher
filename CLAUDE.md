@@ -93,8 +93,16 @@ NEXT_PUBLIC_PLATFORM_DOMAIN=app.example.fr  # same, exposed to client for displa
 - **Onboarding complete**: commune registration (`/auth/register-commune`) with super-admin approval (`/super-admin`), generated database types
 - **Public surface complete**: web landing page at `/` (hero, features, how-it-works, communes grid, footer), mobile welcome screen as default for signed-out users
 - **Bugfix wave 2026-04-16**: self-read RLS policy for profiles (fixes admin tab missing post-approval), `search_path` hardening on SECURITY DEFINER functions, theme changes apply across pages without reload, homogeneous post-card thumbnail slot, silent token refresh in middleware (sessions never expire silently), mobile PostHog wiring fix
+- **Test suite phase 1 complete (2026-04-17)**: 56 tests across 13 files — component tests (jsdom + RTL with mocked Supabase) for NavBar/PostCard/ThemeCustomizer/FeedFilters, integration tests (real local Supabase) covering every server-action write path × admin/moderator/resident; CI runs both jobs on PR
 - **Remaining**: custom pages (Phase 2 of website customization), AI council document summaries
 - **Not started**: v3 (mairie tools), v4 (services directory), v5 (group buying), v6 (carpooling)
+
+## Test Suite Roadmap
+
+Phase 1 shipped — see `docs/superpowers/specs/2026-04-17-web-test-suite-phase1-design.md`. Two follow-up phases deferred (no spec yet — brainstorm before tackling):
+
+- **Phase 2 — Mobile tests** (`apps/mobile`). Stack: `@testing-library/react-native` (already a dep) for screen tests, `vitest` or `jest` runner, mocked Supabase client. Priority targets: welcome screen, login/signup flows, feed screen role-based visibility, push-notification token registration, image-picker upload happy path. Probably needs Detox or Maestro added later for true device E2E — defer that decision until pure-component tests are in place.
+- **Phase 3 — End-to-end browser tests** (Playwright). Critical user journeys only, not exhaustive: commune registration → super-admin approval → admin login → publish annonce → resident sees it. Runs against local Supabase + a real Next.js dev build. Slow (minutes); CI runs on master pushes only, not every PR.
 
 ## Design Specs & Plans
 
@@ -102,3 +110,4 @@ NEXT_PUBLIC_PLATFORM_DOMAIN=app.example.fr  # same, exposed to client for displa
 - `docs/superpowers/specs/2026-04-14-features-v2-design.md` — service posts, producers, polls, infos pratiques
 - `docs/superpowers/specs/2026-04-14-moderation-pagination-design.md` — reporting, moderation, word filter, pagination
 - `docs/superpowers/specs/2026-04-16-bugfixes-design.md` — landing pages + admin/theme/image/session bugfixes (April 2026)
+- `docs/superpowers/specs/2026-04-17-web-test-suite-phase1-design.md` — web test suite phase 1 (component + integration); phases 2 (mobile) and 3 (E2E Playwright) listed as deferred follow-ups

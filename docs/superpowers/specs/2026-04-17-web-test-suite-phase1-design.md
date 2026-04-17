@@ -173,3 +173,36 @@ After implementation, the suite is "complete for phase 1" if:
 - Every server-action file in `apps/web/src/app/**/*-actions.ts` has at least one corresponding integration test.
 - CI runs both jobs on PRs and blocks merge on failure.
 - Adding a new server action without a matching test would feel out-of-place because the convention is documented.
+
+## Future phases (deferred — no spec yet)
+
+Both phases get their own spec and plan when the time comes; brainstorm first.
+
+### Phase 2 — Mobile tests (`apps/mobile`)
+
+Same friction-driven motivation as phase 1 but for the React Native app. Probable stack:
+
+- `@testing-library/react-native` (already in `apps/mobile/package.json`) for screen tests in jsdom-equivalent environment.
+- Vitest or Jest runner — pick whichever has the lighter Expo/React Native integration story at the time.
+- Mocked Supabase client (the integration tier from phase 1 already covers the DB; mobile component tests don't need real DB).
+
+Priority targets for the first mobile spec:
+- Welcome screen renders three CTAs and routes correctly per tap
+- Login/signup happy paths with validation states
+- Feed screen role-based visibility (mirror of the NavBar test)
+- Push-notification token registration on first launch
+- Image-picker upload happy path
+
+Detox or Maestro for true on-device E2E is a separate question — defer until the pure-component tier is in place and we know which gaps matter.
+
+### Phase 3 — End-to-end browser tests (Playwright)
+
+Critical user journeys only — not exhaustive coverage. Examples:
+
+- Commune registration → super-admin approval → admin login → publish annonce → resident on a different device sees it
+- Resident signs up with invite code → joins commune → posts a discussion → another resident comments
+- Admin uploads logo → public commune site shows it
+
+Runs against `pnpm dev` + local Supabase. Slow (minutes per scenario). CI runs on master pushes only, not every PR. Probably opt-in label-gated on PRs when developer wants the extra confidence.
+
+Out of scope for both future phases (and this spec): performance/load testing, visual-regression snapshots, accessibility audits.
