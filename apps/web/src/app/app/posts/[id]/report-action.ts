@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { ReportCategory } from "@rural-community-platform/shared";
 
@@ -35,6 +34,5 @@ export async function reportPostAction(
     return { error: "Erreur lors du signalement" };
   }
 
-  revalidatePath("/app/feed");
   return { error: null };
 }

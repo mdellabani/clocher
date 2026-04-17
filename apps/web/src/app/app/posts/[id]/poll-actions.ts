@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export async function voteAction(optionId: string, pollId: string, allowMultiple: boolean) {
@@ -35,7 +34,6 @@ export async function voteAction(optionId: string, pollId: string, allowMultiple
 
   if (error) return { error: "Erreur lors du vote" };
 
-  revalidatePath("/app/posts");
   return { error: null };
 }
 
@@ -54,6 +52,5 @@ export async function removeVoteAction(optionId: string) {
 
   if (error) return { error: "Erreur lors du suppression du vote" };
 
-  revalidatePath("/app/posts");
   return { error: null };
 }

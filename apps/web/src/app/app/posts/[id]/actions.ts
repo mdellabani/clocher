@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import {
   createComment,
@@ -28,18 +27,16 @@ export async function addCommentAction(postId: string, body: string) {
     parsed.data.body
   );
   if (error) return { error: "Erreur lors de l'ajout du commentaire" };
-  revalidatePath(`/app/posts/${postId}`);
   return { error: null };
 }
 
 export async function deleteCommentAction(
   commentId: string,
-  postId: string
+  _postId: string
 ) {
   const supabase = await createClient();
   const { error } = await deleteComment(supabase, commentId);
   if (error) return { error: "Erreur lors de la suppression" };
-  revalidatePath(`/app/posts/${postId}`);
   return { error: null };
 }
 
@@ -54,7 +51,6 @@ export async function setRsvpAction(
   if (!user) return { error: "Non authentifié" };
   const { error } = await setRsvp(supabase, postId, user.id, status as RsvpStatus);
   if (error) return { error: "Erreur lors de l'enregistrement" };
-  revalidatePath(`/app/posts/${postId}`);
   return { error: null };
 }
 
@@ -73,6 +69,5 @@ export async function removeRsvpAction(postId: string) {
   if (!user) return { error: "Non authentifié" };
   const { error } = await removeRsvp(supabase, postId, user.id);
   if (error) return { error: "Erreur" };
-  revalidatePath(`/app/posts/${postId}`);
   return { error: null };
 }
