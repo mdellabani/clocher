@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@rural-community-platform/shared";
 import { createClient } from "@/lib/supabase/client";
 
 interface SettingsFormProps {
@@ -11,7 +12,7 @@ interface SettingsFormProps {
 }
 
 export function SettingsForm({ userId, initialDisplayName, initialAvatarUrl }: SettingsFormProps) {
-  const router = useRouter();
+  const qc = useQueryClient();
   const [displayName, setDisplayName] = useState(initialDisplayName);
   const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl || null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -121,7 +122,7 @@ export function SettingsForm({ userId, initialDisplayName, initialAvatarUrl }: S
       setAvatarPreview(null);
       setStatus("success");
       setUploadingAvatar(false);
-      router.refresh();
+      await qc.invalidateQueries({ queryKey: queryKeys.profile(userId) });
     } catch (error) {
       setStatus("error");
       setUploadingAvatar(false);
@@ -142,6 +143,9 @@ export function SettingsForm({ userId, initialDisplayName, initialAvatarUrl }: S
 
     setSaving(false);
     setStatus(error ? "error" : "success");
+    if (!error) {
+      await qc.invalidateQueries({ queryKey: queryKeys.profile(userId) });
+    }
   }
 
   return (
