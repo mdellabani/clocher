@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getCommuneBySlug } from "@rural-community-platform/shared";
+import { getCommuneBySlugCached, getHomepageSectionsBySlugCached } from "@/lib/cached-fetchers/commune";
 import { SectionRenderer } from "@/components/sections/section-renderer";
 
 type Props = {
@@ -10,8 +10,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { "commune-slug": slug } = await params;
-  const supabase = await createClient();
-  const { data: commune } = await getCommuneBySlug(supabase, slug);
+  const commune = await getCommuneBySlugCached(slug);
   return {
     title: commune ? `${commune.name} — Commune` : "Commune",
   };
@@ -20,18 +19,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CommuneHomePage({ params }: Props) {
   const { "commune-slug": slug } = await params;
   const supabase = await createClient();
-  const { data: commune } = await getCommuneBySlug(supabase, slug);
+  const commune = await getCommuneBySlugCached(slug);
 
   if (!commune) notFound();
 
   // Fetch page sections
-  const { data: sections } = await supabase
-    .from("page_sections")
-    .select("id, section_type, content")
-    .eq("commune_id", commune.id)
-    .eq("page", "homepage")
-    .eq("visible", true)
-    .order("sort_order", { ascending: true });
+  const sections = await getHomepageSectionsBySlugCached(slug);
 
   // If sections exist, render them
   if (sections && sections.length > 0) {
