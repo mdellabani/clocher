@@ -29,6 +29,7 @@ export function PostCard({ post }: { post: Post }) {
   return (
     <Link href={`/app/posts/${post.id}`} className="block">
       <div
+        data-testid="post-card"
         className="relative bg-white rounded-[14px] border border-[#f0e8da] shadow-[0_2px_8px_rgba(140,120,80,0.08)] transition-all hover:shadow-[0_4px_16px_rgba(140,120,80,0.14)] hover:-translate-y-0.5"
         style={post.is_pinned ? {
           borderTopColor: "var(--theme-primary)",
