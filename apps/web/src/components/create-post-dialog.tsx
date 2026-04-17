@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@rural-community-platform/shared";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -40,8 +41,8 @@ const ALL_POST_TYPES: PostType[] = [
   "service",
 ];
 
-export function CreatePostDialog({ isAdmin }: { isAdmin: boolean }) {
-  const router = useRouter();
+export function CreatePostDialog({ isAdmin, communeId }: { isAdmin: boolean; communeId: string }) {
+  const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [type, setType] = useState<PostType>("discussion");
   const [error, setError] = useState<string | null>(null);
@@ -138,7 +139,8 @@ export function CreatePostDialog({ isAdmin }: { isAdmin: boolean }) {
     setImageFile(null);
     setImagePreview(null);
     setLoading(false);
-    router.refresh();
+    await qc.invalidateQueries({ queryKey: ["posts", communeId] });
+    await qc.invalidateQueries({ queryKey: queryKeys.posts.pinned(communeId) });
   }
 
   return (

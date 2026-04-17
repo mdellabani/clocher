@@ -77,7 +77,7 @@ export function FeedClient({ userId }: { userId: string }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-[var(--foreground)]">Fil de la commune</h1>
-        <CreatePostDialog isAdmin={profile.role === "admin"} />
+        <CreatePostDialog isAdmin={profile.role === "admin"} communeId={profile.commune_id} />
       </div>
 
       <div className="flex gap-3 text-sm">

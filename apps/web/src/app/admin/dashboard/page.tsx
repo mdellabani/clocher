@@ -112,7 +112,7 @@ export default async function AdminDashboardPage({
 
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-[var(--foreground)]">Administration</h1>
-        <CreatePostDialog isAdmin={true} />
+        <CreatePostDialog isAdmin={true} communeId={profile.commune_id} />
       </div>
 
       <AdminTabs
