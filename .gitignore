@@ -15,4 +15,5 @@ supabase/.branches/
 supabase/.temp/
 db-backups/
 *.png
+!apps/web/public/landing/*.png
 .serena/
