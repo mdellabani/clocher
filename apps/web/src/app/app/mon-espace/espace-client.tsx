@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useProfile } from "@/hooks/queries/use-profile";
+import { useProfile } from "@/hooks/use-profile";
 import { useMyPosts } from "@/hooks/queries/use-my-posts";
 import { useMyComments } from "@/hooks/queries/use-my-comments";
 import { useMyRsvps } from "@/hooks/queries/use-my-rsvps";
@@ -38,8 +38,9 @@ function firstOrSame<T>(v: T | T[] | null | undefined): T | null {
   return Array.isArray(v) ? (v[0] ?? null) : v;
 }
 
-export function EspaceClient({ userId }: { userId: string }) {
-  const { data: profile } = useProfile(userId);
+export function EspaceClient() {
+  const { profile } = useProfile();
+  const userId = profile?.id ?? "";
   const myPostsQuery = useMyPosts(userId);
   const myCommentsQuery = useMyComments(userId);
   const myRsvpsQuery = useMyRsvps(userId);

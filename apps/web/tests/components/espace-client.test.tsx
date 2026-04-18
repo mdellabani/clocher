@@ -15,9 +15,13 @@ const profileFixture = {
   communes: { id: "c-1", name: "Saint-Martin" },
 };
 
+vi.mock("@/hooks/use-profile", () => ({
+  useProfile: () => ({ profile: profileFixture, loading: false, isAdmin: false, isModerator: false }),
+}));
+
 describe("EspaceClient", () => {
   it("renders content from hydrated cache for each section", () => {
-    renderWithQuery(<EspaceClient userId="u-1" />, {
+    renderWithQuery(<EspaceClient />, {
       cache: [
         { key: queryKeys.profile("u-1"), data: profileFixture },
         {
@@ -67,7 +71,7 @@ describe("EspaceClient", () => {
   });
 
   it("shows empty states in each section when cache is empty", () => {
-    renderWithQuery(<EspaceClient userId="u-1" />, {
+    renderWithQuery(<EspaceClient />, {
       cache: [
         { key: queryKeys.profile("u-1"), data: profileFixture },
         { key: queryKeys.me.posts("u-1"), data: [] },
