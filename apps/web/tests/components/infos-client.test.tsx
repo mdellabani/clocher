@@ -6,9 +6,19 @@ import { InfosClient } from "@/app/app/infos-pratiques/infos-client";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
 
+vi.mock("@/hooks/use-profile", () => ({
+  useProfile: () => ({
+    profile: { id: "u-1", commune_id: "c-1", role: "resident", status: "active", display_name: "Marie" },
+    userEmail: "marie@example.fr",
+    loading: false,
+    isAdmin: false,
+    isModerator: false,
+  }),
+}));
+
 describe("InfosClient", () => {
   it("renders the mairie contact + hours from cached commune", () => {
-    renderWithQuery(<InfosClient communeId="c-1" />, {
+    renderWithQuery(<InfosClient />, {
       cache: [
         {
           key: queryKeys.commune("c-1"),
@@ -31,7 +41,7 @@ describe("InfosClient", () => {
   });
 
   it("renders empty state when commune has no practical info", () => {
-    renderWithQuery(<InfosClient communeId="c-1" />, {
+    renderWithQuery(<InfosClient />, {
       cache: [
         {
           key: queryKeys.commune("c-1"),
