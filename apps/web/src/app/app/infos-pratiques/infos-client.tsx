@@ -2,6 +2,7 @@
 
 import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 import { useCommune } from "@/hooks/queries/use-commune";
+import { useProfile } from "@/hooks/use-profile";
 
 interface InfosPratiques {
   horaires?: string;
@@ -54,8 +55,9 @@ function parseLinks(linksStr?: string): Lien[] {
     .filter((l): l is Lien => l !== null);
 }
 
-export function InfosClient({ communeId }: { communeId: string }) {
-  const { data: commune } = useCommune(communeId);
+export function InfosClient() {
+  const { profile } = useProfile();
+  const { data: commune } = useCommune(profile?.commune_id ?? "");
   if (!commune) return null;
 
   const infos = ((commune.infos_pratiques as InfosPratiques) ?? {});
