@@ -15,11 +15,14 @@ const profile = {
   communes: { id: "c-1", name: "Saint-Martin" },
 };
 
+vi.mock("@/hooks/use-profile", () => ({
+  useProfile: () => ({ profile, loading: false, isAdmin: false, isModerator: false }),
+}));
+
 describe("ProducersClient", () => {
   it("renders producer list from hydrated cache", () => {
-    renderWithQuery(<ProducersClient userId="u-1" />, {
+    renderWithQuery(<ProducersClient />, {
       cache: [
-        { key: queryKeys.profile("u-1"), data: profile },
         {
           key: queryKeys.producers("c-1"),
           data: [
