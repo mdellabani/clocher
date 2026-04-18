@@ -15,6 +15,16 @@ vi.mock("@/app/admin/homepage/actions", () => ({
   seedDefaultSectionsAction: vi.fn(),
 }));
 
+vi.mock("@/hooks/use-profile", () => ({
+  useProfile: () => ({
+    profile: { id: "u-1", commune_id: "c-1", role: "admin", status: "active", display_name: "Admin" },
+    userEmail: "admin@example.fr",
+    loading: false,
+    isAdmin: true,
+    isModerator: true,
+  }),
+}));
+
 describe("HomepageClient", () => {
   it("renders homepage editor with sections from cache", () => {
     const qc = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity } } });
@@ -25,7 +35,7 @@ describe("HomepageClient", () => {
 
     render(
       <QueryClientProvider client={qc}>
-        <HomepageClient communeId="c-1" />
+        <HomepageClient />
       </QueryClientProvider>,
     );
 
