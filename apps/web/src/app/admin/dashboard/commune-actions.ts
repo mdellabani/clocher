@@ -1,6 +1,6 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { updateTag, refresh } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 async function getAdminProfile() {
@@ -28,6 +28,7 @@ export async function updateCommuneInfoAction(data: {
     .from("communes").select("slug").eq("id", ctx.profile.commune_id).single();
   if (commune?.slug) {
     updateTag(`commune:${commune.slug}`);
+    refresh();
   }
   return { error: null };
 }
@@ -47,6 +48,7 @@ export async function updateAssociationsAction(associations: Array<{
     .from("communes").select("slug").eq("id", ctx.profile.commune_id).single();
   if (commune?.slug) {
     updateTag(`commune:${commune.slug}`);
+    refresh();
   }
   return { error: null };
 }

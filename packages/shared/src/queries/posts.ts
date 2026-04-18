@@ -169,6 +169,7 @@ export async function getAdminPostsPaginated(
     .eq("commune_id", communeId)
     .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
     .order("created_at", { ascending: false })
+    .order("id", { ascending: false })
     .range(from, to);
   if (types.length > 0) postsQuery = postsQuery.in("type", types);
   if (dateSince) postsQuery = postsQuery.gte("created_at", dateSince);

@@ -1,6 +1,6 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { updateTag, refresh } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 async function getAdminContext() {
@@ -28,7 +28,10 @@ export async function updateSectionAction(id: string, data: {
     .eq("commune_id", ctx.communeId);
 
   if (error) return { error: error.message };
-  if (ctx.slug) updateTag(`commune:${ctx.slug}`);
+  if (ctx.slug) {
+    updateTag(`commune:${ctx.slug}`);
+    refresh();
+  }
   return { error: null };
 }
 
@@ -50,7 +53,10 @@ export async function addSectionAction(sectionType: string, sortOrder: number) {
     .single();
 
   if (error) return { error: error.message, id: null };
-  if (ctx.slug) updateTag(`commune:${ctx.slug}`);
+  if (ctx.slug) {
+    updateTag(`commune:${ctx.slug}`);
+    refresh();
+  }
   return { error: null, id: data.id };
 }
 
@@ -65,7 +71,10 @@ export async function deleteSectionAction(id: string) {
     .eq("commune_id", ctx.communeId);
 
   if (error) return { error: error.message };
-  if (ctx.slug) updateTag(`commune:${ctx.slug}`);
+  if (ctx.slug) {
+    updateTag(`commune:${ctx.slug}`);
+    refresh();
+  }
   return { error: null };
 }
 
@@ -81,7 +90,10 @@ export async function reorderSectionsAction(orderedIds: string[]) {
       .eq("commune_id", ctx.communeId);
   }
 
-  if (ctx.slug) updateTag(`commune:${ctx.slug}`);
+  if (ctx.slug) {
+    updateTag(`commune:${ctx.slug}`);
+    refresh();
+  }
   return { error: null };
 }
 
@@ -130,6 +142,9 @@ export async function seedDefaultSectionsAction() {
     });
   }
 
-  if (ctx.slug) updateTag(`commune:${ctx.slug}`);
+  if (ctx.slug) {
+    updateTag(`commune:${ctx.slug}`);
+    refresh();
+  }
   return { error: null };
 }

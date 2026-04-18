@@ -1,6 +1,6 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { updateTag, refresh } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export async function uploadCouncilDocumentAction(formData: FormData) {
@@ -36,7 +36,10 @@ export async function uploadCouncilDocumentAction(formData: FormData) {
   if (insertError) return { error: insertError.message };
 
   const { data: commune } = await supabase.from("communes").select("slug").eq("id", profile.commune_id).single();
-  if (commune) updateTag(`commune:${commune.slug}`);
+  if (commune) {
+    updateTag(`commune:${commune.slug}`);
+    refresh();
+  }
   return { error: null };
 }
 
@@ -54,6 +57,9 @@ export async function deleteCouncilDocumentAction(id: string, storagePath: strin
   if (error) return { error: error.message };
 
   const { data: commune } = await supabase.from("communes").select("slug").eq("id", profile.commune_id).single();
-  if (commune) updateTag(`commune:${commune.slug}`);
+  if (commune) {
+    updateTag(`commune:${commune.slug}`);
+    refresh();
+  }
   return { error: null };
 }

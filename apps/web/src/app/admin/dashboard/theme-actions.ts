@@ -1,7 +1,7 @@
 "use server";
 
 import { unstable_cache } from "next/cache";
-import { updateTag } from "next/cache";
+import { updateTag, refresh } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export async function updateThemeAction(theme: string, customPrimaryColor: string | null) {
@@ -23,6 +23,7 @@ export async function updateThemeAction(theme: string, customPrimaryColor: strin
     .select("slug").eq("id", profile.commune_id).single();
   if (commune) {
     updateTag(`commune:${commune.slug}`);
+    refresh();
   }
 
   return { error: null };
@@ -60,6 +61,7 @@ export async function uploadLogoAction(formData: FormData) {
     .select("slug").eq("id", profile.commune_id).single();
   if (commune) {
     updateTag(`commune:${commune.slug}`);
+    refresh();
   }
 
   return { error: null };
@@ -93,6 +95,7 @@ export async function removeLogoAction() {
     .select("slug").eq("id", profile.commune_id).single();
   if (commune) {
     updateTag(`commune:${commune.slug}`);
+    refresh();
   }
 
   return { error: null };
