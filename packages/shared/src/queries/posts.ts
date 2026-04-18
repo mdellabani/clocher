@@ -168,6 +168,7 @@ export async function getAdminPostsPaginated(
     .select("id, title, type, is_pinned, created_at, profiles!author_id(display_name)")
     .eq("commune_id", communeId)
     .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
+    .order("is_pinned", { ascending: false })
     .order("created_at", { ascending: false })
     .order("id", { ascending: false })
     .range(from, to);
