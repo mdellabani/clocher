@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import { getCommuneBySlug } from "@rural-community-platform/shared";
+import { getCommuneBySlugCached } from "@/lib/cached-fetchers/commune";
 import { ThemeInjector } from "@/components/theme-injector";
 
 export default async function CommuneLayout({
@@ -13,8 +12,7 @@ export default async function CommuneLayout({
 }) {
   const { "commune-slug": slug } = await params;
 
-  const supabase = await createClient();
-  const { data: commune } = await getCommuneBySlug(supabase, slug);
+  const commune = await getCommuneBySlugCached(slug);
 
   if (!commune) {
     notFound();

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import { getCommuneBySlug } from "@rural-community-platform/shared";
+import { getCommuneBySlugCached } from "@/lib/cached-fetchers/commune";
 import { ThemeInjector } from "@/components/theme-injector";
 import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 
@@ -11,8 +10,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { "commune-slug": slug } = await params;
-  const supabase = await createClient();
-  const { data: commune } = await getCommuneBySlug(supabase, slug);
+  const commune = await getCommuneBySlugCached(slug);
 
   return {
     title: commune ? `Infos pratiques — ${commune.name}` : "Infos pratiques",
@@ -80,8 +78,7 @@ function parseLinks(linksStr?: string): Lien[] {
 export default async function InfosPratiquesPage({ params }: Props) {
   const { "commune-slug": slug } = await params;
 
-  const supabase = await createClient();
-  const { data: commune } = await getCommuneBySlug(supabase, slug);
+  const commune = await getCommuneBySlugCached(slug);
 
   if (!commune) {
     notFound();

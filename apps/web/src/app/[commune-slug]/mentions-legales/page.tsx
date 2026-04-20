@@ -1,21 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import { getCommuneBySlug } from "@rural-community-platform/shared";
+import { getCommuneBySlugCached } from "@/lib/cached-fetchers/commune";
 
 type Props = { params: Promise<{ "commune-slug": string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { "commune-slug": slug } = await params;
-  const supabase = await createClient();
-  const { data: commune } = await getCommuneBySlug(supabase, slug);
+  const commune = await getCommuneBySlugCached(slug);
   return { title: commune ? `Mentions légales — ${commune.name}` : "Mentions légales" };
 }
 
 export default async function MentionsLegalesPage({ params }: Props) {
   const { "commune-slug": slug } = await params;
-  const supabase = await createClient();
-  const { data: commune } = await getCommuneBySlug(supabase, slug);
+  const commune = await getCommuneBySlugCached(slug);
   if (!commune) notFound();
 
   return (

@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getCommuneBySlug } from "@rural-community-platform/shared";
+import { getCommuneBySlugCached } from "@/lib/cached-fetchers/commune";
 
 type Props = { params: Promise<{ "commune-slug": string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { "commune-slug": slug } = await params;
-  const supabase = await createClient();
-  const { data: commune } = await getCommuneBySlug(supabase, slug);
+  const commune = await getCommuneBySlugCached(slug);
   return { title: commune ? `Bulletin municipal — ${commune.name}` : "Bulletin municipal" };
 }
 
@@ -23,9 +22,9 @@ function getWeekLabel(date: Date): string {
 
 export default async function BulletinPage({ params }: Props) {
   const { "commune-slug": slug } = await params;
-  const supabase = await createClient();
-  const { data: commune } = await getCommuneBySlug(supabase, slug);
+  const commune = await getCommuneBySlugCached(slug);
   if (!commune) notFound();
+  const supabase = await createClient();
 
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getCommuneBySlug } from "@rural-community-platform/shared";
+import { getCommuneBySlugCached } from "@/lib/cached-fetchers/commune";
 import { EventsWithCalendar } from "@/components/events-with-calendar";
 
 type Props = {
@@ -10,8 +10,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { "commune-slug": slug } = await params;
-  const supabase = await createClient();
-  const { data: commune } = await getCommuneBySlug(supabase, slug);
+  const commune = await getCommuneBySlugCached(slug);
 
   return {
     title: commune ? `Evenements — ${commune.name}` : "Evenements",
@@ -21,12 +20,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function EvenementsPage({ params }: Props) {
   const { "commune-slug": slug } = await params;
 
-  const supabase = await createClient();
-  const { data: commune } = await getCommuneBySlug(supabase, slug);
+  const commune = await getCommuneBySlugCached(slug);
 
   if (!commune) {
     notFound();
   }
+
+  const supabase = await createClient();
 
   const now = new Date().toISOString();
 
