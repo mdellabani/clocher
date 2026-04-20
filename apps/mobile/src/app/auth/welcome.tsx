@@ -1,35 +1,54 @@
-import { View, Text, StyleSheet, Pressable, Linking, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Pressable, Linking } from "react-native";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 
 const WEB_URL = process.env.EXPO_PUBLIC_WEB_URL ?? "https://app.example.fr";
+
+const colors = {
+  bg: "#FBF7F1",
+  surface: "#FFFFFF",
+  text: "#2a1a14",
+  textMuted: "#5a4030",
+  textSubtle: "#7a5e4d",
+  primary: "#2a1a14",
+  accentStrong: "#BF3328",
+  accentMid: "#D35230",
+  accentLight: "#E49035",
+};
 
 export default function Welcome() {
   const router = useRouter();
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.screen}>
+      <LinearGradient
+        colors={["#FBF7F1", "#FDF0EB", "#F5DBC8"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <View style={styles.blob} />
+
       <View style={styles.hero}>
-        <Text style={styles.brand}>Ma Commune</Text>
-        <Text style={styles.headline}>
-          L'application qui rapproche votre commune et ses habitants
-        </Text>
-        <View style={styles.bullets}>
-          <Text style={styles.bullet}>· Annonces de la mairie</Text>
-          <Text style={styles.bullet}>· Agenda du village</Text>
-          <Text style={styles.bullet}>· Entraide entre voisins</Text>
+        <View style={styles.pill}>
+          <Text style={styles.pillText}>🌾 Pour les communes rurales</Text>
         </View>
+
+        <Text style={styles.headlineDark}>Le village dans votre poche.</Text>
+        <Text style={styles.headlineAccent}>La mairie en direct.</Text>
+
+        <Text style={styles.sub}>
+          Annonces, événements, entraide — une app simple, connectée à votre mairie.
+        </Text>
       </View>
 
       <View style={styles.actions}>
-        <Pressable
-          style={styles.primaryButton}
-          onPress={() => router.push("/auth/signup")}
-        >
-          <Text style={styles.primaryButtonText}>J'ai un code d'invitation</Text>
+        <Pressable style={styles.primaryBtn} onPress={() => router.push("/auth/signup")}>
+          <Text style={styles.primaryBtnText}>J'ai un code d'invitation</Text>
         </Pressable>
 
-        <Pressable onPress={() => router.push("/auth/login")} style={styles.secondaryLink}>
-          <Text style={styles.secondaryLinkText}>Se connecter</Text>
+        <Pressable style={styles.secondaryBtn} onPress={() => router.push("/auth/login")}>
+          <Text style={styles.secondaryBtnText}>Se connecter</Text>
         </Pressable>
 
         <Pressable
@@ -38,48 +57,91 @@ export default function Welcome() {
         >
           <Text style={styles.tertiaryLinkText}>Je suis élu(e), inscrire ma commune</Text>
         </Pressable>
+
+        <Text style={styles.micro}>Démarrage immédiat · Sans engagement · Hébergé en France</Text>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: "#faf6ee",
-    paddingHorizontal: 24,
+  screen: {
+    flex: 1,
+    backgroundColor: colors.bg,
     paddingTop: 80,
     paddingBottom: 40,
+    paddingHorizontal: 24,
     justifyContent: "space-between",
   },
-  hero: { alignItems: "center" },
-  brand: {
-    fontSize: 14,
-    fontWeight: "600",
-    letterSpacing: 2,
-    color: "#7a6d56",
-    textTransform: "uppercase",
+  blob: {
+    position: "absolute",
+    top: -80,
+    right: -60,
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    backgroundColor: colors.accentLight,
+    opacity: 0.25,
   },
-  headline: {
+  hero: { alignItems: "flex-start" },
+  pill: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.7)",
+    borderWidth: 1,
+    borderColor: "rgba(228,144,53,0.3)",
+  },
+  pillText: { fontSize: 11, fontWeight: "600", color: colors.accentStrong },
+  headlineDark: {
     marginTop: 24,
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#2a2418",
-    textAlign: "center",
-    lineHeight: 36,
+    fontSize: 32,
+    fontWeight: "800",
+    color: colors.text,
+    lineHeight: 40,
   },
-  bullets: { marginTop: 32, gap: 8 },
-  bullet: { fontSize: 16, color: "#5a4d36" },
-  actions: { marginTop: 48, gap: 16 },
-  primaryButton: {
-    backgroundColor: "#2a2418",
+  headlineAccent: {
+    fontSize: 32,
+    fontWeight: "800",
+    color: colors.accentMid,
+    lineHeight: 40,
+  },
+  sub: {
+    marginTop: 16,
+    fontSize: 16,
+    color: colors.textMuted,
+    lineHeight: 24,
+  },
+  actions: { gap: 12 },
+  primaryBtn: {
+    backgroundColor: colors.primary,
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: "center",
   },
-  primaryButtonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
-  secondaryLink: { paddingVertical: 12, alignItems: "center" },
-  secondaryLinkText: { color: "#2a2418", fontSize: 15, fontWeight: "500" },
-  tertiaryLink: { paddingVertical: 8, alignItems: "center" },
-  tertiaryLinkText: { color: "#7a6d56", fontSize: 13, textDecorationLine: "underline" },
+  primaryBtnText: { color: "#fff", fontSize: 16, fontWeight: "600" },
+  secondaryBtn: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.accentMid,
+    paddingVertical: 15,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  secondaryBtnText: { color: colors.accentStrong, fontSize: 16, fontWeight: "600" },
+  tertiaryLink: {
+    paddingVertical: 8,
+    alignItems: "center",
+  },
+  tertiaryLinkText: {
+    fontSize: 13,
+    color: colors.textSubtle,
+    textDecorationLine: "underline",
+  },
+  micro: {
+    marginTop: 8,
+    textAlign: "center",
+    fontSize: 11,
+    color: colors.textSubtle,
+  },
 });

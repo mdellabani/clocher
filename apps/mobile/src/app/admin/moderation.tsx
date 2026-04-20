@@ -3,6 +3,7 @@ import {
   Alert,
   FlatList,
   RefreshControl,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -278,7 +279,11 @@ export default function AdminHub() {
             </View>
           ) : null}
 
-          <View style={styles.tabsRow}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.tabsRow}
+          >
             {sections.map((s) => {
               const isActive = activeSection === s.key;
               const Icon = s.icon;
@@ -299,7 +304,7 @@ export default function AdminHub() {
                 </TouchableOpacity>
               );
             })}
-          </View>
+          </ScrollView>
           </>
         }
       />

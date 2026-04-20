@@ -19,4 +19,16 @@ config.resolver.nodeModulesPaths = [
 config.resolver.unstable_enableSymlinks = true;
 config.resolver.unstable_enablePackageExports = true;
 
+// pnpm can create multiple symlink paths to the same package; Metro caches
+// each distinct path as a separate module. For the React runtime (hooks
+// check instance identity), that causes "Invalid hook call" at launch.
+// Pin react, react-dom, react-native, and react-native-web to the single
+// canonical copy under apps/mobile/node_modules.
+config.resolver.extraNodeModules = {
+  react: path.resolve(projectRoot, "node_modules/react"),
+  "react-dom": path.resolve(projectRoot, "node_modules/react-dom"),
+  "react-native": path.resolve(projectRoot, "node_modules/react-native"),
+  "react-native-web": path.resolve(projectRoot, "node_modules/react-native-web"),
+};
+
 module.exports = config;
