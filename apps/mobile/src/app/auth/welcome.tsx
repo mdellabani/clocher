@@ -30,6 +30,18 @@ export default function Welcome() {
       <View style={styles.blob} />
 
       <View style={styles.hero}>
+        <View style={styles.brand}>
+          <LinearGradient
+            colors={[colors.accentStrong, colors.accentMid, colors.accentLight]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.brandMark}
+          >
+            <Text style={styles.brandMarkText}>◉</Text>
+          </LinearGradient>
+          <Text style={styles.brandWordmark}>Pretou</Text>
+        </View>
+
         <View style={styles.pill}>
           <Text style={styles.pillText}>🌾 Pour les communes rurales</Text>
         </View>
@@ -84,6 +96,30 @@ const styles = StyleSheet.create({
     opacity: 0.25,
   },
   hero: { alignItems: "flex-start" },
+  brand: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 24,
+  },
+  brandMark: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  brandMarkText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  brandWordmark: {
+    fontSize: 18,
+    fontWeight: "800",
+    letterSpacing: -0.3,
+    color: colors.text,
+  },
   pill: {
     paddingHorizontal: 10,
     paddingVertical: 4,

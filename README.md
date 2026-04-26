@@ -1,4 +1,6 @@
-# Rural Community Platform
+# Pretou
+
+> Internal repo: `rural-community-platform`
 
 SaaS platform for small French communes. Community feed, official announcements, events, mairie admin panel, and public commune website.
 

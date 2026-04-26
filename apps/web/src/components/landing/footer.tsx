@@ -10,7 +10,7 @@ export function Footer() {
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#BF3328] via-[#D35230] to-[#E49035] text-base font-bold text-white">
                 ◉
               </span>
-              <span className="text-base font-bold tracking-tight text-white">Ma Commune</span>
+              <span className="text-base font-bold tracking-tight text-white">Pretou</span>
             </div>
             <p className="mt-3 text-sm text-white/60">
               Conçu en France pour les communes rurales. Hébergement souverain, RGPD, open
@@ -66,7 +66,7 @@ export function Footer() {
         </div>
 
         <div className="mt-10 border-t border-white/10 pt-6 text-center text-xs text-white/40">
-          © {new Date().getFullYear()} Ma Commune · Fait avec soin pour la France rurale 🇫🇷
+          © {new Date().getFullYear()} Pretou · Fait avec soin pour la France rurale 🇫🇷
         </div>
       </div>
     </footer>

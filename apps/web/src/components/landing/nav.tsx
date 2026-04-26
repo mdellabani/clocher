@@ -27,7 +27,7 @@ export function Nav() {
             ◉
           </span>
           <span className="text-base font-bold tracking-tight text-[#2a1a14]">
-            Ma Commune
+            Pretou
           </span>
         </Link>
 

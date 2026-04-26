@@ -4,7 +4,7 @@ const IS_DEMO = process.env.APP_VARIANT === "demo";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: IS_DEMO ? "Ma Commune (Demo)" : "Ma Commune",
+  name: IS_DEMO ? "Pretou (Demo)" : "Pretou",
   slug: "rural-community-platform",
   version: "1.0.0",
   owner: "mdellabani",
