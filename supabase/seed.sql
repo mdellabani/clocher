@@ -127,7 +127,7 @@ VALUES
   NULL, '', '', '', '',
   false, false
 ),
--- Saint-Médard moderator
+-- Saint-Médard additional resident (was previously a moderator)
 (
   '00000000-0000-0000-0000-000000000103',
   '00000000-0000-0000-0000-000000000000',
@@ -307,7 +307,7 @@ INSERT INTO profiles (id, commune_id, display_name, role, status) VALUES
   ('00000000-0000-0000-0000-000000000100', '00000000-0000-0000-0000-000000000010', 'Secrétariat Mairie', 'admin', 'active'),
   ('00000000-0000-0000-0000-000000000101', '00000000-0000-0000-0000-000000000010', 'Pierre Moreau', 'resident', 'active'),
   ('00000000-0000-0000-0000-000000000102', '00000000-0000-0000-0000-000000000010', 'Jeanne Larrieu', 'resident', 'active'),
-  ('00000000-0000-0000-0000-000000000103', '00000000-0000-0000-0000-000000000010', 'Sophie Dupin', 'moderator', 'active'),
+  ('00000000-0000-0000-0000-000000000103', '00000000-0000-0000-0000-000000000010', 'Sophie Dupin', 'resident', 'active'),
   -- Arthez-de-Béarn
   ('00000000-0000-0000-0000-000000000200', '00000000-0000-0000-0000-000000000011', 'Secrétariat Mairie', 'admin', 'active'),
   ('00000000-0000-0000-0000-000000000201', '00000000-0000-0000-0000-000000000011', 'Marie Ducasse', 'resident', 'active'),
@@ -498,14 +498,6 @@ Merci !',
 -- COMMENTS
 -- ================================================
 
-INSERT INTO comments (post_id, author_id, body, created_at) VALUES
-  ('00000000-0000-0000-0000-000000001009', '00000000-0000-0000-0000-000000000101', 'Je me posais la même question. La dernière fois que j''ai croisé le maire, il m''a dit que le budget était voté et que ça devrait commencer courant avril.', now() - interval '3 days'),
-  ('00000000-0000-0000-0000-000000001009', '00000000-0000-0000-0000-000000000100', 'Bonjour, les travaux sont effectivement programmés à partir du 21 avril. Un avis sera publié prochainement. Merci de votre patience.', now() - interval '2 days'),
-  ('00000000-0000-0000-0000-000000001009', '00000000-0000-0000-0000-000000000102', 'Super merci pour l''info ! Ce sera beaucoup plus sûr pour les enfants.', now() - interval '2 days'),
-  ('00000000-0000-0000-0000-000000001007', '00000000-0000-0000-0000-000000000102', 'Je peux venir samedi matin, je suis libre jusqu''à 13h. Je ramène ma débroussailleuse aussi !', now() - interval '12 hours'),
-  ('00000000-0000-0000-0000-000000001007', '00000000-0000-0000-0000-000000000101', 'Parfait Jeanne, merci ! Rendez-vous à 9h chez moi (maison au bout du chemin de la crête, portail vert). Le café sera prêt !', now() - interval '10 hours'),
-  ('00000000-0000-0000-0000-000000001010', '00000000-0000-0000-0000-000000000102', 'Normalement c''est ouvert le vendredi et samedi soir, et le dimanche matin. Mais ça change parfois, le mieux c''est d''appeler avant.', now() - interval '1 day');
-
 -- ================================================
 -- RSVPs
 -- ================================================
@@ -631,10 +623,6 @@ INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VAL
 Inscription en doublette, 5€ par équipe. Qui est chaud ? On peut monter une équipe ensemble si quelqu''un cherche un partenaire.',
   now() - interval '8 hours'
 );
-
--- Additional comments
-INSERT INTO comments (post_id, author_id, body, created_at) VALUES
-  ('00000000-0000-0000-0000-000000001016', '00000000-0000-0000-0000-000000000101', 'Je peux passer le matin avant le boulot, c''est sur ma route. Envoie-moi un message pour les détails !', now() - interval '2 hours');
 
 -- Additional RSVPs
 INSERT INTO rsvps (post_id, user_id, status) VALUES
@@ -787,13 +775,6 @@ INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VAL
 Merci !',
   now() - interval '3 days'
 );
-
--- Arthez comments
-INSERT INTO comments (post_id, author_id, body, created_at) VALUES
-  ('00000000-0000-0000-0000-000000002006', '00000000-0000-0000-0000-000000000202', 'Je suis disponible le mercredi soir, c''est possible ? J''ai fait le chemin moi-même il y a 3 ans, ça me ferait plaisir de rendre la pareille.', now() - interval '4 hours'),
-  ('00000000-0000-0000-0000-000000002006', '00000000-0000-0000-0000-000000000201', 'Bien sûr Jean-Paul ! Le mercredi c''est parfait. Passe à la Maison des pèlerins mercredi vers 17h30, je te ferai faire le tour.', now() - interval '3 hours'),
-  ('00000000-0000-0000-0000-000000002008', '00000000-0000-0000-0000-000000000200', 'Bonjour Marie, les horaires d''été seront communiqués fin mai. La médiathèque restera ouverte le samedi matin en juillet cette année.', now() - interval '12 hours'),
-  ('00000000-0000-0000-0000-000000002009', '00000000-0000-0000-0000-000000000201', 'J''ai vu de la lumière là-bas la semaine dernière, ils préparent peut-être l''ouverture. Je passerai demander.', now() - interval '2 days');
 
 -- Arthez RSVPs
 INSERT INTO rsvps (post_id, user_id, status) VALUES
@@ -948,15 +929,6 @@ INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VAL
 Quelqu''un sait si on peut déposer à Arzacq sinon ?',
   now() - interval '2 days'
 );
-
--- Morlanne comments
-INSERT INTO comments (post_id, author_id, body, created_at) VALUES
-  ('00000000-0000-0000-0000-000000003006', '00000000-0000-0000-0000-000000000302', 'Mon voisin à Arzacq tond encore, il s''appelle Bernard Loustau. Je te retrouve son numéro.', now() - interval '6 hours'),
-  ('00000000-0000-0000-0000-000000003006', '00000000-0000-0000-0000-000000000301', 'Merci Martine ! Ce serait super. Il fait les petits troupeaux aussi ?', now() - interval '5 hours'),
-  ('00000000-0000-0000-0000-000000003008', '00000000-0000-0000-0000-000000000300', 'Le rebalisage est prévu pour fin avril avec le club de randonnée. Merci du signalement !', now() - interval '12 hours'),
-  ('00000000-0000-0000-0000-000000003008', '00000000-0000-0000-0000-000000000302', 'J''avais remarqué la même chose il y a 2 semaines. En attendant, il faut prendre à gauche au croisement après le lavoir.', now() - interval '10 hours'),
-  ('00000000-0000-0000-0000-000000003009', '00000000-0000-0000-0000-000000000301', 'Oui le mercredi c''est fermé l''après-midi mais ouvert le matin de 9h à 12h. Sinon Arzacq c''est ouvert tout le mercredi.', now() - interval '1 day'),
-  ('00000000-0000-0000-0000-000000003007', '00000000-0000-0000-0000-000000000301', 'Je passe demain matin prendre quelques plants de tomates ! Merci Martine, tu es géniale.', now() - interval '3 hours');
 
 -- Morlanne RSVPs
 INSERT INTO rsvps (post_id, user_id, status) VALUES
@@ -1124,3 +1096,24 @@ INSERT INTO producers (id, commune_id, created_by, name, description, categories
   'Tous les jours, passez chercher vos œufs ! Boîte à la porte.',
   'active'
 );
+
+-- ================================================
+-- Demo conversations + messages
+-- ================================================
+
+-- Pierre (101) ↔ Jeanne (102) about Jeanne's entraide post 1007
+DO $$
+DECLARE
+  v_a uuid := LEAST('00000000-0000-0000-0000-000000000101'::uuid, '00000000-0000-0000-0000-000000000102'::uuid);
+  v_b uuid := GREATEST('00000000-0000-0000-0000-000000000101'::uuid, '00000000-0000-0000-0000-000000000102'::uuid);
+  v_conv uuid;
+BEGIN
+  INSERT INTO conversations (post_id, user_a, user_b)
+  VALUES ('00000000-0000-0000-0000-000000001007', v_a, v_b)
+  RETURNING id INTO v_conv;
+
+  INSERT INTO messages (conversation_id, sender_id, body, created_at) VALUES
+    (v_conv, '00000000-0000-0000-0000-000000000102', 'Bonjour, je peux venir samedi matin si ça aide.', now() - interval '12 hours'),
+    (v_conv, '00000000-0000-0000-0000-000000000101', 'Super, merci ! Rendez-vous à 9h chez moi.', now() - interval '10 hours'),
+    (v_conv, '00000000-0000-0000-0000-000000000102', 'Parfait, à samedi !', now() - interval '8 hours');
+END $$;
