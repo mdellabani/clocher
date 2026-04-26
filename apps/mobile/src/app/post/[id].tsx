@@ -1,19 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  Alert,
   Image,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
 import {
   Megaphone,
   Calendar,
@@ -22,8 +16,6 @@ import {
   MapPin,
   CalendarDays,
   Pin,
-  Trash2,
-  Send,
   CheckCircle,
   HelpCircle,
   XCircle,
@@ -34,11 +26,10 @@ import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
 import { PollDisplay } from "@/components/poll-display";
 import { ReportDialog } from "@/components/report-dialog";
+import { ContacterButton } from "@/components/contacter-button";
+import { AnnonceContactBlock } from "@/components/annonce-contact-block";
 import {
   getPostById,
-  getComments,
-  createComment,
-  deleteComment,
   getRsvpCounts,
   setRsvp,
   removeRsvp,
@@ -60,14 +51,12 @@ type PostDetail = {
   author_id: string;
   profiles: { display_name: string; avatar_url: string | null };
   post_images: { id: string; storage_path: string }[];
-};
-
-type Comment = {
-  id: string;
-  body: string;
-  created_at: string;
-  author_id: string;
-  profiles: { display_name: string; avatar_url: string | null };
+  communes?: {
+    name: string | null;
+    phone: string | null;
+    email: string | null;
+    opening_hours: Record<string, string> | null;
+  } | null;
 };
 
 const RSVP_LABELS: Record<string, string> = {
@@ -91,28 +80,19 @@ const TYPE_ICONS: Record<string, typeof Megaphone> = {
 
 export default function PostDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { profile, isAdmin } = useAuth();
+  const { profile } = useAuth();
   const theme = useTheme();
   const [post, setPost] = useState<PostDetail | null>(null);
   const [poll, setPoll] = useState<Poll | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
   const [rsvpCounts, setRsvpCounts] = useState({ going: 0, maybe: 0, not_going: 0 });
   const [userRsvp, setUserRsvp] = useState<string | null>(null);
-  const [commentText, setCommentText] = useState("");
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [showReport, setShowReport] = useState(false);
 
   const loadPost = useCallback(async () => {
     if (!id) return;
     const { data } = await getPostById(supabase, id);
     if (data) setPost(data as unknown as PostDetail);
-  }, [id]);
-
-  const loadComments = useCallback(async () => {
-    if (!id) return;
-    const { data } = await getComments(supabase, id);
-    if (data) setComments(data as unknown as Comment[]);
   }, [id]);
 
   const loadRsvps = useCallback(async () => {
@@ -138,10 +118,10 @@ export default function PostDetailScreen() {
   }, [id]);
 
   useEffect(() => {
-    Promise.all([loadPost(), loadComments(), loadRsvps(), loadPoll()]).then(
-      () => setLoading(false)
+    Promise.all([loadPost(), loadRsvps(), loadPoll()]).then(() =>
+      setLoading(false),
     );
-  }, [loadPost, loadComments, loadRsvps, loadPoll]);
+  }, [loadPost, loadRsvps, loadPoll]);
 
   async function handleRsvp(status: RsvpStatus) {
     if (!profile || !id) return;
@@ -154,40 +134,6 @@ export default function PostDetailScreen() {
       setUserRsvp(status);
     }
     loadRsvps();
-  }
-
-  async function handleAddComment() {
-    if (!profile || !id || !commentText.trim()) return;
-
-    setSubmitting(true);
-    const { data, error } = await createComment(
-      supabase,
-      id,
-      profile.id,
-      commentText.trim()
-    );
-
-    if (error) {
-      Alert.alert("Erreur", "Impossible d'ajouter le commentaire");
-    } else if (data) {
-      setComments((prev) => [...prev, data as unknown as Comment]);
-      setCommentText("");
-    }
-    setSubmitting(false);
-  }
-
-  async function handleDeleteComment(commentId: string) {
-    Alert.alert("Supprimer", "Supprimer ce commentaire ?", [
-      { text: "Annuler", style: "cancel" },
-      {
-        text: "Supprimer",
-        style: "destructive",
-        onPress: async () => {
-          await deleteComment(supabase, commentId);
-          setComments((prev) => prev.filter((c) => c.id !== commentId));
-        },
-      },
-    ]);
   }
 
   function getImageUrl(storagePath: string) {
@@ -220,14 +166,8 @@ export default function PostDetailScreen() {
   const authorInitial =
     post.profiles.display_name?.charAt(0)?.toUpperCase() ?? "?";
 
-  const insets = useSafeAreaInsets();
-
   return (
-    <KeyboardAvoidingView
-      style={[styles.wrapper, { backgroundColor: theme.background }]}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-    >
+    <View style={[styles.wrapper, { backgroundColor: theme.background }]}>
       <Stack.Screen options={{ title: "Publication", headerBackTitle: "Retour" }} />
       <ScrollView
         style={styles.container}
@@ -380,86 +320,25 @@ export default function PostDetailScreen() {
           </View>
         )}
 
-        {/* Comments */}
-        <View style={styles.commentsSection}>
-          <Text style={styles.sectionTitle}>
-            Commentaires ({comments.length})
-          </Text>
-          {comments.map((comment) => {
-            const commentInitial =
-              comment.profiles.display_name?.charAt(0)?.toUpperCase() ?? "?";
-            return (
-              <View key={comment.id} style={styles.commentCard}>
-                <View style={styles.commentHeader}>
-                  <View
-                    style={[
-                      styles.commentAvatar,
-                      { backgroundColor: theme.pinBg },
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.commentAvatarText,
-                        { color: theme.primary },
-                      ]}
-                    >
-                      {commentInitial}
-                    </Text>
-                  </View>
-                  <View style={styles.commentMeta}>
-                    <Text style={styles.commentAuthor}>
-                      {comment.profiles.display_name}
-                    </Text>
-                    <Text style={styles.commentDate}>
-                      {new Date(comment.created_at).toLocaleDateString(
-                        "fr-FR",
-                        { day: "numeric", month: "short" }
-                      )}
-                    </Text>
-                  </View>
-                  {(comment.author_id === profile?.id || isAdmin) && (
-                    <TouchableOpacity
-                      onPress={() => handleDeleteComment(comment.id)}
-                      style={styles.deleteButton}
-                    >
-                      <Trash2 size={14} color="#dc2626" />
-                    </TouchableOpacity>
-                  )}
-                </View>
-                <Text style={styles.commentBody}>{comment.body}</Text>
-              </View>
-            );
-          })}
-          {comments.length === 0 && (
-            <Text style={styles.noComments}>
-              Aucun commentaire pour le moment.
-            </Text>
-          )}
+        {/* Contact / messaging */}
+        <View style={styles.contactSection}>
+          {post.type === "annonce" ? (
+            <AnnonceContactBlock
+              phone={post.communes?.phone ?? null}
+              email={post.communes?.email ?? null}
+              openingHours={post.communes?.opening_hours ?? null}
+            />
+          ) : profile ? (
+            <ContacterButton
+              postId={post.id}
+              postType={post.type}
+              authorId={post.author_id}
+              viewerId={profile.id}
+            />
+          ) : null}
         </View>
       </ScrollView>
 
-      {/* Comment input bar */}
-      <View style={[styles.commentInputBar, { paddingBottom: Math.max(insets.bottom, 12) }]}>
-        <TextInput
-          style={styles.commentInput}
-          placeholder="Écrire un commentaire..."
-          value={commentText}
-          onChangeText={setCommentText}
-          multiline
-          placeholderTextColor="#a1a1aa"
-        />
-        <TouchableOpacity
-          style={[
-            styles.sendButton,
-            { backgroundColor: theme.primary },
-            (submitting || !commentText.trim()) && styles.sendButtonDisabled,
-          ]}
-          onPress={handleAddComment}
-          disabled={submitting || !commentText.trim()}
-        >
-          <Send size={16} color="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
       {id && (
         <ReportDialog
           postId={id}
@@ -467,7 +346,7 @@ export default function PostDetailScreen() {
           onClose={() => setShowReport(false)}
         />
       )}
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -594,81 +473,5 @@ const styles = StyleSheet.create({
   },
   rsvpCountActive: { color: "#FFFFFF" },
 
-  commentsSection: { marginTop: 8 },
-  commentCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  commentHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: 6,
-  },
-  commentAvatar: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  commentAvatarText: { fontFamily: "DMSans_600SemiBold", fontSize: 12 },
-  commentMeta: { flex: 1 },
-  commentAuthor: {
-    fontFamily: "DMSans_600SemiBold",
-    fontSize: 13,
-    color: "#18181b",
-  },
-  commentDate: { fontFamily: "DMSans_400Regular", fontSize: 11, color: "#a1a1aa" },
-  deleteButton: { padding: 4 },
-  commentBody: {
-    fontFamily: "DMSans_400Regular",
-    fontSize: 14,
-    color: "#3f3f46",
-    lineHeight: 20,
-  },
-  noComments: {
-    fontFamily: "DMSans_400Regular",
-    fontSize: 14,
-    color: "#a1a1aa",
-    paddingVertical: 8,
-    textAlign: "center",
-  },
-
-  commentInputBar: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    padding: 12,
-    borderTopWidth: 1,
-    borderTopColor: "#F0E6D8",
-    backgroundColor: "#FFFFFF",
-    gap: 8,
-  },
-  commentInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#e4e4e7",
-    borderRadius: 10,
-    padding: 10,
-    fontFamily: "DMSans_400Regular",
-    fontSize: 14,
-    maxHeight: 80,
-    backgroundColor: "#fafafa",
-    color: "#18181b",
-  },
-  sendButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  sendButtonDisabled: { opacity: 0.4 },
+  contactSection: { marginTop: 16, marginBottom: 8 },
 });

@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
       conversation_id: payload.record.conversation_id,
       message_id: payload.record.id,
       sender_id: payload.record.sender_id,
-      url: `/app/messages/${payload.record.conversation_id}`,
+      url: `/messages/${payload.record.conversation_id}`,
     },
     sound: "default",
     categoryId: "message",

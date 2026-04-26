@@ -22,6 +22,8 @@ export function useNotifications() {
         const data = response.notification.request.content.data;
         if (data?.url && typeof data.url === "string") {
           router.push(data.url as any);
+        } else if (data?.conversation_id && typeof data.conversation_id === "string") {
+          router.push(`/messages/${data.conversation_id}` as any);
         } else if (data?.postId && typeof data.postId === "string") {
           router.push(`/post/${data.postId}` as any);
         }

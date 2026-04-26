@@ -33,7 +33,6 @@ export function PostCard({ post }: PostCardProps) {
   const typeColor = POST_TYPE_COLORS[post.type as keyof typeof POST_TYPE_COLORS] ?? "#6b7280";
   const typeLabel = POST_TYPE_LABELS[post.type as PostType] ?? post.type;
   const TypeIcon = TYPE_ICONS[post.type] ?? MessageSquare;
-  const commentCount = post.comments?.[0]?.count ?? 0;
   const authorName = post.profiles?.display_name ?? "Anonyme";
   const createdDate = new Date(post.created_at).toLocaleDateString("fr-FR", {
     day: "numeric",
@@ -124,12 +123,6 @@ export function PostCard({ post }: PostCardProps) {
               {authorName} · {createdDate}
             </Text>
             <View style={styles.metaRight}>
-              {commentCount > 0 && (
-                <View style={styles.commentMeta}>
-                  <MessageSquare size={12} color={theme.muted} />
-                  <Text style={styles.commentCount}>{commentCount}</Text>
-                </View>
-              )}
               <TouchableOpacity
                 onPress={() => setShowReport(true)}
                 style={styles.reportButton}
@@ -254,16 +247,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-  },
-  commentMeta: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  commentCount: {
-    fontFamily: "DMSans_500Medium",
-    fontSize: 12,
-    color: "#a1a1aa",
   },
   reportButton: {
     padding: 4,
