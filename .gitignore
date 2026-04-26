@@ -6,6 +6,8 @@ dist/
 .turbo/
 .env
 .env.local
+.env.demo
+.env.production
 *.tgz
 web-build/
 .firecrawl/
