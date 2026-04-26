@@ -59,16 +59,6 @@ CREATE OR REPLACE FUNCTION "public"."is_commune_admin"() RETURNS boolean
   )
 $$;
 ALTER FUNCTION "public"."is_commune_admin"() OWNER TO "postgres";
-CREATE OR REPLACE FUNCTION "public"."is_commune_moderator"() RETURNS boolean
-    LANGUAGE "sql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
-    AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM profiles
-    WHERE id = auth.uid() AND role IN ('moderator', 'admin', 'epci_admin') AND status = 'active'
-  )
-$$;
-ALTER FUNCTION "public"."is_commune_moderator"() OWNER TO "postgres";
 CREATE OR REPLACE FUNCTION "public"."update_updated_at"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     AS $$
@@ -93,14 +83,6 @@ CREATE TABLE IF NOT EXISTS "public"."audit_log" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
 );
 ALTER TABLE "public"."audit_log" OWNER TO "postgres";
-CREATE TABLE IF NOT EXISTS "public"."comments" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "post_id" "uuid" NOT NULL,
-    "author_id" "uuid" NOT NULL,
-    "body" "text" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
-);
-ALTER TABLE "public"."comments" OWNER TO "postgres";
 CREATE TABLE IF NOT EXISTS "public"."communes" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "epci_id" "uuid",
@@ -210,7 +192,7 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "status" "text" DEFAULT 'pending'::"text" NOT NULL,
     "push_token" "text",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "profiles_role_check" CHECK (("role" = ANY (ARRAY['resident'::"text", 'moderator'::"text", 'admin'::"text", 'epci_admin'::"text"]))),
+    CONSTRAINT "profiles_role_check" CHECK (("role" = ANY (ARRAY['resident'::"text", 'admin'::"text", 'epci_admin'::"text"]))),
     CONSTRAINT "profiles_status_check" CHECK (("status" = ANY (ARRAY['pending'::"text", 'active'::"text", 'rejected'::"text"])))
 );
 ALTER TABLE "public"."profiles" OWNER TO "postgres";
@@ -246,8 +228,6 @@ ALTER TABLE "public"."word_filters" OWNER TO "postgres";
 ALTER TABLE ONLY "public"."audit_log"
     ADD CONSTRAINT "audit_log_pkey" PRIMARY KEY ("id");
 
-ALTER TABLE ONLY "public"."comments"
-    ADD CONSTRAINT "comments_pkey" PRIMARY KEY ("id");
 
 ALTER TABLE ONLY "public"."communes"
     ADD CONSTRAINT "communes_invite_code_key" UNIQUE ("invite_code");
@@ -312,7 +292,6 @@ CREATE INDEX "idx_audit_log_commune" ON "public"."audit_log" USING "btree" ("com
 
 CREATE INDEX "idx_audit_log_created" ON "public"."audit_log" USING "btree" ("created_at" DESC);
 
-CREATE INDEX "idx_comments_post_id" ON "public"."comments" USING "btree" ("post_id");
 
 CREATE INDEX "idx_communes_epci_id" ON "public"."communes" USING "btree" ("epci_id");
 
@@ -354,11 +333,7 @@ ALTER TABLE ONLY "public"."audit_log"
 ALTER TABLE ONLY "public"."audit_log"
     ADD CONSTRAINT "audit_log_commune_id_fkey" FOREIGN KEY ("commune_id") REFERENCES "public"."communes"("id");
 
-ALTER TABLE ONLY "public"."comments"
-    ADD CONSTRAINT "comments_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "public"."profiles"("id");
 
-ALTER TABLE ONLY "public"."comments"
-    ADD CONSTRAINT "comments_post_id_fkey" FOREIGN KEY ("post_id") REFERENCES "public"."posts"("id") ON DELETE CASCADE;
 
 ALTER TABLE ONLY "public"."communes"
     ADD CONSTRAINT "communes_epci_id_fkey" FOREIGN KEY ("epci_id") REFERENCES "public"."epci"("id");
@@ -411,10 +386,6 @@ ALTER TABLE ONLY "public"."rsvps"
 ALTER TABLE ONLY "public"."rsvps"
     ADD CONSTRAINT "rsvps_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id");
 
-CREATE POLICY "Admins can delete comments in own commune" ON "public"."comments" FOR DELETE TO "authenticated" USING (((EXISTS ( SELECT 1
-   FROM "public"."posts"
-  WHERE (("posts"."id" = "comments"."post_id") AND ("posts"."commune_id" = "public"."auth_commune_id"())))) AND "public"."is_commune_admin"()));
-
 CREATE POLICY "Admins can update posts in own commune" ON "public"."posts" FOR UPDATE TO "authenticated" USING ((("commune_id" = "public"."auth_commune_id"()) AND "public"."is_commune_admin"()));
 
 CREATE POLICY "Admins can update profiles in own commune" ON "public"."profiles" FOR UPDATE TO "authenticated" USING ((("commune_id" = "public"."auth_commune_id"()) AND "public"."is_commune_admin"()));
@@ -429,10 +400,6 @@ CREATE POLICY "Anon can view posts for public website" ON "public"."posts" FOR S
 
 CREATE POLICY "Approved users can create RSVPs" ON "public"."rsvps" FOR INSERT TO "authenticated" WITH CHECK ((("user_id" = "auth"."uid"()) AND "public"."is_approved"()));
 
-CREATE POLICY "Approved users can create comments" ON "public"."comments" FOR INSERT TO "authenticated" WITH CHECK ((("author_id" = "auth"."uid"()) AND "public"."is_approved"() AND (EXISTS ( SELECT 1
-   FROM "public"."posts"
-  WHERE (("posts"."id" = "comments"."post_id") AND ("posts"."commune_id" = "public"."auth_commune_id"()))))));
-
 CREATE POLICY "Approved users can create posts" ON "public"."posts" FOR INSERT TO "authenticated" WITH CHECK ((("author_id" = "auth"."uid"()) AND ("commune_id" = "public"."auth_commune_id"()) AND "public"."is_approved"() AND (("type" <> 'annonce'::"text") OR "public"."is_commune_admin"())));
 
 CREATE POLICY "Authenticated users can view EPCI" ON "public"."epci" FOR SELECT TO "authenticated" USING (true);
@@ -440,8 +407,6 @@ CREATE POLICY "Authenticated users can view EPCI" ON "public"."epci" FOR SELECT 
 CREATE POLICY "Authenticated users can view communes" ON "public"."communes" FOR SELECT TO "authenticated" USING (true);
 
 CREATE POLICY "Authors and admins can delete posts" ON "public"."posts" FOR DELETE TO "authenticated" USING ((("author_id" = "auth"."uid"()) OR (("commune_id" = "public"."auth_commune_id"()) AND "public"."is_commune_admin"())));
-
-CREATE POLICY "Authors can delete own comments" ON "public"."comments" FOR DELETE TO "authenticated" USING (("author_id" = "auth"."uid"()));
 
 CREATE POLICY "Authors can update own posts" ON "public"."posts" FOR UPDATE TO "authenticated" USING (("author_id" = "auth"."uid"()));
 
@@ -467,10 +432,6 @@ CREATE POLICY "Users can view RSVPs in own commune" ON "public"."rsvps" FOR SELE
    FROM "public"."posts"
   WHERE (("posts"."id" = "rsvps"."post_id") AND ("posts"."commune_id" = "public"."auth_commune_id"())))));
 
-CREATE POLICY "Users can view comments in own commune" ON "public"."comments" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
-   FROM "public"."posts"
-  WHERE (("posts"."id" = "comments"."post_id") AND ("posts"."commune_id" = "public"."auth_commune_id"())))));
-
 CREATE POLICY "Users can view post images in own commune" ON "public"."post_images" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."posts"
   WHERE (("posts"."id" = "post_images"."post_id") AND ("posts"."commune_id" = "public"."auth_commune_id"())))));
@@ -483,12 +444,11 @@ CREATE POLICY "Users can view own profile" ON "public"."profiles"
   FOR SELECT TO "authenticated"
   USING (("id" = "auth"."uid"()));
 
-CREATE POLICY "audit_insert" ON "public"."audit_log" FOR INSERT WITH CHECK (("public"."is_commune_moderator"() OR ("actor_id" IS NULL)));
+CREATE POLICY "audit_insert" ON "public"."audit_log" FOR INSERT WITH CHECK (("public"."is_commune_admin"() OR ("actor_id" IS NULL)));
 
 ALTER TABLE "public"."audit_log" ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "audit_select" ON "public"."audit_log" FOR SELECT USING ((("commune_id" = "public"."auth_commune_id"()) AND ("public"."is_commune_admin"() OR ("actor_id" = "auth"."uid"()))));
 
-ALTER TABLE "public"."comments" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."communes" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."epci" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."poll_options" ENABLE ROW LEVEL SECURITY;
@@ -544,9 +504,9 @@ ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."reports" ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "reports_insert" ON "public"."reports" FOR INSERT WITH CHECK ((("auth"."uid"() = "reporter_id") AND "public"."is_approved"()));
 
-CREATE POLICY "reports_select" ON "public"."reports" FOR SELECT USING ((("reporter_id" = "auth"."uid"()) OR "public"."is_commune_moderator"()));
+CREATE POLICY "reports_select" ON "public"."reports" FOR SELECT USING ((("reporter_id" = "auth"."uid"()) OR "public"."is_commune_admin"()));
 
-CREATE POLICY "reports_update" ON "public"."reports" FOR UPDATE USING ("public"."is_commune_moderator"());
+CREATE POLICY "reports_update" ON "public"."reports" FOR UPDATE USING ("public"."is_commune_admin"());
 
 ALTER TABLE "public"."rsvps" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."word_filters" ENABLE ROW LEVEL SECURITY;
@@ -575,9 +535,6 @@ GRANT ALL ON FUNCTION "public"."is_commune_admin"() TO "anon";
 GRANT ALL ON FUNCTION "public"."is_commune_admin"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."is_commune_admin"() TO "service_role";
 
-GRANT ALL ON FUNCTION "public"."is_commune_moderator"() TO "anon";
-GRANT ALL ON FUNCTION "public"."is_commune_moderator"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."is_commune_moderator"() TO "service_role";
 
 GRANT ALL ON FUNCTION "public"."update_updated_at"() TO "anon";
 GRANT ALL ON FUNCTION "public"."update_updated_at"() TO "authenticated";
@@ -586,9 +543,6 @@ GRANT ALL ON TABLE "public"."audit_log" TO "anon";
 GRANT ALL ON TABLE "public"."audit_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."audit_log" TO "service_role";
 
-GRANT ALL ON TABLE "public"."comments" TO "anon";
-GRANT ALL ON TABLE "public"."comments" TO "authenticated";
-GRANT ALL ON TABLE "public"."comments" TO "service_role";
 
 GRANT ALL ON TABLE "public"."communes" TO "anon";
 GRANT ALL ON TABLE "public"."communes" TO "authenticated";
@@ -794,6 +748,303 @@ DROP POLICY IF EXISTS "Anyone can view website images" ON "storage"."objects";
 CREATE POLICY "Anyone can view website images" ON "storage"."objects" FOR SELECT USING (("bucket_id" = 'website-images'));
 DROP POLICY IF EXISTS "Authenticated users can delete website images" ON "storage"."objects";
 CREATE POLICY "Authenticated users can delete website images" ON "storage"."objects" FOR DELETE TO "authenticated" USING (("bucket_id" = 'website-images'));
+
+-- ============================================================================
+-- Admins can update their own commune (theme, contact, opening hours, etc.)
+-- ============================================================================
+CREATE POLICY "Admins can update own commune" ON "public"."communes"
+  FOR UPDATE TO "authenticated"
+  USING (
+    "id" = "public"."auth_commune_id"()
+    AND "public"."is_commune_admin"()
+  )
+  WITH CHECK (
+    "id" = "public"."auth_commune_id"()
+    AND "public"."is_commune_admin"()
+  );
+
+-- ============================================================================
+-- Direct messaging: conversations, messages, blocks, conversation reports
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS "public"."conversations" (
+  "id" "uuid" PRIMARY KEY DEFAULT gen_random_uuid(),
+  "post_id" "uuid" NOT NULL REFERENCES "public"."posts"("id") ON DELETE CASCADE,
+  "user_a" "uuid" NOT NULL REFERENCES "public"."profiles"("id") ON DELETE CASCADE,
+  "user_b" "uuid" NOT NULL REFERENCES "public"."profiles"("id") ON DELETE CASCADE,
+  "user_a_last_read_at" timestamptz,
+  "user_b_last_read_at" timestamptz,
+  "last_message_at" timestamptz NOT NULL DEFAULT now(),
+  "last_message_preview" text,
+  "last_message_sender_id" "uuid" REFERENCES "public"."profiles"("id"),
+  "created_at" timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT "conv_user_order" CHECK (user_a < user_b),
+  CONSTRAINT "conv_users_distinct" CHECK (user_a <> user_b),
+  UNIQUE (post_id, user_a, user_b)
+);
+
+ALTER TABLE "public"."conversations" OWNER TO "postgres";
+
+CREATE INDEX IF NOT EXISTS "conv_user_a_idx"
+  ON "public"."conversations"(user_a, last_message_at DESC);
+CREATE INDEX IF NOT EXISTS "conv_user_b_idx"
+  ON "public"."conversations"(user_b, last_message_at DESC);
+CREATE INDEX IF NOT EXISTS "conv_post_idx"
+  ON "public"."conversations"(post_id);
+
+CREATE TABLE IF NOT EXISTS "public"."messages" (
+  "id" "uuid" PRIMARY KEY DEFAULT gen_random_uuid(),
+  "conversation_id" "uuid" NOT NULL REFERENCES "public"."conversations"("id") ON DELETE CASCADE,
+  "sender_id" "uuid" NOT NULL REFERENCES "public"."profiles"("id") ON DELETE CASCADE,
+  "body" text NOT NULL CHECK (length(trim(body)) > 0 AND length(body) <= 4000),
+  "created_at" timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE "public"."messages" OWNER TO "postgres";
+
+CREATE INDEX IF NOT EXISTS "msg_conversation_idx"
+  ON "public"."messages"(conversation_id, created_at);
+CREATE INDEX IF NOT EXISTS "msg_sender_idx"
+  ON "public"."messages"(sender_id);
+
+CREATE TABLE IF NOT EXISTS "public"."user_blocks" (
+  "blocker_id" "uuid" NOT NULL REFERENCES "public"."profiles"("id") ON DELETE CASCADE,
+  "blocked_id" "uuid" NOT NULL REFERENCES "public"."profiles"("id") ON DELETE CASCADE,
+  "created_at" timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (blocker_id, blocked_id),
+  CONSTRAINT "blocks_self" CHECK (blocker_id <> blocked_id)
+);
+
+ALTER TABLE "public"."user_blocks" OWNER TO "postgres";
+
+CREATE INDEX IF NOT EXISTS "user_blocks_blocked_idx"
+  ON "public"."user_blocks"(blocked_id);
+
+CREATE TABLE IF NOT EXISTS "public"."conversation_reports" (
+  "id" "uuid" PRIMARY KEY DEFAULT gen_random_uuid(),
+  "conversation_id" "uuid" NOT NULL REFERENCES "public"."conversations"("id") ON DELETE CASCADE,
+  "reporter_id" "uuid" NOT NULL REFERENCES "public"."profiles"("id") ON DELETE CASCADE,
+  "reason" text,
+  "word_filter_hit" boolean NOT NULL DEFAULT false,
+  "word_filter_matches" text[],
+  "resolved_at" timestamptz,
+  "created_at" timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE "public"."conversation_reports" OWNER TO "postgres";
+
+CREATE INDEX IF NOT EXISTS "conv_reports_unresolved_idx"
+  ON "public"."conversation_reports"(created_at DESC) WHERE resolved_at IS NULL;
+
+-- ============================================================================
+-- Helpers + RPCs for messaging
+-- ============================================================================
+
+CREATE OR REPLACE FUNCTION public.are_users_blocked(a uuid, b uuid)
+  RETURNS boolean
+  LANGUAGE sql STABLE SECURITY DEFINER
+  SET search_path = public, pg_temp
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.user_blocks
+    WHERE (blocker_id = a AND blocked_id = b)
+       OR (blocker_id = b AND blocked_id = a)
+  );
+$$;
+ALTER FUNCTION public.are_users_blocked(uuid, uuid) OWNER TO "postgres";
+
+CREATE OR REPLACE FUNCTION public.is_conversation_participant(conv_id uuid)
+  RETURNS boolean
+  LANGUAGE sql STABLE SECURITY DEFINER
+  SET search_path = public, pg_temp
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.conversations
+    WHERE id = conv_id AND (user_a = auth.uid() OR user_b = auth.uid())
+  );
+$$;
+ALTER FUNCTION public.is_conversation_participant(uuid) OWNER TO "postgres";
+
+CREATE OR REPLACE FUNCTION public.mark_conversation_read(conv_id uuid)
+  RETURNS void
+  LANGUAGE plpgsql SECURITY DEFINER
+  SET search_path = public, pg_temp
+AS $$
+BEGIN
+  UPDATE public.conversations
+  SET user_a_last_read_at = CASE WHEN user_a = auth.uid() THEN now() ELSE user_a_last_read_at END,
+      user_b_last_read_at = CASE WHEN user_b = auth.uid() THEN now() ELSE user_b_last_read_at END
+  WHERE id = conv_id
+    AND (user_a = auth.uid() OR user_b = auth.uid());
+END;
+$$;
+ALTER FUNCTION public.mark_conversation_read(uuid) OWNER TO "postgres";
+
+GRANT EXECUTE ON FUNCTION public.are_users_blocked(uuid, uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.is_conversation_participant(uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.mark_conversation_read(uuid) TO authenticated;
+
+-- ============================================================================
+-- Triggers
+-- ============================================================================
+
+CREATE OR REPLACE FUNCTION public.update_conversation_last_message()
+  RETURNS trigger
+  LANGUAGE plpgsql SECURITY DEFINER
+  SET search_path = public, pg_temp
+AS $$
+BEGIN
+  UPDATE public.conversations
+  SET last_message_at = NEW.created_at,
+      last_message_preview = LEFT(trim(NEW.body), 200),
+      last_message_sender_id = NEW.sender_id
+  WHERE id = NEW.conversation_id;
+  RETURN NEW;
+END;
+$$;
+ALTER FUNCTION public.update_conversation_last_message() OWNER TO "postgres";
+
+CREATE TRIGGER messages_update_conversation
+  AFTER INSERT ON public.messages
+  FOR EACH ROW EXECUTE FUNCTION public.update_conversation_last_message();
+
+CREATE OR REPLACE FUNCTION public.invoke_notify_new_message()
+  RETURNS trigger
+  LANGUAGE plpgsql SECURITY DEFINER
+  SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_url text := current_setting('app.settings.functions_url', true);
+  v_key text := current_setting('app.settings.service_role_key', true);
+BEGIN
+  IF v_url IS NULL OR v_url = '' THEN
+    RETURN NEW;
+  END IF;
+  PERFORM net.http_post(
+    url := v_url || '/notify_new_message',
+    headers := jsonb_build_object(
+      'Content-Type', 'application/json',
+      'Authorization', 'Bearer ' || v_key
+    ),
+    body := jsonb_build_object(
+      'type', 'INSERT',
+      'table', 'messages',
+      'record', row_to_json(NEW)
+    )
+  );
+  RETURN NEW;
+END;
+$$;
+ALTER FUNCTION public.invoke_notify_new_message() OWNER TO "postgres";
+
+CREATE TRIGGER messages_notify_after_insert
+  AFTER INSERT ON public.messages
+  FOR EACH ROW EXECUTE FUNCTION public.invoke_notify_new_message();
+
+-- ============================================================================
+-- RLS for messaging tables
+-- ============================================================================
+
+ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_blocks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.conversation_reports ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY conv_select_self ON public.conversations
+  FOR SELECT USING (
+    (auth.uid() = user_a OR auth.uid() = user_b)
+    AND NOT public.are_users_blocked(user_a, user_b)
+  );
+
+CREATE POLICY conv_insert_self ON public.conversations
+  FOR INSERT WITH CHECK (
+    (auth.uid() = user_a OR auth.uid() = user_b)
+    AND NOT public.are_users_blocked(user_a, user_b)
+    AND EXISTS (
+      SELECT 1 FROM public.posts p
+      WHERE p.id = post_id
+        AND p.type <> 'annonce'
+        AND p.is_hidden = false
+        AND p.author_id <> auth.uid()
+    )
+  );
+
+CREATE POLICY msg_select_participant ON public.messages
+  FOR SELECT USING (
+    public.is_conversation_participant(conversation_id)
+    AND NOT EXISTS (
+      SELECT 1 FROM public.conversations c
+      WHERE c.id = conversation_id
+        AND public.are_users_blocked(c.user_a, c.user_b)
+    )
+  );
+
+CREATE POLICY msg_insert_self ON public.messages
+  FOR INSERT WITH CHECK (
+    sender_id = auth.uid()
+    AND public.is_conversation_participant(conversation_id)
+    AND NOT EXISTS (
+      SELECT 1 FROM public.conversations c
+      WHERE c.id = conversation_id
+        AND public.are_users_blocked(c.user_a, c.user_b)
+    )
+  );
+
+CREATE POLICY blocks_select_self ON public.user_blocks
+  FOR SELECT USING (blocker_id = auth.uid());
+CREATE POLICY blocks_insert_self ON public.user_blocks
+  FOR INSERT WITH CHECK (blocker_id = auth.uid());
+CREATE POLICY blocks_delete_self ON public.user_blocks
+  FOR DELETE USING (blocker_id = auth.uid());
+
+CREATE POLICY reports_conv_select_reporter ON public.conversation_reports
+  FOR SELECT USING (reporter_id = auth.uid());
+CREATE POLICY reports_conv_insert_participant ON public.conversation_reports
+  FOR INSERT WITH CHECK (
+    reporter_id = auth.uid()
+    AND EXISTS (
+      SELECT 1 FROM public.conversations c
+      WHERE c.id = conversation_id
+        AND (c.user_a = auth.uid() OR c.user_b = auth.uid())
+    )
+  );
+
+-- ============================================================================
+-- Posts SELECT — block-extension: blocked user's posts disappear from blocker's feed
+-- ============================================================================
+DROP POLICY IF EXISTS "Users can view posts in own commune" ON "public"."posts";
+CREATE POLICY "Users can view posts in own commune" ON "public"."posts"
+  FOR SELECT TO "authenticated"
+  USING (
+    "commune_id" = "public"."auth_commune_id"()
+    AND NOT EXISTS (
+      SELECT 1 FROM public.user_blocks
+      WHERE blocker_id = auth.uid() AND blocked_id = posts.author_id
+    )
+  );
+
+DROP POLICY IF EXISTS "Users can view EPCI-visible posts" ON "public"."posts";
+CREATE POLICY "Users can view EPCI-visible posts" ON "public"."posts"
+  FOR SELECT TO "authenticated"
+  USING (
+    ("epci_visible" = true)
+    AND ("commune_id" IN (
+      SELECT "c"."id" FROM "public"."communes" "c"
+      WHERE ("c"."epci_id" = (
+        SELECT "c2"."epci_id" FROM "public"."communes" "c2"
+        WHERE ("c2"."id" = "public"."auth_commune_id"())
+      ))
+    ))
+    AND NOT EXISTS (
+      SELECT 1 FROM public.user_blocks
+      WHERE blocker_id = auth.uid() AND blocked_id = posts.author_id
+    )
+  );
+
+GRANT ALL ON TABLE "public"."conversations" TO "anon", "authenticated", "service_role";
+GRANT ALL ON TABLE "public"."messages" TO "anon", "authenticated", "service_role";
+GRANT ALL ON TABLE "public"."user_blocks" TO "anon", "authenticated", "service_role";
+GRANT ALL ON TABLE "public"."conversation_reports" TO "anon", "authenticated", "service_role";
 
 -- Restore search_path so seed.sql can use unqualified table names
 SET search_path = public, extensions;
