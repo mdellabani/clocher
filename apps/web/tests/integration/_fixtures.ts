@@ -11,19 +11,22 @@ if (!SERVICE_KEY) throw new Error("SUPABASE_SERVICE_ROLE_KEY missing in test env
 
 const SEED_SQL = readFileSync(resolve(__dirname, "_seed.sql"), "utf8");
 
-// CASCADE auto-clears child rows (comments→posts, rsvps→posts, etc.).
+// CASCADE auto-clears child rows (rsvps→posts, messages→conversations, etc.).
 // epci is intentionally excluded — it's reference data seeded by
 // supabase/seed.sql and FK'd from communes; truncating it would
 // cascade-delete every commune.
 const TABLES_TO_TRUNCATE = [
   "audit_log",
   "reports",
+  "conversation_reports",
+  "messages",
+  "conversations",
+  "user_blocks",
   "poll_votes",
   "poll_options",
   "polls",
   "post_images",
   "rsvps",
-  "comments",
   "posts",
   "page_sections",
   "council_documents",

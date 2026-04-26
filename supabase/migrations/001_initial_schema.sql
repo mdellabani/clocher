@@ -865,6 +865,19 @@ AS $$
 $$;
 ALTER FUNCTION public.is_conversation_participant(uuid) OWNER TO "postgres";
 
+CREATE OR REPLACE FUNCTION public.conversation_has_block(conv_id uuid)
+  RETURNS boolean
+  LANGUAGE sql STABLE SECURITY DEFINER
+  SET search_path = public, pg_temp
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.conversations c
+    WHERE c.id = conv_id
+      AND public.are_users_blocked(c.user_a, c.user_b)
+  );
+$$;
+ALTER FUNCTION public.conversation_has_block(uuid) OWNER TO "postgres";
+
 CREATE OR REPLACE FUNCTION public.mark_conversation_read(conv_id uuid)
   RETURNS void
   LANGUAGE plpgsql SECURITY DEFINER
@@ -882,6 +895,7 @@ ALTER FUNCTION public.mark_conversation_read(uuid) OWNER TO "postgres";
 
 GRANT EXECUTE ON FUNCTION public.are_users_blocked(uuid, uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.is_conversation_participant(uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.conversation_has_block(uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.mark_conversation_read(uuid) TO authenticated;
 
 -- ============================================================================
@@ -972,22 +986,14 @@ CREATE POLICY conv_insert_self ON public.conversations
 CREATE POLICY msg_select_participant ON public.messages
   FOR SELECT USING (
     public.is_conversation_participant(conversation_id)
-    AND NOT EXISTS (
-      SELECT 1 FROM public.conversations c
-      WHERE c.id = conversation_id
-        AND public.are_users_blocked(c.user_a, c.user_b)
-    )
+    AND NOT public.conversation_has_block(conversation_id)
   );
 
 CREATE POLICY msg_insert_self ON public.messages
   FOR INSERT WITH CHECK (
     sender_id = auth.uid()
     AND public.is_conversation_participant(conversation_id)
-    AND NOT EXISTS (
-      SELECT 1 FROM public.conversations c
-      WHERE c.id = conversation_id
-        AND public.are_users_blocked(c.user_a, c.user_b)
-    )
+    AND NOT public.conversation_has_block(conversation_id)
   );
 
 CREATE POLICY blocks_select_self ON public.user_blocks
