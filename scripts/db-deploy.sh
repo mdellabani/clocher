@@ -96,12 +96,32 @@ npx --yes supabase db reset --linked --yes $SEED_FLAG
 echo "==> Deploying edge function: notify_new_message"
 npx --yes supabase functions deploy notify_new_message --project-ref "$PROJECT_REF" --no-verify-jwt
 
-cat <<EOF
+echo "==> Setting trigger GUCs via Management API"
+FUNCTIONS_URL="https://${PROJECT_REF}.functions.supabase.co"
+GUC_SQL="ALTER DATABASE postgres SET \"app.settings.functions_url\" = '${FUNCTIONS_URL}'; ALTER DATABASE postgres SET \"app.settings.service_role_key\" = '${SUPABASE_SERVICE_ROLE_KEY}';"
 
-==> Done. One-time GUC setup (run in Supabase Studio SQL editor per env, only once):
+if [[ -z "${SUPABASE_ACCESS_TOKEN:-}" ]]; then
+  cat <<EOF
+SUPABASE_ACCESS_TOKEN not set — skipping GUC step.
+Either export it (https://supabase.com/dashboard/account/tokens) and rerun,
+or paste this once in Studio → SQL editor:
 
-ALTER DATABASE postgres SET "app.settings.functions_url" = 'https://${PROJECT_REF}.functions.supabase.co';
-ALTER DATABASE postgres SET "app.settings.service_role_key" = '<service-role-key from project API settings>';
-
-These persist across resets. The messaging trigger needs them to invoke the edge function.
+$GUC_SQL
 EOF
+else
+  http_code=$(curl -sS -o /tmp/db-deploy-resp.json -w "%{http_code}" \
+    -X POST "https://api.supabase.com/v1/projects/${PROJECT_REF}/database/query" \
+    -H "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "$(printf '{"query": %s}' "$(printf '%s' "$GUC_SQL" | jq -Rs .)")")
+  if [[ "$http_code" != "200" && "$http_code" != "201" ]]; then
+    echo "Management API returned $http_code:" >&2
+    cat /tmp/db-deploy-resp.json >&2
+    echo >&2
+    exit 1
+  fi
+  echo "GUCs set (functions_url + service_role_key)."
+fi
+
+echo
+echo "==> Deploy complete for $ENV_NAME."
