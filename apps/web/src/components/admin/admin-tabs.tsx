@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-type TabKey = "dashboard" | "website" | "commune" | "members" | "posts" | "moderation";
+type TabKey = "dashboard" | "website" | "commune" | "members" | "posts" | "journal";
 
 const TABS: { key: TabKey; icon: string; label: string }[] = [
   { key: "dashboard", icon: "📊", label: "Tableau de bord" },
@@ -10,7 +10,7 @@ const TABS: { key: TabKey; icon: string; label: string }[] = [
   { key: "commune", icon: "🏛️", label: "Ma commune" },
   { key: "members", icon: "👥", label: "Membres" },
   { key: "posts", icon: "📋", label: "Publications" },
-  { key: "moderation", icon: "🛡️", label: "Modération" },
+  { key: "journal", icon: "📜", label: "Journal" },
 ];
 
 interface AdminTabsProps {
@@ -19,7 +19,7 @@ interface AdminTabsProps {
   communeContent: React.ReactNode;
   membersContent: React.ReactNode;
   postsContent: React.ReactNode;
-  moderationContent: React.ReactNode;
+  journalContent: React.ReactNode;
 }
 
 export function AdminTabs({
@@ -28,7 +28,7 @@ export function AdminTabs({
   communeContent,
   membersContent,
   postsContent,
-  moderationContent,
+  journalContent,
 }: AdminTabsProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("dashboard");
 
@@ -38,7 +38,7 @@ export function AdminTabs({
     commune: communeContent,
     members: membersContent,
     posts: postsContent,
-    moderation: moderationContent,
+    journal: journalContent,
   };
 
   return (

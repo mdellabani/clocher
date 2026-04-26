@@ -9,7 +9,7 @@ import { SummaryCards } from "@/components/admin/summary-cards";
 import { FeedFilters } from "@/components/feed-filters";
 import { CreatePostDialog } from "@/components/create-post-dialog";
 import { CommuneMembers } from "@/components/admin/community-members";
-import { AuditLogView } from "@/app/moderation/audit-log-view";
+import { AuditLogView } from "@/components/admin/audit-log-view";
 import { InviteCodeManager } from "@/components/admin/invite-code-manager";
 import { ThemeCustomizer } from "@/components/admin/theme-customizer";
 import { CommuneInfoForm } from "@/components/admin/commune-info-form";
@@ -135,7 +135,7 @@ export function DashboardClient() {
             <CouncilDocuments communeId={communeId} documents={(councilDocs ?? []) as any[]} />
           </>
         }
-        moderationContent={
+        journalContent={
           <AuditLogView entries={(auditEntries ?? []) as any[]} />
         }
       />

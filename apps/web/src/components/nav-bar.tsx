@@ -118,11 +118,6 @@ export function NavBar() {
             Admin
           </Link>
         )}
-        {!isAdmin && isModerator && (
-          <Link href="/moderation/dashboard" className={navLinkClass("/moderation")}>
-            Modération
-          </Link>
-        )}
       </div>
     </nav>
   );

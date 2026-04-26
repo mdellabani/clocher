@@ -62,17 +62,10 @@ describe("NavBar", () => {
     expect(screen.getByText("Admin")).toBeInTheDocument();
   });
 
-  it("shows Modération link for moderator (not admin)", () => {
+  it("never shows a Modération link (moderator role removed)", () => {
     setProfile({ isAdmin: false, isModerator: true });
     render(<NavBar />);
-    expect(screen.getByText("Modération")).toBeInTheDocument();
-    expect(screen.queryByText("Admin")).not.toBeInTheDocument();
-  });
-
-  it("prefers Admin over Modération when user is both", () => {
-    setProfile({ isAdmin: true, isModerator: true });
-    render(<NavBar />);
-    expect(screen.getByText("Admin")).toBeInTheDocument();
     expect(screen.queryByText("Modération")).not.toBeInTheDocument();
+    expect(screen.queryByText("Admin")).not.toBeInTheDocument();
   });
 });

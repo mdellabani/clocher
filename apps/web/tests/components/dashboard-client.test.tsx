@@ -23,13 +23,13 @@ vi.mock("@/components/admin/admin-tabs", () => ({
       {props.communeContent}
       {props.membersContent}
       {props.postsContent}
-      {props.moderationContent}
+      {props.journalContent}
     </div>
   ),
 }));
 vi.mock("@/components/feed-filters", () => ({ FeedFilters: () => <div>FILTERS</div> }));
 vi.mock("@/components/create-post-dialog", () => ({ CreatePostDialog: () => <div>CREATE</div> }));
-vi.mock("@/app/moderation/audit-log-view", () => ({ AuditLogView: () => <div>AUDIT</div> }));
+vi.mock("@/components/admin/audit-log-view", () => ({ AuditLogView: () => <div>AUDIT</div> }));
 vi.mock("@/components/theme-injector", () => ({ ThemeInjector: () => null }));
 vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams() }));
 
