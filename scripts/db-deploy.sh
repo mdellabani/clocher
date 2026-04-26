@@ -12,15 +12,14 @@
 #   scripts/db-deploy.sh demo
 #   scripts/db-deploy.sh prod
 #
-# Reads its config from a repo-root .env.local (auto-sourced). See
-# .env.local.example for the full template. Required keys:
+# Reads its config from apps/web/.env.local (auto-sourced — same file
+# Next.js uses). See apps/web/.env.example for the full template.
+# Required keys:
 #   SUPABASE_DB_URL_DEMO            postgres://... (project settings → Database)
 #   SUPABASE_SERVICE_ROLE_KEY_DEMO
 #   SUPABASE_DB_URL_PROD
 #   SUPABASE_SERVICE_ROLE_KEY_PROD
 #   SUPABASE_ACCESS_TOKEN           for `supabase link` / `functions deploy`
-# .env.local values overwrite any pre-existing exports, so unset vars
-# you want to override before running.
 #
 # Flags:
 #   --no-seed     skip seed.sql (default: seed only on demo)
@@ -32,13 +31,15 @@ set -euo pipefail
 ENV_NAME="${1:-}"
 shift || true
 
-# Auto-source repo-root .env.local so the user doesn't have to export
-# every var by hand. (.env.local values overwrite existing exports.)
+# Auto-source apps/web/.env.local — same file Next.js reads, so deploy
+# creds and app creds live in one place. (.env.local values overwrite
+# existing exports.)
 REPO_ROOT_FOR_ENV="$(cd "$(dirname "$0")/.." && pwd)"
-if [[ -f "$REPO_ROOT_FOR_ENV/.env.local" ]]; then
+ENV_FILE="$REPO_ROOT_FOR_ENV/apps/web/.env.local"
+if [[ -f "$ENV_FILE" ]]; then
   set -a
-  # shellcheck disable=SC1091
-  source "$REPO_ROOT_FOR_ENV/.env.local"
+  # shellcheck disable=SC1090
+  source "$ENV_FILE"
   set +a
 fi
 
@@ -68,7 +69,7 @@ case "$ENV_NAME" in
     DEFAULT_SEED=0
     ;;
   ""|-h|--help)
-    sed -n '2,28p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,27p' "$0" | sed 's/^# \{0,1\}//'
     exit 0
     ;;
   *)
