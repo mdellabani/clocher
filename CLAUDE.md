@@ -46,13 +46,14 @@ npx supabase stop                                    # stop local Supabase
 - **No UI sharing:** web uses `<div>` + Tailwind, mobile uses `<View>` + StyleSheet. The screens serve different purposes — don't force shared components.
 - **One write, multiple outputs:** admin posts once -> appears on mobile feed (Realtime), commune website (SSR), and triggers push notification (Edge Function).
 - **French context:** UI labels, error messages, and content are in French. Code (variable names, comments) stays in English.
-- **Roles:** `resident < moderator < admin`. Use `is_commune_moderator()` for moderation RLS, `is_commune_admin()` for admin-only.
-- **Super-admin:** platform-level admin (hardcoded email in `apps/web/src/app/super-admin/actions.ts`). Approves commune registrations at `/super-admin`.
+- **Roles:** `resident < admin`. Use `is_commune_admin()` for admin-only RLS. The intermediate `moderator` role was removed in the messaging refactor — automated moderation (word filter + report auto-hide) handles day-to-day, super-admin handles escalation.
+- **Super-admin:** platform-level admin (hardcoded email in `apps/web/src/app/super-admin/actions.ts`). Approves commune registrations at `/super-admin` and is the only human moderation escalation.
 - **Commune onboarding:** mairie secretary registers at `/auth/register-commune` → pending until super-admin approves → becomes commune admin.
 - **Database types:** generated from local Supabase via `npx supabase gen types typescript --local`. Stored in `packages/shared/src/types/database.ts`. Regenerate after schema changes.
 - **Post types:** `annonce` (admin only), `evenement`, `entraide`, `discussion`, `service` (7-day auto-expiry).
 - **Feed pagination:** cursor-based (`created_at`), 20 posts/page, pinned posts loaded separately.
-- **Moderation:** posts have `is_hidden` column. Reports auto-hide at 3 flags. Word filter auto-hides on match. All actions logged in `audit_log`.
+- **Moderation:** posts have `is_hidden` column. Reports auto-hide at 3 flags. Word filter auto-hides on match. All actions logged in `audit_log`. There is no manual moderation queue — comments were removed in favour of per-post 1:1 DMs (see Messaging).
+- **Messaging:** per-post 1:1 conversations. `entraide`/`evenement`/`discussion`/`service` posts show a "Contacter" button; `annonce` posts show an inline contact block (commune phone/email/hours). Schema: `conversations` (canonical `user_a < user_b` per post, per-user `last_read_at`), `messages`, `user_blocks` (symmetric), `conversation_reports`. RLS enforces participation + symmetric block. `mark_conversation_read(conv_id)` RPC for read-state. New-message push coalesces per conversation: only the first unread fires; subsequent unreads are skipped until the recipient reads. Cross-commune DMs are allowed and surface a banner.
 - **Migrations:** Add a new timestamped file in `supabase/migrations/` for every schema change (e.g. `20260417000000_add_xyz.sql`). Never edit an existing migration file post-deploy — add a new one that supersedes it.
   - **Locally:** `npx supabase db reset` to drop + reapply all migrations + seed.
   - **Deploy to remote:**
@@ -64,16 +65,16 @@ npx supabase stop                                    # stop local Supabase
 - **Writing RLS policies:** every table that admins/users write to needs explicit `INSERT`/`UPDATE`/`DELETE` policies — RLS denies by default, and Supabase clients silently filter blocked rows (zero rows affected, no error). When adding a write path in app code, also add the matching policy in the same migration.
 - **Run `pnpm --filter @rural-community-platform/web test:components` before committing UI changes.** Catches NavBar/PostCard/ThemeCustomizer regressions in <5s.
 - **Run `pnpm --filter @rural-community-platform/web test:integration` before merging anything that touches DB schema, RLS, or server actions.** Requires `npx supabase start` running locally.
+- **Run `pnpm --filter @rural-community-platform/web test:integration -- messaging-rls` after any change to messaging RLS, helpers, or RPCs.** The 41-case matrix is the only thing that catches RLS regressions silently filtering rows.
 - **Every new server-action write path needs an integration test** asserting (a) it persists for the intended role and (b) it's silently blocked for an unauthorized role. RLS denies by default and PostgREST swallows the failure — the test is the only thing that catches it.
 - **Client-side data (authed routes):** `/app/*` and `/admin/*` are wrapped in `QueryProvider` (React Query). Shared query keys live in `packages/shared/src/query-keys.ts`; use `prefetchAndDehydrate()` from `apps/web/src/lib/query/prefetch.ts` in server components to hydrate the client cache. Public routes (`/`, `/[commune-slug]/*`) stay pure SSR.
 
 ## Database Schema
 
 Migrations in `supabase/migrations/`:
-- `001_initial_schema.sql` — full initial schema: communes (with contact fields, custom_primary_color, custom_domain, associations, opening_hours), profiles, posts, comments, rsvps, polls, producers, reports, audit_log, word_filters, push_tokens, post_images, council_documents, page_sections, storage buckets (post-images, avatars, council-documents, website-images), all RLS policies, functions, triggers, and indexes
-- `20260417000000_admin_can_update_own_commune.sql` — RLS UPDATE policy on `public.communes` so admins can save theme/logo/contact/opening_hours/associations/custom_domain
-- `20260417000100_moderators_can_moderate_posts.sql` — RLS UPDATE/DELETE on `public.posts` for moderators so the moderation UI hide/unhide/delete actually affects rows
-- All future schema changes go in their own timestamped file — never edit `001_initial_schema.sql` again post-launch.
+- `001_initial_schema.sql` — full initial schema: communes (with contact fields, custom_primary_color, custom_domain, associations, opening_hours), profiles, posts, rsvps, polls, producers, reports, audit_log, word_filters, push_tokens, post_images, council_documents, page_sections, **messaging tables (conversations, messages, user_blocks, conversation_reports)**, storage buckets (post-images, avatars, council-documents, website-images), all RLS policies, functions, triggers, and indexes.
+- **2026-04-26 pre-launch reset:** the messaging refactor consolidated the schema by rewriting `001_initial_schema.sql` in place: dropped the `comments` table and the `moderator` role, dropped the two earlier patch migrations (folded their UPDATE policies into `001`), and added the four messaging tables + helpers + RPC. Both demo and prod were wiped and reset since they held throwaway data only.
+- The "never edit `001_initial_schema.sql` post-deploy; add a new timestamped migration that supersedes it" rule resumes from this point on.
 
 ## Environment Variables
 
@@ -94,7 +95,8 @@ NEXT_PUBLIC_PLATFORM_DOMAIN=app.example.fr  # same, exposed to client for displa
 - **Onboarding complete**: commune registration (`/auth/register-commune`) with super-admin approval (`/super-admin`), generated database types
 - **Public surface complete**: web landing page at `/` (hero, features, how-it-works, communes grid, footer), mobile welcome screen as default for signed-out users
 - **Bugfix wave 2026-04-16**: self-read RLS policy for profiles (fixes admin tab missing post-approval), `search_path` hardening on SECURITY DEFINER functions, theme changes apply across pages without reload, homogeneous post-card thumbnail slot, silent token refresh in middleware (sessions never expire silently), mobile PostHog wiring fix
-- **Test suite phase 1 complete (2026-04-17)**: 56 tests across 13 files — component tests (jsdom + RTL with mocked Supabase) for NavBar/PostCard/ThemeCustomizer/FeedFilters, integration tests (real local Supabase) covering every server-action write path × admin/moderator/resident; CI runs both jobs on PR
+- **Test suite phase 1 complete (2026-04-17)**: component tests (jsdom + RTL with mocked Supabase) for NavBar/PostCard/ThemeCustomizer/FeedFilters, integration tests (real local Supabase) covering every server-action write path; CI runs both jobs on PR
+- **Direct messaging shipped (2026-04-26)**: comments + manual moderation queue replaced by per-post 1:1 DMs (leboncoin-style). Annonces show inline contact block; other posts show "Contacter". Cross-commune DMs allowed with banner. Push coalesces per conversation. 41-case RLS matrix covers messages/conversations/blocks/reports/posts SELECT block-extension. Edge function `notify_new_message` reads `last_read_at` and skips push if the recipient already has unread messages from the sender. Web (141) + integration (91 incl. 41 RLS + 12 query) tests green.
 - **Remaining**: custom pages (Phase 2 of website customization), AI council document summaries
 - **Not started**: v3 (mairie tools), v4 (services directory), v5 (group buying), v6 (carpooling)
 
