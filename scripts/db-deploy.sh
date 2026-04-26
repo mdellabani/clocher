@@ -77,7 +77,7 @@ About to deploy to: $ENV_NAME (project ref: $PROJECT_REF)
   supabase link        --project-ref $PROJECT_REF
 $([[ $SKIP_RESET -eq 0 ]] && echo "  supabase db reset    --linked $SEED_FLAG  (DROPS public schema)")
   supabase functions deploy notify_new_message
-  set GUCs via Management API
+  upsert runtime_config (via PostgREST)
 EOF
 
 if [[ $ASSUME_YES -ne 1 ]]; then
@@ -102,32 +102,32 @@ fi
 echo "==> Deploying edge function: notify_new_message"
 npx --yes supabase functions deploy notify_new_message --project-ref "$PROJECT_REF" --no-verify-jwt
 
-echo "==> Setting trigger GUCs via Management API"
+echo "==> Writing runtime_config (functions_url, service_role_key)"
 FUNCTIONS_URL="https://${PROJECT_REF}.functions.supabase.co"
-GUC_SQL="ALTER DATABASE postgres SET \"app.settings.functions_url\" = '${FUNCTIONS_URL}'; ALTER DATABASE postgres SET \"app.settings.service_role_key\" = '${SUPABASE_SERVICE_ROLE_KEY}';"
 
-if [[ -z "${SUPABASE_ACCESS_TOKEN:-}" ]]; then
-  cat <<EOF
-SUPABASE_ACCESS_TOKEN not set — skipping GUC step.
-Either export it (https://supabase.com/dashboard/account/tokens) and rerun,
-or paste this once in Studio → SQL editor:
-
-$GUC_SQL
-EOF
-else
-  http_code=$(curl -sS -o /tmp/db-deploy-resp.json -w "%{http_code}" \
-    -X POST "https://api.supabase.com/v1/projects/${PROJECT_REF}/database/query" \
-    -H "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+upsert_config() {
+  local key="$1" value="$2"
+  local payload
+  payload=$(jq -nc --arg k "$key" --arg v "$value" '{key:$k, value:$v}')
+  local code
+  code=$(curl -sS -o /tmp/db-deploy-resp.json -w "%{http_code}" \
+    -X POST "${NEXT_PUBLIC_SUPABASE_URL}/rest/v1/runtime_config?on_conflict=key" \
+    -H "apikey: ${SUPABASE_SERVICE_ROLE_KEY}" \
+    -H "Authorization: Bearer ${SUPABASE_SERVICE_ROLE_KEY}" \
     -H "Content-Type: application/json" \
-    -d "$(printf '{"query": %s}' "$(printf '%s' "$GUC_SQL" | jq -Rs .)")")
-  if [[ "$http_code" != "200" && "$http_code" != "201" ]]; then
-    echo "Management API returned $http_code:" >&2
+    -H "Prefer: resolution=merge-duplicates" \
+    -d "$payload")
+  if [[ "$code" != "201" && "$code" != "200" ]]; then
+    echo "PostgREST upsert($key) returned $code:" >&2
     cat /tmp/db-deploy-resp.json >&2
     echo >&2
     exit 1
   fi
-  echo "GUCs set (functions_url + service_role_key)."
-fi
+}
+
+upsert_config "functions_url" "$FUNCTIONS_URL"
+upsert_config "service_role_key" "$SUPABASE_SERVICE_ROLE_KEY"
+echo "runtime_config populated."
 
 echo
 echo "==> Deploy complete for $ENV_NAME."
