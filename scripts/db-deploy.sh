@@ -5,43 +5,30 @@
 #
 # Use this only on environments that hold throwaway data. It DROPS the
 # public schema. The 2026-04-26 messaging refactor rewrote the initial
-# migration in place, so `supabase db push` cannot reconcile remote state
-# with local — a destructive reset is the only path forward.
+# migration in place, so `supabase db push` cannot reconcile remote
+# state — a destructive reset is the only path forward.
 #
 # Usage:
 #   scripts/db-deploy.sh demo
-#   scripts/db-deploy.sh prod
+#   scripts/db-deploy.sh production
 #
-# Reads its config from apps/web/.env.local (auto-sourced — same file
-# Next.js uses). See apps/web/.env.example for the full template.
-# Required keys:
-#   SUPABASE_DB_URL_DEMO            postgres://... (project settings → Database)
-#   SUPABASE_SERVICE_ROLE_KEY_DEMO
-#   SUPABASE_DB_URL_PROD
-#   SUPABASE_SERVICE_ROLE_KEY_PROD
-#   SUPABASE_ACCESS_TOKEN           for `supabase link` / `functions deploy`
+# Reads its env from apps/web/.env.<env> (the file you already use for
+# the Next.js app at runtime). Required keys per file:
+#   NEXT_PUBLIC_SUPABASE_URL     project ref is parsed out of this
+#   SUPABASE_SERVICE_ROLE_KEY    used for the trigger GUC
+#   SUPABASE_DB_URL              psql connection string (project settings → Database)
+# Plus once globally:
+#   SUPABASE_ACCESS_TOKEN        cached by `supabase login`, or export it
 #
 # Flags:
 #   --no-seed     skip seed.sql (default: seed only on demo)
-#   --skip-reset  skip schema drop+reapply (only redeploy function + GUCs)
+#   --skip-reset  only redeploy the function + GUCs (no schema drop)
 #   --yes         skip confirmation prompt (CI / scripted use)
 
 set -euo pipefail
 
 ENV_NAME="${1:-}"
 shift || true
-
-# Auto-source apps/web/.env.local — same file Next.js reads, so deploy
-# creds and app creds live in one place. (.env.local values overwrite
-# existing exports.)
-REPO_ROOT_FOR_ENV="$(cd "$(dirname "$0")/.." && pwd)"
-ENV_FILE="$REPO_ROOT_FOR_ENV/apps/web/.env.local"
-if [[ -f "$ENV_FILE" ]]; then
-  set -a
-  # shellcheck disable=SC1090
-  source "$ENV_FILE"
-  set +a
-fi
 
 NO_SEED=0
 SKIP_RESET=0
@@ -56,52 +43,46 @@ for arg in "$@"; do
 done
 
 case "$ENV_NAME" in
-  demo)
-    PROJECT_REF="vdfyugekbtanrlveihlm"
-    DB_URL="${SUPABASE_DB_URL_DEMO:-}"
-    SERVICE_ROLE_KEY="${SUPABASE_SERVICE_ROLE_KEY_DEMO:-}"
-    DEFAULT_SEED=1
-    ;;
-  prod)
-    PROJECT_REF="tsfmyrtmuravhzearntn"
-    DB_URL="${SUPABASE_DB_URL_PROD:-}"
-    SERVICE_ROLE_KEY="${SUPABASE_SERVICE_ROLE_KEY_PROD:-}"
-    DEFAULT_SEED=0
-    ;;
+  demo)        DEFAULT_SEED=1 ;;
+  production)  DEFAULT_SEED=0 ;;
   ""|-h|--help)
-    sed -n '2,27p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,26p' "$0" | sed 's/^# \{0,1\}//'
     exit 0
     ;;
   *)
-    echo "Unknown environment: $ENV_NAME (expected: demo | prod)" >&2
+    echo "Unknown environment: $ENV_NAME (expected: demo | production)" >&2
     exit 2
     ;;
 esac
 
-if [[ -z "$DB_URL" ]]; then
-  echo "Missing SUPABASE_DB_URL_${ENV_NAME^^}" >&2
-  exit 2
-fi
-if [[ -z "$SERVICE_ROLE_KEY" ]]; then
-  echo "Missing SUPABASE_SERVICE_ROLE_KEY_${ENV_NAME^^}" >&2
-  exit 2
-fi
-if [[ -z "${SUPABASE_ACCESS_TOKEN:-}" ]]; then
-  echo "Missing SUPABASE_ACCESS_TOKEN (needed for supabase link / functions deploy)" >&2
-  exit 2
-fi
-
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+ENV_FILE="$REPO_ROOT/apps/web/.env.$ENV_NAME"
 SCHEMA_FILE="$REPO_ROOT/supabase/migrations/001_initial_schema.sql"
 SEED_FILE="$REPO_ROOT/supabase/seed.sql"
-FUNCTIONS_URL="https://${PROJECT_REF}.functions.supabase.co"
-SEED=$NO_SEED
-if [[ $NO_SEED -eq 0 ]]; then SEED=$DEFAULT_SEED; else SEED=0; fi
 
+if [[ ! -f "$ENV_FILE" ]]; then
+  echo "$ENV_FILE not found" >&2
+  exit 2
+fi
 if [[ ! -f "$SCHEMA_FILE" ]]; then
-  echo "Schema file not found: $SCHEMA_FILE" >&2
+  echo "$SCHEMA_FILE not found" >&2
   exit 1
 fi
+
+set -a
+# shellcheck disable=SC1090
+source "$ENV_FILE"
+set +a
+
+: "${NEXT_PUBLIC_SUPABASE_URL:?missing in $ENV_FILE}"
+: "${SUPABASE_SERVICE_ROLE_KEY:?missing in $ENV_FILE}"
+: "${SUPABASE_DB_URL:?missing in $ENV_FILE — add the Connection string (URI) from the project Database settings}"
+
+# https://<ref>.supabase.co  →  <ref>
+PROJECT_REF="$(echo "$NEXT_PUBLIC_SUPABASE_URL" | sed -E 's#^https?://([^.]+)\..*#\1#')"
+FUNCTIONS_URL="https://${PROJECT_REF}.functions.supabase.co"
+
+if [[ $NO_SEED -eq 1 ]]; then SEED=0; else SEED=$DEFAULT_SEED; fi
 
 cat <<EOF
 About to deploy to: $ENV_NAME (project ref: $PROJECT_REF)
@@ -120,7 +101,7 @@ if [[ $ASSUME_YES -ne 1 ]]; then
 fi
 
 run_psql() {
-  PGPASSWORD="" psql "$DB_URL" -v ON_ERROR_STOP=1 "$@"
+  psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 "$@"
 }
 
 if [[ $SKIP_RESET -eq 0 ]]; then
@@ -143,7 +124,7 @@ echo "==> Deploying edge function: notify_new_message"
 echo "==> Setting trigger GUCs (functions_url, service_role_key)"
 run_psql <<SQL
 ALTER DATABASE postgres SET "app.settings.functions_url" = '${FUNCTIONS_URL}';
-ALTER DATABASE postgres SET "app.settings.service_role_key" = '${SERVICE_ROLE_KEY}';
+ALTER DATABASE postgres SET "app.settings.service_role_key" = '${SUPABASE_SERVICE_ROLE_KEY}';
 SQL
 
-echo "==> Done. New connections will see the GUCs; restart the project's Postgres if a worker holds a stale session."
+echo "==> Done. New connections see the GUCs; reconnect any open psql sessions to pick them up."
