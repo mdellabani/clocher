@@ -3,7 +3,6 @@ import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { queryKeys } from "@rural-community-platform/shared";
 import { useMyPosts } from "@/hooks/queries/use-my-posts";
-import { useMyComments } from "@/hooks/queries/use-my-comments";
 import { useMyRsvps } from "@/hooks/queries/use-my-rsvps";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -25,21 +24,6 @@ describe("useMyPosts", () => {
   it("is disabled on empty userId", () => {
     const qc = new QueryClient();
     const { result } = renderHook(() => useMyPosts(""), { wrapper: wrap(qc) });
-    expect(result.current.fetchStatus).toBe("idle");
-  });
-});
-
-describe("useMyComments", () => {
-  it("returns hydrated comments without fetching", async () => {
-    const qc = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity } } });
-    qc.setQueryData(queryKeys.me.comments("u-1"), [{ id: "c-1", body: "Hi" }]);
-    const { result } = renderHook(() => useMyComments("u-1"), { wrapper: wrap(qc) });
-    await waitFor(() => expect(result.current.data).toBeTruthy());
-    expect(result.current.data?.[0].id).toBe("c-1");
-  });
-  it("is disabled on empty userId", () => {
-    const qc = new QueryClient();
-    const { result } = renderHook(() => useMyComments(""), { wrapper: wrap(qc) });
     expect(result.current.fetchStatus).toBe("idle");
   });
 });

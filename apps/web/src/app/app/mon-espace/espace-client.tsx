@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useProfile } from "@/hooks/use-profile";
 import { useMyPosts } from "@/hooks/queries/use-my-posts";
-import { useMyComments } from "@/hooks/queries/use-my-comments";
 import { useMyRsvps } from "@/hooks/queries/use-my-rsvps";
 
 type MyPost = {
@@ -12,14 +11,6 @@ type MyPost = {
   type: string;
   created_at: string;
   is_pinned: boolean;
-  comments?: { count: number }[];
-};
-type MyCommentPost = { id: string; title: string; type: string };
-type MyComment = {
-  id: string;
-  body: string;
-  created_at: string;
-  posts: MyCommentPost | MyCommentPost[] | null;
 };
 type MyRsvpPost = {
   id: string;
@@ -42,13 +33,11 @@ export function EspaceClient() {
   const { profile } = useProfile();
   const userId = profile?.id ?? "";
   const myPostsQuery = useMyPosts(userId);
-  const myCommentsQuery = useMyComments(userId);
   const myRsvpsQuery = useMyRsvps(userId);
 
   if (!profile) return null;
 
   const posts = (myPostsQuery.data ?? []) as MyPost[];
-  const comments = (myCommentsQuery.data ?? []) as MyComment[];
   const rsvps = (myRsvpsQuery.data ?? []) as MyRsvp[];
 
   return (
@@ -63,51 +52,13 @@ export function EspaceClient() {
           </p>
         ) : (
           <ul className="space-y-2">
-            {posts.map((p) => {
-              const commentCount = p.comments?.[0]?.count ?? 0;
-              return (
-                <li key={p.id} className="rounded-xl border bg-white p-4">
-                  <Link href={`/app/posts/${p.id}`} className="font-medium hover:underline">
-                    {p.title}
-                  </Link>
-                  <p className="text-xs text-[var(--muted-foreground)]">
-                    {commentCount} commentaire{commentCount > 1 ? "s" : ""}
-                  </p>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
-
-      <section>
-        <h2 className="mb-3 text-lg font-semibold text-[var(--foreground)]">
-          Mes commentaires
-        </h2>
-        {comments.length === 0 ? (
-          <p className="text-sm text-[var(--muted-foreground)]">
-            Aucun commentaire pour le moment.
-          </p>
-        ) : (
-          <ul className="space-y-2">
-            {comments.map((c) => {
-              const post = firstOrSame(c.posts);
-              return (
-                <li key={c.id} className="rounded-xl border bg-white p-4">
-                  <p className="text-sm text-[var(--foreground)]">{c.body}</p>
-                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                    sur{" "}
-                    {post?.id ? (
-                      <Link href={`/app/posts/${post.id}`} className="underline">
-                        {post.title}
-                      </Link>
-                    ) : (
-                      <span>Publication supprimée</span>
-                    )}
-                  </p>
-                </li>
-              );
-            })}
+            {posts.map((p) => (
+              <li key={p.id} className="rounded-xl border bg-white p-4">
+                <Link href={`/app/posts/${p.id}`} className="font-medium hover:underline">
+                  {p.title}
+                </Link>
+              </li>
+            ))}
           </ul>
         )}
       </section>

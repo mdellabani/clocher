@@ -4,10 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { queryKeys } from "@rural-community-platform/shared";
 import { PostDetailClient } from "@/app/app/posts/[id]/post-detail-client";
 
-vi.mock("@/hooks/use-realtime-comments", () => ({ useRealtimeComments: () => undefined }));
 vi.mock("@/components/rsvp-buttons", () => ({ RsvpButtons: () => <div>RSVP</div> }));
 vi.mock("@/components/poll-display", () => ({ PollDisplay: () => <div>POLL</div> }));
-vi.mock("@/components/comment-section", () => ({ CommentSection: () => <div>COMMENTS</div> }));
 vi.mock("@/components/delete-post-button", () => ({ DeletePostButton: () => <div>DELETE</div> }));
 
 vi.mock("@/hooks/use-profile", () => ({
@@ -40,6 +38,5 @@ describe("PostDetailClient", () => {
     );
     expect(screen.getByText("Hello")).toBeInTheDocument();
     expect(screen.getByText("Body text")).toBeInTheDocument();
-    expect(screen.getByText("COMMENTS")).toBeInTheDocument();
   });
 });

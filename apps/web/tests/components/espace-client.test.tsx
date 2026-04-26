@@ -33,18 +33,6 @@ describe("EspaceClient", () => {
               type: "discussion",
               created_at: "2026-04-17T00:00:00Z",
               is_pinned: false,
-              comments: [{ count: 2 }],
-            },
-          ],
-        },
-        {
-          key: queryKeys.me.comments("u-1"),
-          data: [
-            {
-              id: "c-1",
-              body: "Mon commentaire",
-              created_at: "2026-04-17T00:00:00Z",
-              posts: { id: "p-2", title: "Autre post", type: "discussion" },
             },
           ],
         },
@@ -66,7 +54,6 @@ describe("EspaceClient", () => {
       ],
     });
     expect(screen.getByText("Ma publication")).toBeInTheDocument();
-    expect(screen.getByText(/Mon commentaire/i)).toBeInTheDocument();
     expect(screen.getByText(/Fête du village/i)).toBeInTheDocument();
   });
 
@@ -75,7 +62,6 @@ describe("EspaceClient", () => {
       cache: [
         { key: queryKeys.profile("u-1"), data: profileFixture },
         { key: queryKeys.me.posts("u-1"), data: [] },
-        { key: queryKeys.me.comments("u-1"), data: [] },
         { key: queryKeys.me.rsvps("u-1"), data: [] },
       ],
     });

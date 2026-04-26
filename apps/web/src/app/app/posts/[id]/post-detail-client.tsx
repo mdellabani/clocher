@@ -4,12 +4,10 @@ import { notFound } from "next/navigation";
 import type { PostType } from "@rural-community-platform/shared";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PostTypeBadge } from "@/components/post-type-badge";
-import { CommentSection } from "@/components/comment-section";
 import { RsvpButtons } from "@/components/rsvp-buttons";
 import { DeletePostButton } from "@/components/delete-post-button";
 import { PollDisplay } from "@/components/poll-display";
 import { usePostDetail } from "@/hooks/queries/use-post-detail";
-import { useRealtimeComments } from "@/hooks/use-realtime-comments";
 import { useProfile } from "@/hooks/use-profile";
 
 interface PostDetailClientProps {
@@ -19,7 +17,6 @@ interface PostDetailClientProps {
 export function PostDetailClient({ postId }: PostDetailClientProps) {
   const { profile } = useProfile();
   const { data: post, isLoading } = usePostDetail(postId);
-  useRealtimeComments(postId);
 
   if (isLoading && !post) return null;
   if (!post) {
@@ -110,12 +107,6 @@ export function PostDetailClient({ postId }: PostDetailClientProps) {
           <PollDisplay postId={postId} userId={userId} />
         </CardContent>
       </Card>
-
-      <CommentSection
-        postId={postId}
-        currentUserId={userId}
-        isAdmin={userRole === "admin"}
-      />
     </div>
   );
 }
