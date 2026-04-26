@@ -20,7 +20,7 @@ export async function getEpciPosts(client: Client, epciId: string, selectedCommu
 
   return client
     .from("posts")
-    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status), communes!commune_id(name)")
+    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), rsvps(status), communes!commune_id(name)")
     .in("commune_id", communeIds)
     .eq("epci_visible", true)
     .order("created_at", { ascending: false });

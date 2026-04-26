@@ -3,7 +3,7 @@ import Image from "next/image";
 import { PostTypeBadge } from "@/components/post-type-badge";
 import { ReportDialog } from "@/components/report-dialog";
 import type { Post, PostType } from "@rural-community-platform/shared";
-import { Pin, MessageCircle } from "lucide-react";
+import { Pin } from "lucide-react";
 
 function getImageUrl(storagePath: string): string {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
@@ -11,7 +11,6 @@ function getImageUrl(storagePath: string): string {
 }
 
 export function PostCard({ post }: { post: Post }) {
-  const commentCount = post.comments?.[0]?.count ?? 0;
   const rsvpCount =
     post.rsvps?.filter((r) => r.status === "going").length ?? 0;
 
@@ -91,15 +90,6 @@ export function PostCard({ post }: { post: Post }) {
                     month: "short",
                   })}
                 </span>
-                {commentCount > 0 && (
-                  <>
-                    <span>·</span>
-                    <span className="inline-flex items-center gap-1">
-                      <MessageCircle size={12} />
-                      {commentCount}
-                    </span>
-                  </>
-                )}
                 {post.type === "evenement" && rsvpCount > 0 && (
                   <>
                     <span>·</span>

@@ -11,9 +11,3 @@ export const createPostSchema = z.object({
 });
 
 export type CreatePostFormData = z.infer<typeof createPostSchema>;
-
-export const createCommentSchema = z.object({
-  body: z.string().min(1, "Le commentaire est requis").max(2000, "Le commentaire est trop long"),
-});
-
-export type CreateCommentFormData = z.infer<typeof createCommentSchema>;

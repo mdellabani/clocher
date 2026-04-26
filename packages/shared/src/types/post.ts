@@ -8,7 +8,6 @@ export type PostType = "annonce" | "evenement" | "entraide" | "discussion" | "se
 export type Post = PostRow & {
   profiles: { display_name: string; avatar_url: string | null };
   post_images: { id: string; storage_path: string }[];
-  comments: { count: number }[];
   rsvps: { status: string }[];
   communes?: { name: string };
 };

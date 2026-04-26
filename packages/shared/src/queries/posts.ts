@@ -6,7 +6,7 @@ type Client = SupabaseClient<Database>;
 export async function getPosts(client: Client, communeId: string) {
   return client
     .from("posts")
-    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status)")
+    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), rsvps(status)")
     .eq("commune_id", communeId)
     .eq("is_hidden", false)
     .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
@@ -41,7 +41,7 @@ export async function togglePinPost(client: Client, postId: string, isPinned: bo
 export async function getPostsByType(client: Client, communeId: string, type: string) {
   return client
     .from("posts")
-    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status)")
+    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), rsvps(status)")
     .eq("commune_id", communeId)
     .eq("type", type)
     .eq("is_hidden", false)
@@ -85,7 +85,7 @@ export async function getPostsPaginated(
 ) {
   let query = client
     .from("posts")
-    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status)")
+    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), rsvps(status)")
     .eq("commune_id", communeId)
     .eq("is_hidden", false)
     .eq("is_pinned", false)
@@ -105,7 +105,7 @@ export async function getPostsPaginated(
 export async function getPinnedPosts(client: Client, communeId: string) {
   return client
     .from("posts")
-    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status), communes!commune_id(name)")
+    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), rsvps(status), communes!commune_id(name)")
     .eq("commune_id", communeId)
     .eq("is_hidden", false)
     .eq("is_pinned", true)
