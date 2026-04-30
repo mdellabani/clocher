@@ -44,7 +44,7 @@ describe("MessageThread", () => {
       />,
     );
     const items = screen.getAllByRole("listitem");
-    expect(items[0].className).toContain("self-end");
-    expect(items[1].className).toContain("self-start");
+    expect(items[0].className).toContain("justify-end");
+    expect(items[1].className).toContain("justify-start");
   });
 });

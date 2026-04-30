@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  KeyboardAvoidingView,
-  Platform,
+  Keyboard,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/lib/supabase";
 import { sendMessage } from "@pretou/shared";
 
@@ -20,8 +20,26 @@ export function MessageComposer({
 }) {
   const [body, setBody] = useState("");
   const [pending, setPending] = useState(false);
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const insets = useSafeAreaInsets();
   const trimmed = body.trim();
   const disabled = !trimmed || pending;
+
+  // The bottom safe-area inset accounts for the gesture bar — but the gesture
+  // bar disappears when the keyboard opens, so adding it then leaves the
+  // composer hanging below the keyboard edge.
+  useEffect(() => {
+    const showSub = Keyboard.addListener("keyboardDidShow", () =>
+      setKeyboardOpen(true),
+    );
+    const hideSub = Keyboard.addListener("keyboardDidHide", () =>
+      setKeyboardOpen(false),
+    );
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   async function send() {
     if (disabled) return;
@@ -35,30 +53,27 @@ export function MessageComposer({
     }
   }
 
+  const paddingBottom = 12 + (keyboardOpen ? 0 : insets.bottom);
+
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-    >
-      <View style={s.bar}>
-        <TextInput
-          style={s.input}
-          value={body}
-          onChangeText={setBody}
-          placeholder="Votre message…"
-          placeholderTextColor="#a1a1aa"
-          maxLength={4000}
-          multiline
-        />
-        <Pressable
-          onPress={send}
-          disabled={disabled}
-          style={[s.btn, disabled && s.btnDisabled]}
-        >
-          <Text style={s.btnText}>Envoyer</Text>
-        </Pressable>
-      </View>
-    </KeyboardAvoidingView>
+    <View style={[s.bar, { paddingBottom }]}>
+      <TextInput
+        style={s.input}
+        value={body}
+        onChangeText={setBody}
+        placeholder="Votre message…"
+        placeholderTextColor="#a1a1aa"
+        maxLength={4000}
+        multiline
+      />
+      <Pressable
+        onPress={send}
+        disabled={disabled}
+        style={[s.btn, disabled && s.btnDisabled]}
+      >
+        <Text style={s.btnText}>Envoyer</Text>
+      </Pressable>
+    </View>
   );
 }
 
@@ -67,7 +82,8 @@ const s = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
     gap: 8,
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingTop: 12,
     borderTopWidth: 1,
     borderColor: "#f0e0d0",
     backgroundColor: "#ffffff",

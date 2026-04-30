@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import {
+  KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { MoreHorizontal } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
@@ -38,12 +40,43 @@ export default function ThreadScreen() {
   const [messages, setMessages] = useState<MessageRow[]>([]);
   const [meta, setMeta] = useState<Meta | null>(null);
   const [loading, setLoading] = useState(true);
+  const insets = useSafeAreaInsets();
+  // Stack header default ≈ 56dp on Android, 44dp on iOS, plus the status-bar
+  // inset on top.
+  const headerHeight = (Platform.OS === "ios" ? 44 : 56) + insets.top;
 
   const reload = useCallback(async () => {
     if (!convId) return;
     const { messages } = await getMessages(supabase, convId);
     setMessages(messages);
   }, [convId]);
+
+  // Live updates: when the other participant sends a message, refetch the
+  // thread. Unique channel name per conversation + mount avoids the realtime
+  // reuse race that bit the feed screen.
+  useEffect(() => {
+    if (!convId) return;
+    const channelName = `conversation:${convId}:${Date.now()}`;
+    const channel = supabase
+      .channel(channelName)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `conversation_id=eq.${convId}`,
+        },
+        () => {
+          void reload();
+          void markConversationRead(supabase, convId).catch(() => {});
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [convId, reload]);
 
   useEffect(() => {
     if (!convId) return;
@@ -139,7 +172,11 @@ export default function ThreadScreen() {
   if (!convId) return null;
 
   return (
-    <View style={[styles.root, { backgroundColor: theme.background }]}>
+    <KeyboardAvoidingView
+      style={[styles.root, { backgroundColor: theme.background }]}
+      behavior="padding"
+      keyboardVerticalOffset={headerHeight}
+    >
       <Stack.Screen
         options={{
           title: meta?.counterpartName ?? "Conversation",
@@ -170,7 +207,7 @@ export default function ThreadScreen() {
         )}
       </ScrollView>
       <MessageComposer conversationId={convId} onSent={reload} />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

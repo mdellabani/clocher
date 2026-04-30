@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -120,22 +120,35 @@ export default function FeedScreen() {
     loadPosts().then(() => setLoading(false));
   }, [loadPosts]);
 
+  // Keep the latest loadPosts in a ref so the realtime effect can call it
+  // without re-subscribing every time loadPosts' identity changes (filters,
+  // cursor, scope). Re-subscribing under fast-refresh / strict-mode races
+  // with cleanup and triggers Realtime's "callbacks after subscribe()" error.
+  const loadPostsRef = useRef(loadPosts);
+  useEffect(() => {
+    loadPostsRef.current = loadPosts;
+  }, [loadPosts]);
+
   // Realtime subscription
   useEffect(() => {
-    if (!profile?.commune_id) return;
+    const communeId = profile?.commune_id;
+    if (!communeId) return;
 
+    // Unique channel name per commune + mount, so a stale channel left over
+    // from a previous mount can never collide with this one.
+    const channelName = `posts-feed:${communeId}:${Date.now()}`;
     const channel = supabase
-      .channel("posts-feed")
+      .channel(channelName)
       .on(
         "postgres_changes",
         {
           event: "*",
           schema: "public",
           table: "posts",
-          filter: `commune_id=eq.${profile.commune_id}`,
+          filter: `commune_id=eq.${communeId}`,
         },
         () => {
-          loadPosts();
+          loadPostsRef.current();
         }
       )
       .subscribe();
@@ -143,7 +156,7 @@ export default function FeedScreen() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [profile?.commune_id, loadPosts]);
+  }, [profile?.commune_id]);
 
   async function onRefresh() {
     setRefreshing(true);
