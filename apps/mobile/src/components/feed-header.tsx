@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import {
   ShieldCheck,
   MessageCircle,
-  MessageCircleQuestion,
+  Lightbulb,
 } from "lucide-react-native";
 import { useTheme } from "@/lib/theme-context";
 import { useAuth } from "@/lib/auth-context";
@@ -66,7 +66,7 @@ export function FeedHeader() {
                 activeOpacity={0.8}
                 accessibilityLabel="Envoyer un retour"
               >
-                <MessageCircleQuestion size={17} color="#FFFFFF" />
+                <Lightbulb size={17} color="#FFFFFF" />
               </TouchableOpacity>
               {isAdmin && (
                 <TouchableOpacity

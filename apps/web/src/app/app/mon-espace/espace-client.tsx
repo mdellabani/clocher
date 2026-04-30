@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Pin } from "lucide-react";
 import {
@@ -10,6 +11,8 @@ import {
 import { useProfile } from "@/hooks/use-profile";
 import { useMyPosts } from "@/hooks/queries/use-my-posts";
 import { useMyRsvps } from "@/hooks/queries/use-my-rsvps";
+
+type Tab = "posts" | "rsvps";
 
 type MyPost = {
   id: string;
@@ -67,6 +70,7 @@ export function EspaceClient() {
   const userId = profile?.id ?? "";
   const myPostsQuery = useMyPosts(userId);
   const myRsvpsQuery = useMyRsvps(userId);
+  const [tab, setTab] = useState<Tab>("posts");
 
   if (!profile) return null;
 
@@ -74,12 +78,22 @@ export function EspaceClient() {
   const rsvps = (myRsvpsQuery.data ?? []) as MyRsvp[];
 
   return (
-    <div className="space-y-8">
-      <section>
-        <h2 className="mb-3 text-lg font-semibold text-[var(--foreground)]">
+    <div className="space-y-4">
+      <div
+        role="tablist"
+        aria-label="Mon espace"
+        className="inline-flex rounded-full border border-[#f0e0d0] bg-white p-1"
+      >
+        <TabButton active={tab === "posts"} onClick={() => setTab("posts")}>
           Mes publications
-        </h2>
-        {posts.length === 0 ? (
+        </TabButton>
+        <TabButton active={tab === "rsvps"} onClick={() => setTab("rsvps")}>
+          Mes participations
+        </TabButton>
+      </div>
+
+      {tab === "posts" ? (
+        posts.length === 0 ? (
           <EmptyState
             icon="📝"
             title="Aucune publication"
@@ -111,60 +125,79 @@ export function EspaceClient() {
               </li>
             ))}
           </ul>
-        )}
-      </section>
-
-      <section>
-        <h2 className="mb-3 text-lg font-semibold text-[var(--foreground)]">
-          Mes participations
-        </h2>
-        {rsvps.length === 0 ? (
-          <EmptyState
-            icon="📅"
-            title="Aucune participation"
-            subtitle="Vos RSVP apparaîtront ici."
-          />
-        ) : (
-          <ul className="divide-y divide-[#f0e0d0] overflow-hidden rounded-xl border border-[#f0e0d0] bg-white">
-            {rsvps.map((r, i) => {
-              const post = firstOrSame(r.posts);
-              if (!post) {
-                return (
-                  <li key={i} className="px-4 py-3 text-sm text-[#7a5e4d]">
-                    Événement supprimé
-                  </li>
-                );
-              }
+        )
+      ) : rsvps.length === 0 ? (
+        <EmptyState
+          icon="📅"
+          title="Aucune participation"
+          subtitle="Vos RSVP apparaîtront ici."
+        />
+      ) : (
+        <ul className="divide-y divide-[#f0e0d0] overflow-hidden rounded-xl border border-[#f0e0d0] bg-white">
+          {rsvps.map((r, i) => {
+            const post = firstOrSame(r.posts);
+            if (!post) {
               return (
-                <li key={i}>
-                  <Link
-                    href={`/app/posts/${post.id}`}
-                    className="flex items-start gap-3 px-4 py-3 transition hover:bg-[#f5dbc8]/40"
-                  >
-                    <TypeChip type={post.type} />
-                    <div className="min-w-0 flex-1">
-                      <span className="block truncate text-[14px] font-medium text-[#2a1a14]">
-                        {post.title}
-                      </span>
-                      {post.event_date && (
-                        <p className="mt-1 text-xs text-[#7a5e4d]">
-                          {new Date(post.event_date).toLocaleString("fr-FR")}
-                        </p>
-                      )}
-                      {post.event_location && (
-                        <p className="text-xs text-[#7a5e4d]">
-                          {post.event_location}
-                        </p>
-                      )}
-                    </div>
-                  </Link>
+                <li key={i} className="px-4 py-3 text-sm text-[#7a5e4d]">
+                  Événement supprimé
                 </li>
               );
-            })}
-          </ul>
-        )}
-      </section>
+            }
+            return (
+              <li key={i}>
+                <Link
+                  href={`/app/posts/${post.id}`}
+                  className="flex items-start gap-3 px-4 py-3 transition hover:bg-[#f5dbc8]/40"
+                >
+                  <TypeChip type={post.type} />
+                  <div className="min-w-0 flex-1">
+                    <span className="block truncate text-[14px] font-medium text-[#2a1a14]">
+                      {post.title}
+                    </span>
+                    {post.event_date && (
+                      <p className="mt-1 text-xs text-[#7a5e4d]">
+                        {new Date(post.event_date).toLocaleString("fr-FR")}
+                      </p>
+                    )}
+                    {post.event_location && (
+                      <p className="text-xs text-[#7a5e4d]">
+                        {post.event_location}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
+  );
+}
+
+function TabButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={active}
+      onClick={onClick}
+      className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+        active
+          ? "bg-[var(--theme-primary)] text-white"
+          : "text-[#7a5e4d] hover:text-[#2a1a14]"
+      }`}
+    >
+      {children}
+    </button>
   );
 }
 

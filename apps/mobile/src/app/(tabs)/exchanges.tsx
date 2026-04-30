@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import {
+  Pressable,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -13,6 +14,8 @@ import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
 import { MyPostsPanel } from "@/components/my-posts-panel";
 import { MyRsvpsPanel } from "@/components/my-rsvps-panel";
+
+type Tab = "posts" | "rsvps";
 
 type PostRow = {
   id: string;
@@ -41,6 +44,7 @@ export default function MonEspaceScreen() {
   const [rsvps, setRsvps] = useState<RsvpRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [tab, setTab] = useState<Tab>("posts");
 
   const userId = profile?.id;
 
@@ -86,14 +90,57 @@ export default function MonEspaceScreen() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <Text style={styles.sectionTitle}>Mes publications</Text>
-      <MyPostsPanel rows={posts} />
+      <View style={styles.tabsWrap}>
+        <View style={styles.tabs}>
+          <TabButton
+            active={tab === "posts"}
+            onPress={() => setTab("posts")}
+            label="Mes publications"
+            primary={theme.primary}
+          />
+          <TabButton
+            active={tab === "rsvps"}
+            onPress={() => setTab("rsvps")}
+            label="Mes participations"
+            primary={theme.primary}
+          />
+        </View>
+      </View>
 
-      <Text style={[styles.sectionTitle, styles.sectionTitleSpaced]}>
-        Mes participations
-      </Text>
-      <MyRsvpsPanel rows={rsvps} />
+      {tab === "posts" ? (
+        <MyPostsPanel rows={posts} />
+      ) : (
+        <MyRsvpsPanel rows={rsvps} />
+      )}
     </ScrollView>
+  );
+}
+
+function TabButton({
+  active,
+  onPress,
+  label,
+  primary,
+}: {
+  active: boolean;
+  onPress: () => void;
+  label: string;
+  primary: string;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="tab"
+      accessibilityState={{ selected: active }}
+      style={[
+        styles.tab,
+        active && { backgroundColor: primary },
+      ]}
+    >
+      <Text style={[styles.tabLabel, active && styles.tabLabelActive]}>
+        {label}
+      </Text>
+    </Pressable>
   );
 }
 
@@ -106,13 +153,32 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   muted: { fontFamily: "DMSans_400Regular", fontSize: 14 },
-  sectionTitle: {
-    fontFamily: "DMSans_600SemiBold",
-    fontSize: 16,
-    color: "#2a1a14",
+  tabsWrap: {
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 8,
   },
-  sectionTitleSpaced: { paddingTop: 24 },
+  tabs: {
+    flexDirection: "row",
+    alignSelf: "flex-start",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 999,
+    padding: 4,
+    borderWidth: 1,
+    borderColor: "#f0e0d0",
+  },
+  tab: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+  tabLabel: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 13,
+    color: "#7a5e4d",
+  },
+  tabLabelActive: {
+    color: "#FFFFFF",
+    fontFamily: "DMSans_600SemiBold",
+  },
 });

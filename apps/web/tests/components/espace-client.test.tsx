@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { renderWithQuery } from "../helpers/render-with-query";
 import { queryKeys } from "@pretou/shared";
 import { EspaceClient } from "@/app/app/mon-espace/espace-client";
@@ -20,7 +20,7 @@ vi.mock("@/hooks/use-profile", () => ({
 }));
 
 describe("EspaceClient", () => {
-  it("renders content from hydrated cache for each section", () => {
+  it("renders content from hydrated cache for each tab", () => {
     renderWithQuery(<EspaceClient />, {
       cache: [
         { key: queryKeys.profile("u-1"), data: profileFixture },
@@ -54,10 +54,14 @@ describe("EspaceClient", () => {
       ],
     });
     expect(screen.getByText("Ma publication")).toBeInTheDocument();
+    expect(screen.queryByText(/Fête du village/i)).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("tab", { name: /mes participations/i }));
     expect(screen.getByText(/Fête du village/i)).toBeInTheDocument();
+    expect(screen.queryByText("Ma publication")).not.toBeInTheDocument();
   });
 
-  it("shows empty states in each section when cache is empty", () => {
+  it("shows empty state for each tab when cache is empty", () => {
     renderWithQuery(<EspaceClient />, {
       cache: [
         { key: queryKeys.profile("u-1"), data: profileFixture },
@@ -65,6 +69,9 @@ describe("EspaceClient", () => {
         { key: queryKeys.me.rsvps("u-1"), data: [] },
       ],
     });
-    expect(screen.getAllByText(/Aucun/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Aucune publication/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("tab", { name: /mes participations/i }));
+    expect(screen.getByText(/Aucune participation/i)).toBeInTheDocument();
   });
 });

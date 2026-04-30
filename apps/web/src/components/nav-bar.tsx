@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { LogOut, MessageCircleQuestion, X } from "lucide-react";
+import { LogOut, Lightbulb, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
 import { InboxNavLink } from "@/components/inbox-nav-link";
@@ -99,7 +99,7 @@ export function NavBar() {
               className="text-white/60 transition-colors hover:text-white"
               aria-label="Envoyer un retour"
             >
-              <MessageCircleQuestion className="h-4 w-4" />
+              <Lightbulb className="h-4 w-4" />
             </button>
             <button
               onClick={handleLogout}
