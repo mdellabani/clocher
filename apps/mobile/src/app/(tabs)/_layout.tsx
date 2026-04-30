@@ -1,9 +1,16 @@
 import { Tabs } from "expo-router";
 import { House, CalendarDots, SquaresFour, BellRinging, Info } from "phosphor-react-native";
 import { useTheme } from "@/lib/theme-context";
+import { useAuth } from "@/lib/auth-context";
+import { useUnreadCount } from "@/hooks/use-unread-count";
+import { useRealtimeConversations } from "@/hooks/use-realtime-conversations";
 
 export default function TabLayout() {
   const theme = useTheme();
+  const { session } = useAuth();
+  const userId = session?.user?.id;
+  useRealtimeConversations(userId);
+  useUnreadCount(!!userId);
 
   return (
     <Tabs
