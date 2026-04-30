@@ -12,14 +12,22 @@
     "demo": {
       "distribution": "internal",
       "env": {
-        "APP_VARIANT": "demo"
+        "APP_VARIANT": "demo",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://vdfyugekbtanrlveihlm.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_rGudN7dTuw2wKvyMUTOO5w_kczXrG-6",
+        "EXPO_PUBLIC_WEB_URL": "https://rural-community-platform-81nmcml5g.vercel.app/"
       },
       "channel": "demo"
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "APP_VARIANT": "production"
+        "APP_VARIANT": "production",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://tsfmyrtmuravhzearntn.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_5HlrhjQJH_QngmM6mXwuJQ_Mq4MQVt_",
+        "EXPO_PUBLIC_WEB_URL": "https://rural-community-platform.vercel.app/",
+        "EXPO_PUBLIC_POSTHOG_KEY": "phc_BEQXHZviW8KycDpRHCKttKFbW6QPDwdu8yhPyveGRN88",
+        "EXPO_PUBLIC_POSTHOG_HOST": "https://eu.i.posthog.com"
       },
       "channel": "production"
     }
