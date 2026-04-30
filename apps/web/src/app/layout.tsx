@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { PostHogMonitoringProvider } from "@/components/posthog-provider";
 import { ProfileProviderWrapper } from "@/components/profile-provider";
-import { FeedbackFloat } from "@/components/feedback-float";
 import "./globals.css";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
@@ -23,7 +22,6 @@ export default function RootLayout({
         <PostHogMonitoringProvider>
           <ProfileProviderWrapper>
             {children}
-            <FeedbackFloat />
           </ProfileProviderWrapper>
         </PostHogMonitoringProvider>
       </body>
