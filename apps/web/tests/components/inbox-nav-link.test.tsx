@@ -6,6 +6,12 @@ let unread = 0;
 vi.mock("@/hooks/queries/use-unread-count", () => ({
   useUnreadCount: () => ({ data: unread }),
 }));
+vi.mock("@/hooks/use-realtime-conversations", () => ({
+  useRealtimeConversations: () => {},
+}));
+vi.mock("@/hooks/use-profile", () => ({
+  useProfile: () => ({ profile: { id: "u-1" }, loading: false, isAdmin: false, isModerator: false }),
+}));
 
 describe("InboxNavLink", () => {
   it("renders without badge when no unread", () => {

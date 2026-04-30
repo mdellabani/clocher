@@ -25,7 +25,9 @@ vi.mock("@/hooks/use-profile", () => ({
 describe("EventsClient", () => {
   it("renders an event from hydrated cache in current month", () => {
     const today = new Date();
-    const future = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2, 18, 0).toISOString();
+    // Pin the event to mid-month so it always lands in the current month,
+    // regardless of when the test runs (today + 2 can cross a month boundary).
+    const future = new Date(today.getFullYear(), today.getMonth(), 15, 18, 0).toISOString();
     renderWithQuery(<EventsClient />, {
       cache: [
         {
