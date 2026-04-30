@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import type { CreateProducerInput } from "@rural-community-platform/shared";
+import type { CreateProducerInput } from "@pretou/shared";
 
 export async function createProducerAction(formData: FormData) {
   const supabase = await createClient();

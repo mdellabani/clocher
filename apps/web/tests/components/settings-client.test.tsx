@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import { renderWithQuery } from "../helpers/render-with-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { SettingsClient } from "@/app/app/settings/settings-client";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));

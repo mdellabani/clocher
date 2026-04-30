@@ -9,7 +9,7 @@ import {
   deletePost,
   promoteToModerator,
   demoteToResident,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 
 export async function approveUserAction(
   userId: string,

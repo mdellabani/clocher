@@ -12,8 +12,8 @@ import { CalendarDays, MapPin } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
-import { getPostsByType } from "@rural-community-platform/shared";
-import type { Post } from "@rural-community-platform/shared";
+import { getPostsByType } from "@pretou/shared";
+import type { Post } from "@pretou/shared";
 import { EventCalendar } from "@/components/event-calendar";
 
 export default function EventsScreen() {

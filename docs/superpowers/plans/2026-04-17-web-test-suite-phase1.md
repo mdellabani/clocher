@@ -382,7 +382,7 @@ describe("NavBar", () => {
 - [ ] **Step 2: Run the test**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web test:components
 ```
 
 Expected: 6 tests pass.
@@ -415,7 +415,7 @@ Create `apps/web/tests/components/post-card.test.tsx`:
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { PostCard } from "@/components/post-card";
-import type { Post } from "@rural-community-platform/shared";
+import type { Post } from "@pretou/shared";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
@@ -488,7 +488,7 @@ describe("PostCard", () => {
 - [ ] **Step 2: Run the test**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web test:components
 ```
 
 Expected: 4 PostCard tests pass (plus the 6 NavBar tests from Task 2 = 10 total).
@@ -585,7 +585,7 @@ describe("ThemeCustomizer", () => {
 - [ ] **Step 2: Run the test**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web test:components
 ```
 
 Expected: 5 ThemeCustomizer tests pass (15 total component tests).
@@ -666,7 +666,7 @@ If the actual `POST_TYPE_LABELS` import doesn't include "Annonce" with that exac
 - [ ] **Step 2: Run the test**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web test:components
 ```
 
 Expected: 5 FeedFilters tests pass.
@@ -1578,7 +1578,7 @@ In `apps/web/package.json`, replace the existing `"test"`, `"test:watch"` entrie
 - [ ] **Step 2: Run the full suite**
 
 ```bash
-pnpm --filter @rural-community-platform/web test
+pnpm --filter @pretou/web test
 ```
 
 Expected: every component test passes, every integration test passes. Total runtime ~30-60s on a warm machine.
@@ -1622,7 +1622,7 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @rural-community-platform/web test:components
+      - run: pnpm --filter @pretou/web test:components
 
   integration:
     runs-on: ubuntu-latest
@@ -1649,7 +1649,7 @@ jobs:
             echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY"
             echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
           } >> "$GITHUB_ENV"
-      - run: pnpm --filter @rural-community-platform/web test:integration
+      - run: pnpm --filter @pretou/web test:integration
       - name: Stop Supabase
         if: always()
         run: supabase stop
@@ -1683,8 +1683,8 @@ git commit -m "ci: add components + integration test workflow"
 In `CLAUDE.md` under `## Key Conventions`, append three bullets:
 
 ```markdown
-- **Run `pnpm --filter @rural-community-platform/web test:components` before committing UI changes.** Catches NavBar/PostCard/ThemeCustomizer regressions in <5s.
-- **Run `pnpm --filter @rural-community-platform/web test:integration` before merging anything that touches DB schema, RLS, or server actions.** Requires `npx supabase start` running locally.
+- **Run `pnpm --filter @pretou/web test:components` before committing UI changes.** Catches NavBar/PostCard/ThemeCustomizer regressions in <5s.
+- **Run `pnpm --filter @pretou/web test:integration` before merging anything that touches DB schema, RLS, or server actions.** Requires `npx supabase start` running locally.
 - **Every new server-action write path needs an integration test** asserting (a) it persists for the intended role and (b) it's silently blocked for an unauthorized role. RLS denies by default and PostgREST swallows the failure — the test is the only thing that catches it.
 ```
 
@@ -1719,7 +1719,7 @@ git commit -m "docs: codify the 'every write path needs a test' convention"
 
 ```bash
 npx supabase start
-pnpm --filter @rural-community-platform/web test
+pnpm --filter @pretou/web test
 ```
 
 Expected: all component + integration tests pass. Note total runtime.

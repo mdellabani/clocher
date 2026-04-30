@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import type { ReportCategory } from "@rural-community-platform/shared";
+import type { ReportCategory } from "@pretou/shared";
 
 export async function reportPostAction(
   postId: string,

@@ -6,8 +6,8 @@ import { Megaphone, Calendar, HeartHandshake, MessageSquare, Pin, CalendarDays, 
 import { useTheme } from "@/lib/theme-context";
 import { POST_TYPE_COLORS, CARD } from "@/constants/colors";
 import { ReportDialog } from "@/components/report-dialog";
-import type { Post, PostType } from "@rural-community-platform/shared";
-import { POST_TYPE_LABELS } from "@rural-community-platform/shared";
+import type { Post, PostType } from "@pretou/shared";
+import { POST_TYPE_LABELS } from "@pretou/shared";
 
 function getImageUrl(storagePath: string): string {
   const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || "";

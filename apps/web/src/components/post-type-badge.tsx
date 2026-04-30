@@ -1,8 +1,8 @@
 import {
   POST_TYPE_LABELS,
   POST_TYPE_COLORS,
-} from "@rural-community-platform/shared";
-import type { PostType } from "@rural-community-platform/shared";
+} from "@pretou/shared";
+import type { PostType } from "@pretou/shared";
 import { Megaphone, Calendar, HeartHandshake, MessageCircle, Wrench } from "lucide-react";
 
 const POST_TYPE_ICON: Record<PostType, React.ComponentType<{ className?: string; size?: number }>> = {

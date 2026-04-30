@@ -1,7 +1,7 @@
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "@/lib/theme-context";
-import { POST_TYPE_LABELS } from "@rural-community-platform/shared";
-import type { PostType } from "@rural-community-platform/shared";
+import { POST_TYPE_LABELS } from "@pretou/shared";
+import type { PostType } from "@pretou/shared";
 
 const TYPE_OPTIONS: { value: PostType; label: string }[] = [
   { value: "annonce", label: POST_TYPE_LABELS.annonce },

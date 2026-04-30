@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const supabaseUrl = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "http://localhost:54321");
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@rural-community-platform/shared"],
+  transpilePackages: ["@pretou/shared"],
   images: {
     remotePatterns: [
       // Whatever NEXT_PUBLIC_SUPABASE_URL points at — handles both prod

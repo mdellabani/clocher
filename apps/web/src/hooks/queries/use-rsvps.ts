@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getRsvps, queryKeys } from "@rural-community-platform/shared";
-import type { RsvpStatus } from "@rural-community-platform/shared";
+import { getRsvps, queryKeys } from "@pretou/shared";
+import type { RsvpStatus } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 type RsvpRow = { user_id: string; status: RsvpStatus };

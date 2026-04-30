@@ -693,7 +693,7 @@ Replace `apps/web/src/app/[commune-slug]/page.tsx` with:
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getCommuneBySlug } from "@rural-community-platform/shared";
+import { getCommuneBySlug } from "@pretou/shared";
 import { SectionRenderer } from "@/components/sections/section-renderer";
 
 type Props = {
@@ -1493,7 +1493,7 @@ Create `apps/web/src/app/admin/homepage/page.tsx`:
 ```tsx
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getProfile } from "@rural-community-platform/shared";
+import { getProfile } from "@pretou/shared";
 import { ThemeInjector } from "@/components/theme-injector";
 import { HomepageEditor } from "./homepage-editor";
 

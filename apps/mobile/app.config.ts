@@ -5,12 +5,12 @@ const IS_DEMO = process.env.APP_VARIANT === "demo";
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: IS_DEMO ? "Pretou (Demo)" : "Pretou",
-  slug: "rural-community-platform",
+  slug: "pretou",
   version: "1.0.0",
   owner: "mdellabani",
   orientation: "portrait",
   icon: "./assets/icon.png",
-  scheme: IS_DEMO ? "rural-community-platform-demo" : "rural-community-platform",
+  scheme: IS_DEMO ? "pretou-demo" : "pretou",
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
   splash: {
@@ -21,8 +21,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: IS_DEMO
-      ? "com.macommune.app.demo"
-      : "com.macommune.app",
+      ? "com.pretou.app.demo"
+      : "com.pretou.app",
   },
   android: {
     adaptiveIcon: {
@@ -30,8 +30,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundColor: "#ffffff",
     },
     package: IS_DEMO
-      ? "com.macommune.app.demo"
-      : "com.macommune.app",
+      ? "com.pretou.app.demo"
+      : "com.pretou.app",
   },
   web: {
     bundler: "metro",
@@ -46,14 +46,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     "expo-location",
   ],
   updates: {
-    url: "https://u.expo.dev/7618b9c8-3d4d-4bc8-b7df-e2e18cf25b70",
+    url: "https://u.expo.dev/57f2c1e9-4b1a-4088-b894-1b27d249d6d2",
   },
   runtimeVersion: {
     policy: "appVersion",
   },
   extra: {
     eas: {
-      projectId: "7618b9c8-3d4d-4bc8-b7df-e2e18cf25b70",
+      projectId: "57f2c1e9-4b1a-4088-b894-1b27d249d6d2",
     },
     posthogKey: process.env.EXPO_PUBLIC_POSTHOG_KEY,
     posthogHost: process.env.EXPO_PUBLIC_POSTHOG_HOST,

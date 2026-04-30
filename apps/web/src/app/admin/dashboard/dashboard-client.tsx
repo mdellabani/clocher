@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import type { PostType } from "@rural-community-platform/shared";
+import type { PostType } from "@pretou/shared";
 import { PendingUsers } from "@/components/admin/pending-users";
 import { PendingProducers } from "@/components/admin/pending-producers";
 import { PostManagement } from "@/components/admin/post-management";
@@ -26,7 +26,7 @@ import { useCouncilDocs } from "@/hooks/queries/use-council-docs";
 import { usePostsThisWeek } from "@/hooks/queries/use-posts-this-week";
 import { useAdminPosts } from "@/hooks/queries/use-admin-posts";
 import { useProfile } from "@/hooks/use-profile";
-import type { AdminPostFilters } from "@rural-community-platform/shared";
+import type { AdminPostFilters } from "@pretou/shared";
 
 function parseCsv(value: string | null): string[] {
   if (!value) return [];

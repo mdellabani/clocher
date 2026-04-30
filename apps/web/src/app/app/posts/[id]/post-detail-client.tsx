@@ -1,7 +1,7 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import type { PostType } from "@rural-community-platform/shared";
+import type { PostType } from "@pretou/shared";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PostTypeBadge } from "@/components/post-type-badge";
 import { RsvpButtons } from "@/components/rsvp-buttons";

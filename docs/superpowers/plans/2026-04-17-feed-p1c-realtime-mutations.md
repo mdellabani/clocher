@@ -56,7 +56,7 @@ Create `apps/web/tests/hooks/use-realtime-posts.test.tsx`:
 import { describe, expect, it, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useRealtimePosts } from "@/hooks/use-realtime-posts";
 
 type Listener = (payload: { eventType: string; new?: unknown; old?: unknown }) => void;
@@ -163,7 +163,7 @@ describe("useRealtimePosts", () => {
 - [ ] **Step 2: Run — expect FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-realtime-posts.test
+pnpm --filter @pretou/web test:components -- use-realtime-posts.test
 ```
 
 - [ ] **Step 3: Implement the hook**
@@ -175,8 +175,8 @@ Create `apps/web/src/hooks/use-realtime-posts.ts`:
 
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import type { Post, PostListFilters } from "@rural-community-platform/shared";
-import { queryKeys } from "@rural-community-platform/shared";
+import type { Post, PostListFilters } from "@pretou/shared";
+import { queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 type InfinitePostsData = { pages: Post[][]; pageParams: (string | null)[] };
@@ -274,7 +274,7 @@ export function useRealtimePosts(communeId: string, filters: PostListFilters) {
 - [ ] **Step 4: Run — expect PASS (5 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-realtime-posts.test
+pnpm --filter @pretou/web test:components -- use-realtime-posts.test
 ```
 
 - [ ] **Step 5: Commit**
@@ -343,7 +343,7 @@ it("calls useRealtimePosts with the profile's commune id in commune scope", () =
 - [ ] **Step 3: Run feed-client tests**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- feed-client.test
+pnpm --filter @pretou/web test:components -- feed-client.test
 ```
 
 Expected: all green (previous tests + 1 new).
@@ -405,7 +405,7 @@ And annotate `createPostAction` return type accordingly.
 - [ ] **Step 4: Run integration tests to confirm the action still works end-to-end**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:integration
+pnpm --filter @pretou/web test:integration
 ```
 
 Expected: all green. If any test asserts the shape of the returned object, update it to the new shape.
@@ -432,7 +432,7 @@ At the top of `create-post-dialog.tsx`, add:
 
 ```tsx
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 ```
 
 - [ ] **Step 2: Get the query client + the user's commune**
@@ -487,7 +487,7 @@ Update each to include `communeId="c-1"` (or similar).
 - [ ] **Step 5: Run component tests**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web test:components
 ```
 
 Expected: all green.
@@ -510,7 +510,7 @@ git commit -m "feat(web): CreatePostDialog invalidates feed keys after action"
 - [ ] **Step 1: Component suite**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web test:components
 ```
 
 Expected: prior ~56 + 5 new realtime tests + 1 new feed-client test = ~62 tests, all green.
@@ -518,7 +518,7 @@ Expected: prior ~56 + 5 new realtime tests + 1 new feed-client test = ~62 tests,
 - [ ] **Step 2: Integration suite**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:integration
+pnpm --filter @pretou/web test:integration
 ```
 
 Expected: all green (schema untouched; only app-layer changes).
@@ -526,14 +526,14 @@ Expected: all green (schema untouched; only app-layer changes).
 - [ ] **Step 3: Typecheck + build**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck && \
-pnpm --filter @rural-community-platform/web build
+pnpm --filter @pretou/web typecheck && \
+pnpm --filter @pretou/web build
 ```
 
 - [ ] **Step 4: Manual smoke — two-browser test**
 
 ```bash
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 In two browser windows (or two profiles), log in as two users in the same commune. Window A is viewing `/app/feed`.

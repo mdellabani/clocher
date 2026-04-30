@@ -14,7 +14,7 @@ import { useTheme } from "@/lib/theme-context";
 import {
   getConversations,
   type InboxConversation,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 
 export default function ExchangesScreen() {
   const { session } = useAuth();

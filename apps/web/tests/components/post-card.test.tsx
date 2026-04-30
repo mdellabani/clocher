@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { PostCard } from "@/components/post-card";
-import type { Post } from "@rural-community-platform/shared";
+import type { Post } from "@pretou/shared";
 
 vi.mock("next/link", () => ({
   default: ({ children, href }: { children: React.ReactNode; href: string }) => (

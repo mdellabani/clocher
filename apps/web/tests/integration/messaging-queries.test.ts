@@ -9,7 +9,7 @@ import {
   unblockUser,
   getMyBlocks,
   reportConversation,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 import { resetData, serviceClient, signInAs, SEED_IDS } from "./_fixtures";
 
 const JEANNE_ID = "00000000-0000-0000-0000-000000000102";

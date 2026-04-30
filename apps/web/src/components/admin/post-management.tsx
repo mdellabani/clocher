@@ -4,8 +4,8 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { PostTypeBadge } from "@/components/post-type-badge";
 import { togglePinAction, deletePostAction } from "@/app/admin/dashboard/actions";
-import type { PostType } from "@rural-community-platform/shared";
-import { queryKeys } from "@rural-community-platform/shared";
+import type { PostType } from "@pretou/shared";
+import { queryKeys } from "@pretou/shared";
 import { Pin, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PostItem {

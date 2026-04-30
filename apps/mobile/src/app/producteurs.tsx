@@ -14,9 +14,9 @@ import { Search, X } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
-import { PRODUCER_CATEGORIES, getProducers } from "@rural-community-platform/shared";
+import { PRODUCER_CATEGORIES, getProducers } from "@pretou/shared";
 import { ProducerCard } from "@/components/producer-card";
-import type { Producer } from "@rural-community-platform/shared";
+import type { Producer } from "@pretou/shared";
 
 export default function ProducersScreen() {
   const { profile } = useAuth();

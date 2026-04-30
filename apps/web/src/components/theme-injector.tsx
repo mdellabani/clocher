@@ -1,4 +1,4 @@
-import { resolveTheme } from "@rural-community-platform/shared";
+import { resolveTheme } from "@pretou/shared";
 
 export function ThemeInjector({
   theme,

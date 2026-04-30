@@ -66,7 +66,7 @@ import { resetData, serviceClient, SEED_IDS, SEED_EMAILS, signInAs } from "./_fi
 import {
   getEventsByCommune,
   getActiveProducersByCommune,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 
 describe("getEventsByCommune", () => {
   beforeEach(async () => {
@@ -114,7 +114,7 @@ describe("getActiveProducersByCommune", () => {
 - [ ] **Step 2: Run — expect FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:integration -- shared-events-producers
+pnpm --filter @pretou/web test:integration -- shared-events-producers
 ```
 
 - [ ] **Step 3: Add helpers**
@@ -160,13 +160,13 @@ export { getProducers, getPendingProducers, createProducer, approveProducer, rej
 - [ ] **Step 4: Run — expect PASS (2 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:integration -- shared-events-producers
+pnpm --filter @pretou/web test:integration -- shared-events-producers
 ```
 
 - [ ] **Step 5: Full integration suite stays green**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:integration
+pnpm --filter @pretou/web test:integration
 ```
 
 - [ ] **Step 6: Commit**
@@ -195,7 +195,7 @@ Create `apps/web/tests/hooks/use-events.test.tsx`:
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useEvents } from "@/hooks/queries/use-events";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -233,7 +233,7 @@ Create `apps/web/src/hooks/queries/use-events.ts`:
 
 ```ts
 import { useQuery } from "@tanstack/react-query";
-import { getEventsByCommune, queryKeys } from "@rural-community-platform/shared";
+import { getEventsByCommune, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useEvents(communeId: string) {
@@ -276,7 +276,7 @@ Create `apps/web/tests/hooks/use-producers.test.tsx`:
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useProducers } from "@/hooks/queries/use-producers";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -314,8 +314,8 @@ Create `apps/web/src/hooks/queries/use-producers.ts`:
 
 ```ts
 import { useQuery } from "@tanstack/react-query";
-import { getActiveProducersByCommune, queryKeys } from "@rural-community-platform/shared";
-import type { Producer } from "@rural-community-platform/shared";
+import { getActiveProducersByCommune, queryKeys } from "@pretou/shared";
+import type { Producer } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useProducers(communeId: string) {
@@ -391,7 +391,7 @@ Create `apps/web/tests/components/events-client.test.tsx`:
 import { describe, expect, it, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import { renderWithQuery } from "../helpers/render-with-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { EventsClient } from "@/app/app/evenements/events-client";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -597,7 +597,7 @@ export function EventsClient({ userId }: { userId: string }) {
 - [ ] **Step 5: Run — expect PASS (2 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- events-client
+pnpm --filter @pretou/web test:components -- events-client
 ```
 
 ### 4.3 — Thin-shell page.tsx
@@ -612,7 +612,7 @@ import {
   getProfile,
   getEventsByCommune,
   queryKeys,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 import { prefetchAndDehydrate } from "@/lib/query/prefetch";
 import { ThemeInjector } from "@/components/theme-injector";
 import { EventsClient } from "./events-client";
@@ -669,8 +669,8 @@ git rm apps/web/src/app/app/evenements/events-content.tsx
 - [ ] **Step 8: Typecheck + tests**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web typecheck
+pnpm --filter @pretou/web test:components
 ```
 
 - [ ] **Step 9: Commit**
@@ -731,7 +731,7 @@ Create `apps/web/tests/components/producers-client.test.tsx`:
 import { describe, expect, it, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import { renderWithQuery } from "../helpers/render-with-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { ProducersClient } from "@/app/app/producteurs/producers-client";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -780,7 +780,7 @@ Create `apps/web/src/app/app/producteurs/producers-client.tsx`:
 ```tsx
 "use client";
 
-import type { Producer } from "@rural-community-platform/shared";
+import type { Producer } from "@pretou/shared";
 import { useProfile } from "@/hooks/queries/use-profile";
 import { useProducers } from "@/hooks/queries/use-producers";
 import { ProducersContent } from "./producers-content";
@@ -800,7 +800,7 @@ Note: this assumes `ProducersContent` already owns the "Create producer" dialog 
 - [ ] **Step 5: Run — expect PASS**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- producers-client
+pnpm --filter @pretou/web test:components -- producers-client
 ```
 
 ### 5.3 — Drop revalidatePath + wire invalidation
@@ -818,7 +818,7 @@ Open `apps/web/src/app/app/producteurs/create-producer-dialog.tsx`. Needed chang
 1. Imports (add):
    ```tsx
    import { useQueryClient } from "@tanstack/react-query";
-   import { queryKeys } from "@rural-community-platform/shared";
+   import { queryKeys } from "@pretou/shared";
    ```
    Remove `useRouter` import if present and unused after the change.
 
@@ -852,8 +852,8 @@ import {
   getProfile,
   getActiveProducersByCommune,
   queryKeys,
-} from "@rural-community-platform/shared";
-import type { Producer } from "@rural-community-platform/shared";
+} from "@pretou/shared";
+import type { Producer } from "@pretou/shared";
 import { prefetchAndDehydrate } from "@/lib/query/prefetch";
 import { ThemeInjector } from "@/components/theme-injector";
 import { ProducersClient } from "./producers-client";
@@ -896,9 +896,9 @@ export default async function ProducteursPage() {
 - [ ] **Step 9: Typecheck + tests + integration suite**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
-pnpm --filter @rural-community-platform/web test:components
-pnpm --filter @rural-community-platform/web test:integration
+pnpm --filter @pretou/web typecheck
+pnpm --filter @pretou/web test:components
+pnpm --filter @pretou/web test:integration
 ```
 
 - [ ] **Step 10: Commit**
@@ -918,16 +918,16 @@ git commit -m "feat(web): migrate /app/producteurs to thin shell + React Query"
 - [ ] **Step 1: Full component + integration + typecheck + build**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components
-pnpm --filter @rural-community-platform/web test:integration
-pnpm --filter @rural-community-platform/web typecheck
-pnpm --filter @rural-community-platform/web build
+pnpm --filter @pretou/web test:components
+pnpm --filter @pretou/web test:integration
+pnpm --filter @pretou/web typecheck
+pnpm --filter @pretou/web build
 ```
 
 - [ ] **Step 2: Manual smoke**
 
 ```bash
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 - Navigate Feed → Événements → back → Événements. Second visit should feel instant.

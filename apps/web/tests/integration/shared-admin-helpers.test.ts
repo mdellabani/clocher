@@ -4,7 +4,7 @@ import {
   getCouncilDocsByCommune,
   getHomepageSectionsByCommune,
   getPostsThisWeekCount,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 
 describe("admin shared helpers", () => {
   beforeEach(async () => {

@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Flag } from "lucide-react";
-import { REPORT_CATEGORIES } from "@rural-community-platform/shared";
-import type { ReportCategory } from "@rural-community-platform/shared";
+import { REPORT_CATEGORIES } from "@pretou/shared";
+import type { ReportCategory } from "@pretou/shared";
 import { reportPostAction } from "@/app/app/posts/[id]/report-action";
 
 export function ReportDialog({ postId }: { postId: string }) {

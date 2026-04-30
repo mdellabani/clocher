@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { resetData, serviceClient, SEED_IDS, SEED_EMAILS, signInAs } from "./_fixtures";
-import { getPostsPaginated } from "@rural-community-platform/shared";
+import { getPostsPaginated } from "@pretou/shared";
 
 describe("getPostsPaginated filters", () => {
   beforeEach(async () => {

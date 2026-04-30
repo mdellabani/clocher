@@ -2,7 +2,7 @@ import { Pressable, Text, StyleSheet } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { supabase } from "@/lib/supabase";
-import { getOrCreateConversation } from "@rural-community-platform/shared";
+import { getOrCreateConversation } from "@pretou/shared";
 
 export function ContacterButton(props: {
   postId: string;

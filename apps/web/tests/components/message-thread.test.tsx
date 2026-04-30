@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MessageThread } from "@/components/message-thread";
-import type { MessageRow } from "@rural-community-platform/shared";
+import type { MessageRow } from "@pretou/shared";
 
 const msg = (over: Partial<MessageRow>): MessageRow =>
   ({

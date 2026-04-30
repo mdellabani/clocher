@@ -18,7 +18,7 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @rural-community-platform/web test:components
+      - run: pnpm --filter @pretou/web test:components
 
   integration:
     runs-on: ubuntu-latest
@@ -45,7 +45,7 @@ jobs:
             echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY"
             echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
           } >> "$GITHUB_ENV"
-      - run: pnpm --filter @rural-community-platform/web test:integration
+      - run: pnpm --filter @pretou/web test:integration
       - name: Stop Supabase
         if: always()
         run: supabase stop

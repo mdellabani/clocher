@@ -68,7 +68,7 @@ Create `apps/web/tests/query/me-keys.test.ts`:
 
 ```ts
 import { describe, expect, it } from "vitest";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 describe("queryKeys.me", () => {
   it("partitions per-user content keys", () => {
@@ -91,7 +91,7 @@ describe("queryKeys.me", () => {
 - [ ] **Step 2: Run — expect FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- me-keys.test
+pnpm --filter @pretou/web test:components -- me-keys.test
 ```
 
 - [ ] **Step 3: Extend the registry**
@@ -154,13 +154,13 @@ export { getProfile, createProfile, updateProfile, getMyPosts, getMyComments, ge
 - [ ] **Step 6: Run — expect PASS (2 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- me-keys.test
+pnpm --filter @pretou/web test:components -- me-keys.test
 ```
 
 - [ ] **Step 7: Typecheck**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 - [ ] **Step 8: Commit**
@@ -189,7 +189,7 @@ Create `apps/web/tests/hooks/use-commune.test.tsx`:
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useCommune } from "@/hooks/queries/use-commune";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -226,7 +226,7 @@ describe("useCommune", () => {
 - [ ] **Step 2: Run — expect FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-commune.test
+pnpm --filter @pretou/web test:components -- use-commune.test
 ```
 
 - [ ] **Step 3: Implement**
@@ -235,7 +235,7 @@ Create `apps/web/src/hooks/queries/use-commune.ts`:
 
 ```ts
 import { useQuery } from "@tanstack/react-query";
-import { getCommune, queryKeys } from "@rural-community-platform/shared";
+import { getCommune, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useCommune(communeId: string) {
@@ -256,7 +256,7 @@ export function useCommune(communeId: string) {
 - [ ] **Step 4: Run — expect PASS (2 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-commune.test
+pnpm --filter @pretou/web test:components -- use-commune.test
 ```
 
 - [ ] **Step 5: Commit**
@@ -285,7 +285,7 @@ Create `apps/web/tests/hooks/use-my-content.test.tsx`:
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useMyPosts } from "@/hooks/queries/use-my-posts";
 import { useMyComments } from "@/hooks/queries/use-my-comments";
 import { useMyRsvps } from "@/hooks/queries/use-my-rsvps";
@@ -347,7 +347,7 @@ describe("useMyRsvps", () => {
 - [ ] **Step 2: Run — expect 3 FAIL (module not found for each)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-my-content.test
+pnpm --filter @pretou/web test:components -- use-my-content.test
 ```
 
 - [ ] **Step 3: Implement `useMyPosts`**
@@ -356,7 +356,7 @@ Create `apps/web/src/hooks/queries/use-my-posts.ts`:
 
 ```ts
 import { useQuery } from "@tanstack/react-query";
-import { getMyPosts, queryKeys } from "@rural-community-platform/shared";
+import { getMyPosts, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useMyPosts(userId: string) {
@@ -379,7 +379,7 @@ Create `apps/web/src/hooks/queries/use-my-comments.ts`:
 
 ```ts
 import { useQuery } from "@tanstack/react-query";
-import { getMyComments, queryKeys } from "@rural-community-platform/shared";
+import { getMyComments, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useMyComments(userId: string) {
@@ -402,7 +402,7 @@ Create `apps/web/src/hooks/queries/use-my-rsvps.ts`:
 
 ```ts
 import { useQuery } from "@tanstack/react-query";
-import { getMyRsvps, queryKeys } from "@rural-community-platform/shared";
+import { getMyRsvps, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useMyRsvps(userId: string) {
@@ -422,7 +422,7 @@ export function useMyRsvps(userId: string) {
 - [ ] **Step 6: Run — expect PASS (6 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-my-content.test
+pnpm --filter @pretou/web test:components -- use-my-content.test
 ```
 
 - [ ] **Step 7: Commit**
@@ -557,7 +557,7 @@ Create `apps/web/tests/components/espace-client.test.tsx`:
 import { describe, expect, it, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import { renderWithQuery } from "../helpers/render-with-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { EspaceClient } from "@/app/app/mon-espace/espace-client";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -610,7 +610,7 @@ describe("EspaceClient", () => {
 - [ ] **Step 3: Run — expect FAIL (module not found)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- espace-client.test
+pnpm --filter @pretou/web test:components -- espace-client.test
 ```
 
 ### 5.3 — Implement `espace-client.tsx`
@@ -748,7 +748,7 @@ export function EspaceClient({ userId }: { userId: string }) {
 - [ ] **Step 5: Run — expect PASS (2 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- espace-client.test
+pnpm --filter @pretou/web test:components -- espace-client.test
 ```
 
 ### 5.4 — Refactor `page.tsx` to thin shell
@@ -767,7 +767,7 @@ import {
   getMyComments,
   getMyRsvps,
   queryKeys,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 import { prefetchAndDehydrate } from "@/lib/query/prefetch";
 import { ThemeInjector } from "@/components/theme-injector";
 import { EspaceClient } from "./espace-client";
@@ -839,8 +839,8 @@ Expected: no results.
 - [ ] **Step 8: Typecheck + tests**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web typecheck
+pnpm --filter @pretou/web test:components
 ```
 
 - [ ] **Step 9: Commit**
@@ -915,7 +915,7 @@ Create `apps/web/tests/components/settings-client.test.tsx`:
 import { describe, expect, it, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import { renderWithQuery } from "../helpers/render-with-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { SettingsClient } from "@/app/app/settings/settings-client";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -1016,7 +1016,7 @@ At the top of the file, add the imports (if not already present):
 
 ```tsx
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 ```
 
 Inside the component body, add:
@@ -1036,8 +1036,8 @@ If `router.refresh()` is called anywhere in this file, remove it — invalidatio
 - [ ] **Step 9: Typecheck + tests**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web typecheck
+pnpm --filter @pretou/web test:components
 ```
 
 If `SettingsForm` has its own component test, update it to wrap renders in `QueryClientProvider` (use the existing `renderWithQuery` helper) or mock `useQueryClient`.
@@ -1054,7 +1054,7 @@ import {
   getProfile,
   getCommune,
   queryKeys,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 import { prefetchAndDehydrate } from "@/lib/query/prefetch";
 import { ThemeInjector } from "@/components/theme-injector";
 import { SettingsClient } from "./settings-client";
@@ -1157,7 +1157,7 @@ Create `apps/web/tests/components/infos-client.test.tsx`:
 import { describe, expect, it, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import { renderWithQuery } from "../helpers/render-with-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { InfosClient } from "@/app/app/infos-pratiques/infos-client";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -1430,7 +1430,7 @@ import {
   getProfile,
   getCommune,
   queryKeys,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 import { prefetchAndDehydrate } from "@/lib/query/prefetch";
 import { ThemeInjector } from "@/components/theme-injector";
 import { InfosClient } from "./infos-client";
@@ -1486,8 +1486,8 @@ git commit -m "feat(web): migrate /app/infos-pratiques to thin shell + React Que
 - [ ] **Step 1: Full component + integration suites**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components
-pnpm --filter @rural-community-platform/web test:integration
+pnpm --filter @pretou/web test:components
+pnpm --filter @pretou/web test:integration
 ```
 
 Expected: all green. Component count approximately 67 (prior) + ~15 new = 82.
@@ -1495,14 +1495,14 @@ Expected: all green. Component count approximately 67 (prior) + ~15 new = 82.
 - [ ] **Step 2: Typecheck + build**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
-pnpm --filter @rural-community-platform/web build
+pnpm --filter @pretou/web typecheck
+pnpm --filter @pretou/web build
 ```
 
 - [ ] **Step 3: Manual smoke**
 
 ```bash
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 For each route, navigate away and back while watching the Network tab:

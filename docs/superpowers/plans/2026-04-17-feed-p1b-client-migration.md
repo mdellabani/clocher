@@ -59,7 +59,7 @@ Create `apps/web/tests/integration/shared-get-posts-paginated-filters.test.ts`:
 ```ts
 import { beforeEach, describe, expect, it } from "vitest";
 import { resetData, serviceClient, SEED_IDS, SEED_EMAILS, signInAs } from "./_fixtures";
-import { getPostsPaginated } from "@rural-community-platform/shared";
+import { getPostsPaginated } from "@pretou/shared";
 
 describe("getPostsPaginated filters", () => {
   beforeEach(async () => {
@@ -107,7 +107,7 @@ Notes: uses the existing `_fixtures.ts` helpers (`resetData`, `signInAs`, `servi
 - [ ] **Step 2: Run — expect FAIL (filter arg not supported)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:integration -- shared-get-posts-paginated-filters
+pnpm --filter @pretou/web test:integration -- shared-get-posts-paginated-filters
 ```
 
 Expected: FAIL — TypeScript error on the 5th argument, or runtime failure because filter is ignored.
@@ -185,13 +185,13 @@ export type { PostListFilters } from "./posts";
 - [ ] **Step 4: Run — expect PASS (3 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:integration -- shared-get-posts-paginated-filters
+pnpm --filter @pretou/web test:integration -- shared-get-posts-paginated-filters
 ```
 
 - [ ] **Step 5: Ensure no regression in existing integration tests**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:integration
+pnpm --filter @pretou/web test:integration
 ```
 
 Expected: all green.
@@ -236,7 +236,7 @@ Create `apps/web/tests/hooks/use-profile.test.tsx`:
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useProfile } from "@/hooks/queries/use-profile";
 
 vi.mock("@/lib/supabase/client", () => ({
@@ -288,7 +288,7 @@ describe("useProfile", () => {
 - [ ] **Step 3: Run — expect FAIL (module not found)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-profile.test
+pnpm --filter @pretou/web test:components -- use-profile.test
 ```
 
 - [ ] **Step 4: Implement the hook**
@@ -297,7 +297,7 @@ Create `apps/web/src/hooks/queries/use-profile.ts`:
 
 ```ts
 import { useQuery } from "@tanstack/react-query";
-import { getProfile, queryKeys } from "@rural-community-platform/shared";
+import { getProfile, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useProfile(userId: string) {
@@ -317,7 +317,7 @@ export function useProfile(userId: string) {
 - [ ] **Step 5: Run — expect PASS (2 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-profile.test
+pnpm --filter @pretou/web test:components -- use-profile.test
 ```
 
 - [ ] **Step 6: Commit**
@@ -345,7 +345,7 @@ Create `apps/web/tests/hooks/use-pinned-posts.test.tsx`:
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { usePinnedPosts } from "@/hooks/queries/use-pinned-posts";
 
 vi.mock("@/lib/supabase/client", () => ({
@@ -393,7 +393,7 @@ describe("usePinnedPosts", () => {
 - [ ] **Step 2: Run — expect FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-pinned-posts.test
+pnpm --filter @pretou/web test:components -- use-pinned-posts.test
 ```
 
 - [ ] **Step 3: Implement**
@@ -402,8 +402,8 @@ Create `apps/web/src/hooks/queries/use-pinned-posts.ts`:
 
 ```ts
 import { useQuery } from "@tanstack/react-query";
-import { getPinnedPosts, queryKeys } from "@rural-community-platform/shared";
-import type { Post } from "@rural-community-platform/shared";
+import { getPinnedPosts, queryKeys } from "@pretou/shared";
+import type { Post } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function usePinnedPosts(communeId: string) {
@@ -423,7 +423,7 @@ export function usePinnedPosts(communeId: string) {
 - [ ] **Step 4: Run — expect PASS (2 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-pinned-posts.test
+pnpm --filter @pretou/web test:components -- use-pinned-posts.test
 ```
 
 - [ ] **Step 5: Commit**
@@ -452,7 +452,7 @@ Create `apps/web/tests/hooks/use-posts.test.tsx`:
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { usePosts } from "@/hooks/queries/use-posts";
 
 vi.mock("@/lib/supabase/client", () => ({
@@ -518,7 +518,7 @@ describe("usePosts", () => {
 - [ ] **Step 2: Run — expect FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-posts.test
+pnpm --filter @pretou/web test:components -- use-posts.test
 ```
 
 - [ ] **Step 3: Implement**
@@ -527,8 +527,8 @@ Create `apps/web/src/hooks/queries/use-posts.ts`:
 
 ```ts
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPostsPaginated, queryKeys } from "@rural-community-platform/shared";
-import type { Post, PostListFilters } from "@rural-community-platform/shared";
+import { getPostsPaginated, queryKeys } from "@pretou/shared";
+import type { Post, PostListFilters } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 const PAGE_SIZE = 20;
@@ -561,7 +561,7 @@ export function usePosts(communeId: string, filters: PostListFilters) {
 - [ ] **Step 4: Run — expect PASS (3 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-posts.test
+pnpm --filter @pretou/web test:components -- use-posts.test
 ```
 
 - [ ] **Step 5: Commit**
@@ -592,7 +592,7 @@ Create `apps/web/tests/hooks/use-epci-posts.test.tsx`:
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useEpciPosts } from "@/hooks/queries/use-epci-posts";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -636,7 +636,7 @@ describe("useEpciPosts", () => {
 - [ ] **Step 2: Run — expect FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-epci-posts.test
+pnpm --filter @pretou/web test:components -- use-epci-posts.test
 ```
 
 - [ ] **Step 3: Implement**
@@ -645,8 +645,8 @@ Create `apps/web/src/hooks/queries/use-epci-posts.ts`:
 
 ```ts
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getEpciPosts, queryKeys } from "@rural-community-platform/shared";
-import type { Post } from "@rural-community-platform/shared";
+import { getEpciPosts, queryKeys } from "@pretou/shared";
+import type { Post } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useEpciPosts(epciId: string, communeIds?: string[]) {
@@ -668,7 +668,7 @@ export function useEpciPosts(epciId: string, communeIds?: string[]) {
 - [ ] **Step 4: Run — expect PASS (3 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- use-epci-posts.test
+pnpm --filter @pretou/web test:components -- use-epci-posts.test
 ```
 
 - [ ] **Step 5: Commit**
@@ -735,7 +735,7 @@ Create `apps/web/src/hooks/queries/use-epci-communes.ts`:
 
 ```ts
 import { useQuery } from "@tanstack/react-query";
-import { getCommunesByEpci } from "@rural-community-platform/shared";
+import { getCommunesByEpci } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useEpciCommunes(epciId: string | null) {
@@ -869,7 +869,7 @@ Create `apps/web/tests/components/feed-client.test.tsx`:
 import { describe, expect, it, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import { renderWithQuery } from "../helpers/render-with-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { FeedClient } from "@/app/app/feed/feed-client";
 
 vi.mock("next/navigation", () => ({
@@ -936,7 +936,7 @@ This test requires `PostCard` to render each post with `role="article"`. Verify 
 - [ ] **Step 2: Run — expect FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- feed-client.test
+pnpm --filter @pretou/web test:components -- feed-client.test
 ```
 
 - [ ] **Step 3: Implement `feed-client.tsx`**
@@ -949,7 +949,7 @@ Create `apps/web/src/app/app/feed/feed-client.tsx`:
 import { useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import type { Post } from "@rural-community-platform/shared";
+import type { Post } from "@pretou/shared";
 import { PostCard } from "@/components/post-card";
 import { FeedFilters } from "@/components/feed-filters";
 import { CreatePostDialog } from "@/components/create-post-dialog";
@@ -1088,16 +1088,16 @@ export function FeedClient({ userId }: { userId: string }) {
 }
 ```
 
-Note the import: `PostListFilters` from `@rural-community-platform/shared`. Add at the top with other imports:
+Note the import: `PostListFilters` from `@pretou/shared`. Add at the top with other imports:
 
 ```tsx
-import type { PostListFilters } from "@rural-community-platform/shared";
+import type { PostListFilters } from "@pretou/shared";
 ```
 
 - [ ] **Step 4: Run — expect PASS (2 tests) or investigate failures**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- feed-client.test
+pnpm --filter @pretou/web test:components -- feed-client.test
 ```
 
 If `PostCard` doesn't use `role="article"`, the test's `getAllByRole("article")` will fail. Fix by either:
@@ -1138,8 +1138,8 @@ import {
   getEpciPosts,
   getCommunesByEpci,
   queryKeys,
-} from "@rural-community-platform/shared";
-import type { Post, PostListFilters } from "@rural-community-platform/shared";
+} from "@pretou/shared";
+import type { Post, PostListFilters } from "@pretou/shared";
 import { prefetchAndDehydrate } from "@/lib/query/prefetch";
 import { ThemeInjector } from "@/components/theme-injector";
 import { FeedClient } from "./feed-client";
@@ -1257,7 +1257,7 @@ export default async function FeedPage({
 - [ ] **Step 2: Typecheck**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 Expected: exit 0. If TypeScript flags that `qc.prefetchInfiniteQuery` is missing a `getNextPageParam`, add `getNextPageParam: () => undefined` to the prefetch options (server only prefetches the first page).
@@ -1265,7 +1265,7 @@ Expected: exit 0. If TypeScript flags that `qc.prefetchInfiniteQuery` is missing
 - [ ] **Step 3: Component suite still green**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web test:components
 ```
 
 - [ ] **Step 4: Commit**
@@ -1286,7 +1286,7 @@ git commit -m "refactor(web): /app/feed page becomes thin server shell + Hydrati
 - [ ] **Step 1: Verify nothing else imports them**
 
 ```bash
-pnpm --filter @rural-community-platform/web --silent exec grep -rln "feed-content\|load-more-action\|loadMorePosts\|FeedContent" apps/web/src/ apps/web/tests/
+pnpm --filter @pretou/web --silent exec grep -rln "feed-content\|load-more-action\|loadMorePosts\|FeedContent" apps/web/src/ apps/web/tests/
 ```
 
 Expected: no results (apart from the files themselves).
@@ -1301,8 +1301,8 @@ git rm apps/web/src/app/app/feed/feed-content.tsx \
 - [ ] **Step 3: Typecheck + component tests**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web typecheck
+pnpm --filter @pretou/web test:components
 ```
 
 Expected: both green.
@@ -1322,7 +1322,7 @@ git commit -m "chore(web): remove feed-content + load-more-action (replaced by h
 - [ ] **Step 1: Component suite**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web test:components
 ```
 
 Expected: prior 44 + ~12 new from this plan = ~56 tests, all green.
@@ -1332,7 +1332,7 @@ Expected: prior 44 + ~12 new from this plan = ~56 tests, all green.
 Ensure local Supabase is running.
 
 ```bash
-pnpm --filter @rural-community-platform/web test:integration
+pnpm --filter @pretou/web test:integration
 ```
 
 Expected: prior 36 + 3 new filter tests from Task 1 = 39 tests, all green.
@@ -1340,8 +1340,8 @@ Expected: prior 36 + 3 new filter tests from Task 1 = 39 tests, all green.
 - [ ] **Step 3: Typecheck + build**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck && \
-pnpm --filter @rural-community-platform/web build
+pnpm --filter @pretou/web typecheck && \
+pnpm --filter @pretou/web build
 ```
 
 Expected: both exit 0.
@@ -1349,7 +1349,7 @@ Expected: both exit 0.
 - [ ] **Step 4: Manual smoke — critical**
 
 ```bash
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 In the browser, log in as a resident and an admin in separate sessions. Test all of:
@@ -1379,7 +1379,7 @@ If there are warnings, fix inline before the next step. They will NOT appear in 
 ## Done when
 
 - All 11 tasks committed.
-- `pnpm --filter @rural-community-platform/web test` passes (components + integration).
+- `pnpm --filter @pretou/web test` passes (components + integration).
 - Manual smoke confirms feed works in both scopes, filters work, pagination works, second-visit navigation is instant with zero Supabase network calls.
 - No hydration mismatch warnings in browser console.
 

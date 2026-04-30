@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { Upload, Trash2 } from "lucide-react";
 import {
   THEMES,
@@ -11,7 +11,7 @@ import {
   contrastRatioOnWhite,
   suggestAccessibleShade,
   isValidHexColor,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 import {
   updateThemeAction,
   uploadLogoAction,

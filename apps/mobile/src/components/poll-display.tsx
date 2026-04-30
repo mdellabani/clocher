@@ -10,7 +10,7 @@ import {
 import { CheckCircle, HelpCircle, XCircle } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useTheme } from "@/lib/theme-context";
-import type { Poll } from "@rural-community-platform/shared";
+import type { Poll } from "@pretou/shared";
 
 interface PollDisplayProps {
   poll: Poll;

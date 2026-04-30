@@ -282,7 +282,7 @@ export * from "./color";
 Replace `apps/web/src/components/theme-injector.tsx`:
 
 ```tsx
-import { resolveTheme } from "@rural-community-platform/shared";
+import { resolveTheme } from "@pretou/shared";
 
 export function ThemeInjector({
   theme,
@@ -330,7 +330,7 @@ Replace `apps/mobile/src/lib/theme-context.tsx`:
 
 ```tsx
 import { createContext, useContext } from "react";
-import { resolveTheme, type ThemeConfig } from "@rural-community-platform/shared";
+import { resolveTheme, type ThemeConfig } from "@pretou/shared";
 
 const ThemeContext = createContext<ThemeConfig>(resolveTheme(null, null));
 
@@ -373,7 +373,7 @@ import {
   contrastRatioOnWhite,
   suggestAccessibleShade,
   isValidHexColor,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 import { updateThemeAction, uploadLogoAction } from "@/app/admin/dashboard/theme-actions";
 
 interface ThemeCustomizerProps {
@@ -1251,7 +1251,7 @@ Create `apps/web/src/app/[commune-slug]/bulletin/page.tsx`:
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getCommuneBySlug } from "@rural-community-platform/shared";
+import { getCommuneBySlug } from "@pretou/shared";
 
 type Props = { params: Promise<{ "commune-slug": string }> };
 
@@ -1352,7 +1352,7 @@ Create `apps/web/src/app/[commune-slug]/conseil-municipal/page.tsx`:
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getCommuneBySlug } from "@rural-community-platform/shared";
+import { getCommuneBySlug } from "@pretou/shared";
 import { FileText } from "lucide-react";
 
 type Props = { params: Promise<{ "commune-slug": string }> };
@@ -1442,7 +1442,7 @@ Create `apps/web/src/app/[commune-slug]/mentions-legales/page.tsx`:
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getCommuneBySlug } from "@rural-community-platform/shared";
+import { getCommuneBySlug } from "@pretou/shared";
 
 type Props = { params: Promise<{ "commune-slug": string }> };
 

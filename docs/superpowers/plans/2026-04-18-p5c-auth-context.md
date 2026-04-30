@@ -102,12 +102,12 @@ if (isPlatformHost(hostname)) {
 
 - [ ] **Step 3: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 4: Manual smoke**
 
-Start dev server: `pnpm --filter @rural-community-platform/web dev`
+Start dev server: `pnpm --filter @pretou/web dev`
 
 - In a private window (no session), visit `http://localhost:3000/app/feed`. Expected: redirect to `/auth/login?next=%2Fapp%2Ffeed`.
 - Log in. Expected: land on `/app/feed`.
@@ -154,7 +154,7 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
 
 - [ ] **Step 2: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 3: Commit**
@@ -188,7 +188,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { SUPER_ADMIN_EMAILS } from "@/lib/super-admin";
-import type { Profile } from "@rural-community-platform/shared";
+import type { Profile } from "@pretou/shared";
 
 type ProfileWithCommune = Profile & {
   communes: {
@@ -305,7 +305,7 @@ export function useProfile() {
 
 - [ ] **Step 2: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 3: Commit**
@@ -343,7 +343,7 @@ Everything else in the component stays the same — `profile?.commune_id` and `p
 
 - [ ] **Step 2: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: errors only from `feed/page.tsx` (will be fixed in Task 5).
 
 - [ ] **Step 3: Commit**
@@ -391,7 +391,7 @@ import { ThemeInjector } from "@/components/theme-injector";
 
 - [ ] **Step 3: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors from feed.
 
 - [ ] **Step 4: Manual smoke**
@@ -446,7 +446,7 @@ export default function EvenementsPage() {
 
 - [ ] **Step 3: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors from evenements.
 
 - [ ] **Step 4: Manual smoke**
@@ -499,7 +499,7 @@ export default function ProducteursPage() {
 
 - [ ] **Step 3: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 4: Commit**
@@ -555,7 +555,7 @@ export default async function PostDetailPage({
 
 - [ ] **Step 3: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 4: Commit**
@@ -604,7 +604,7 @@ export default function MonEspacePage() {
 
 - [ ] **Step 3: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 4: Commit**
@@ -653,7 +653,7 @@ export default function SettingsPage() {
 
 - [ ] **Step 3: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 4: Commit**
@@ -697,7 +697,7 @@ Preserve the `async` signature and `params`/`searchParams` destructuring if the 
 
 - [ ] **Step 4: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 5: Commit**
@@ -748,7 +748,7 @@ The server-side auth + role redirect that used to live in `page.tsx` files is no
 
 - [ ] **Step 2: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 3: Commit**
@@ -802,7 +802,7 @@ Gone: auth, profile fetch, role redirect, 8-way prefetch, HydrationBoundary. Mid
 
 - [ ] **Step 3: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 4: Manual smoke**
@@ -854,7 +854,7 @@ export default function AdminHomepagePage() {
 
 - [ ] **Step 3: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 4: Commit**
@@ -886,12 +886,12 @@ rm apps/web/src/hooks/queries/use-profile.ts
 
 - [ ] **Step 3: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 4: Run component tests**
 
-Run: `pnpm --filter @rural-community-platform/web test:components`
+Run: `pnpm --filter @pretou/web test:components`
 Expected: all tests pass. If any fail with mocks referencing the deleted hook, update the mock to return `{ profile }` shape (Context) instead of `{ data: profile }` (React Query).
 
 - [ ] **Step 5: Commit**
@@ -926,13 +926,13 @@ If any hits remain, read the file and remove the prefetch block. Data queries wi
 
 Run typecheck with `--noUnusedParameters` and `--noUnusedLocals` flags if not already set. Alternatively, rely on ESLint if configured:
 
-`pnpm --filter @rural-community-platform/web lint`
+`pnpm --filter @pretou/web lint`
 
 Fix any unused imports revealed (e.g., `HydrationBoundary`, `prefetchAndDehydrate`, `getProfile` in files where they're no longer used).
 
 - [ ] **Step 4: Full test run**
 
-Run: `pnpm --filter @rural-community-platform/web test:components`
+Run: `pnpm --filter @pretou/web test:components`
 Expected: all 128+ tests pass.
 
 - [ ] **Step 5: Commit any sweep changes**
@@ -951,7 +951,7 @@ If nothing changed, skip the commit.
 - [ ] **Step 1: Cold-start dev server**
 
 ```bash
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 - [ ] **Step 2: Unauthed gating check**

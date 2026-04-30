@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { approveUserAction, rejectUserAction } from "@/app/admin/dashboard/actions";
 import { Check, X } from "lucide-react";
 

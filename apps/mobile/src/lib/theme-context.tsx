@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { resolveTheme, type ThemeConfig } from "@rural-community-platform/shared";
+import { resolveTheme, type ThemeConfig } from "@pretou/shared";
 
 const ThemeContext = createContext<ThemeConfig>(resolveTheme(null, null));
 

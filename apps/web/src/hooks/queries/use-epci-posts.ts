@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getEpciPosts, queryKeys } from "@rural-community-platform/shared";
-import type { Post } from "@rural-community-platform/shared";
+import { getEpciPosts, queryKeys } from "@pretou/shared";
+import type { Post } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useEpciPosts(epciId: string, communeIds?: string[]) {

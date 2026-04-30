@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 describe("queryKeys", () => {
   it("produces hierarchical post list keys partitioned by commune", () => {

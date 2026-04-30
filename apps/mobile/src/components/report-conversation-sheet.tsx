@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 import { supabase } from "@/lib/supabase";
-import { reportConversation } from "@rural-community-platform/shared";
+import { reportConversation } from "@pretou/shared";
 
 async function submit(conversationId: string, reason: string | undefined, onDone?: () => void) {
   try {

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPendingUsers, queryKeys } from "@rural-community-platform/shared";
+import { getPendingUsers, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function usePendingUsers(communeId: string) {

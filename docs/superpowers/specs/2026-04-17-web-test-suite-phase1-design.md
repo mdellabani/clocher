@@ -108,8 +108,8 @@ New file `.github/workflows/test.yml`:
 
 - Triggers: pull_request, push to master.
 - Two parallel jobs:
-  - **components** — checkout → `pnpm install` → `pnpm --filter @rural-community-platform/web test:components`. Should finish in well under a minute.
-  - **integration** — checkout → `pnpm install` → `supabase start` (using `supabase/setup-cli` action) → `pnpm --filter @rural-community-platform/web test:integration` → `supabase stop`. Slower but parallelized with components.
+  - **components** — checkout → `pnpm install` → `pnpm --filter @pretou/web test:components`. Should finish in well under a minute.
+  - **integration** — checkout → `pnpm install` → `supabase start` (using `supabase/setup-cli` action) → `pnpm --filter @pretou/web test:integration` → `supabase stop`. Slower but parallelized with components.
 - Both jobs cache `~/.pnpm-store` and `node_modules`.
 
 The existing `triage.yml` workflow is untouched.

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPollByPostId, queryKeys, type Poll } from "@rural-community-platform/shared";
+import { getPollByPostId, queryKeys, type Poll } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function usePoll(postId: string) {

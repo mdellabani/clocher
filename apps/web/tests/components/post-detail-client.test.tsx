@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { PostDetailClient } from "@/app/app/posts/[id]/post-detail-client";
 
 vi.mock("@/components/rsvp-buttons", () => ({ RsvpButtons: () => <div>RSVP</div> }));

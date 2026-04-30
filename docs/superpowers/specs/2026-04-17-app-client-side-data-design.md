@@ -215,7 +215,7 @@ Each shared query gets a thin `useXxx` wrapper in `apps/web/src/hooks/queries/`:
 ```ts
 // apps/web/src/hooks/queries/use-posts.ts
 import { useQuery } from "@tanstack/react-query";
-import { getPosts, queryKeys } from "@rural-community-platform/shared";
+import { getPosts, queryKeys } from "@pretou/shared";
 import { createBrowserClient } from "@/lib/supabase/client";
 
 export function usePosts(communeId: string) {
@@ -241,7 +241,7 @@ Server actions remain the write path (unchanged). The client calls them, then in
 ```tsx
 // apps/web/src/components/create-post-dialog.tsx (client)
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { createPostAction } from "@/app/app/feed/actions";
 
 const qc = useQueryClient();
@@ -264,7 +264,7 @@ Add `apps/web/src/hooks/use-realtime-posts.ts`:
 ```ts
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { createBrowserClient } from "@/lib/supabase/client";
 
 export function useRealtimePosts(communeId: string) {

@@ -36,8 +36,8 @@ import {
   getPollByPostId,
   POST_TYPE_LABELS,
   POST_TYPE_COLORS,
-} from "@rural-community-platform/shared";
-import type { PostType, RsvpStatus, Poll } from "@rural-community-platform/shared";
+} from "@pretou/shared";
+import type { PostType, RsvpStatus, Poll } from "@pretou/shared";
 
 type PostDetail = {
   id: string;

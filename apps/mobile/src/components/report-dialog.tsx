@@ -13,8 +13,8 @@ import { X } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
-import { REPORT_CATEGORIES } from "@rural-community-platform/shared";
-import type { ReportCategory } from "@rural-community-platform/shared";
+import { REPORT_CATEGORIES } from "@pretou/shared";
+import type { ReportCategory } from "@pretou/shared";
 
 interface ReportDialogProps {
   postId: string;

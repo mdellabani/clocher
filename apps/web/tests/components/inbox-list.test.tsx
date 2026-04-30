@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { InboxList } from "@/components/inbox-list";
-import type { InboxConversation } from "@rural-community-platform/shared";
+import type { InboxConversation } from "@pretou/shared";
 
 const baseRow = (over: Partial<InboxConversation> = {}): InboxConversation =>
   ({

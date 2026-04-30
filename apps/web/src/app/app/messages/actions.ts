@@ -7,7 +7,7 @@ import {
   blockUser,
   unblockUser,
   reportConversation,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 
 export async function startConversationAction(args: { postId: string; otherUserId: string }) {
   const supabase = await createClient();

@@ -2,8 +2,8 @@
 
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import type { Post, PostListFilters } from "@rural-community-platform/shared";
-import { queryKeys } from "@rural-community-platform/shared";
+import type { Post, PostListFilters } from "@pretou/shared";
+import { queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 type InfinitePostsData = { pages: Post[][]; pageParams: (string | null)[] };

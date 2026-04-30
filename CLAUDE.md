@@ -1,4 +1,4 @@
-# Rural Community Platform
+# Pretou
 
 SaaS platform for small French communes (<2,000 inhabitants). Combines community interaction, official municipal communication, and mairie back-office tools in one product. Targets rural France where adoption depends on App Store presence and simplicity.
 
@@ -34,7 +34,7 @@ Feature scope and business context: `design.md`
 pnpm install                                        # install all dependencies
 npx supabase start                                   # start local Supabase (Docker)
 npx supabase db reset                                # apply migrations + seed (idempotent)
-pnpm --filter @rural-community-platform/web dev      # web app → http://localhost:3000
+pnpm --filter @pretou/web dev      # web app → http://localhost:3000
 cd apps/mobile && npx expo start --clear             # mobile app (Expo Go)
 npx supabase stop                                    # stop local Supabase
 ```
@@ -63,9 +63,9 @@ npx supabase stop                                    # stop local Supabase
     ```
     Applies only new migration files. No data loss.
 - **Writing RLS policies:** every table that admins/users write to needs explicit `INSERT`/`UPDATE`/`DELETE` policies — RLS denies by default, and Supabase clients silently filter blocked rows (zero rows affected, no error). When adding a write path in app code, also add the matching policy in the same migration.
-- **Run `pnpm --filter @rural-community-platform/web test:components` before committing UI changes.** Catches NavBar/PostCard/ThemeCustomizer regressions in <5s.
-- **Run `pnpm --filter @rural-community-platform/web test:integration` before merging anything that touches DB schema, RLS, or server actions.** Requires `npx supabase start` running locally.
-- **Run `pnpm --filter @rural-community-platform/web test:integration -- messaging-rls` after any change to messaging RLS, helpers, or RPCs.** The 41-case matrix is the only thing that catches RLS regressions silently filtering rows.
+- **Run `pnpm --filter @pretou/web test:components` before committing UI changes.** Catches NavBar/PostCard/ThemeCustomizer regressions in <5s.
+- **Run `pnpm --filter @pretou/web test:integration` before merging anything that touches DB schema, RLS, or server actions.** Requires `npx supabase start` running locally.
+- **Run `pnpm --filter @pretou/web test:integration -- messaging-rls` after any change to messaging RLS, helpers, or RPCs.** The 41-case matrix is the only thing that catches RLS regressions silently filtering rows.
 - **Every new server-action write path needs an integration test** asserting (a) it persists for the intended role and (b) it's silently blocked for an unauthorized role. RLS denies by default and PostgREST swallows the failure — the test is the only thing that catches it.
 - **Client-side data (authed routes):** `/app/*` and `/admin/*` are wrapped in `QueryProvider` (React Query). Shared query keys live in `packages/shared/src/query-keys.ts`; use `prefetchAndDehydrate()` from `apps/web/src/lib/query/prefetch.ts` in server components to hydrate the client cache. Public routes (`/`, `/[commune-slug]/*`) stay pure SSR.
 

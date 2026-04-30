@@ -72,7 +72,7 @@ describe("PostCardSkeleton", () => {
 - [ ] **Step 2: Run the test — expect FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- post-card-skeleton.test
+pnpm --filter @pretou/web test:components -- post-card-skeleton.test
 ```
 
 Expected: FAIL with "module not found" for `@/components/skeletons/post-card-skeleton`.
@@ -105,7 +105,7 @@ export function PostCardSkeleton() {
 - [ ] **Step 4: Run the test — expect PASS (2 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- post-card-skeleton.test
+pnpm --filter @pretou/web test:components -- post-card-skeleton.test
 ```
 
 - [ ] **Step 5: Commit**
@@ -162,7 +162,7 @@ describe("FeedSkeleton", () => {
 - [ ] **Step 2: Run the test — expect FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- feed-skeleton.test
+pnpm --filter @pretou/web test:components -- feed-skeleton.test
 ```
 
 Expected: FAIL — module not found.
@@ -178,7 +178,7 @@ Edit `apps/web/src/components/skeletons/post-card-skeleton.tsx`. Change the oute
 Re-run the PostCardSkeleton test to confirm it still passes:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- post-card-skeleton.test
+pnpm --filter @pretou/web test:components -- post-card-skeleton.test
 ```
 
 Expected: still 2 passing.
@@ -219,7 +219,7 @@ export function FeedSkeleton() {
 - [ ] **Step 5: Run the test — expect PASS (3 tests)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- feed-skeleton.test
+pnpm --filter @pretou/web test:components -- feed-skeleton.test
 ```
 
 - [ ] **Step 6: Commit**
@@ -257,7 +257,7 @@ That's the whole file. No logic, no auth check (Next runs loading.tsx inside the
 - [ ] **Step 2: Typecheck**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 Expected: exit 0.
@@ -265,7 +265,7 @@ Expected: exit 0.
 - [ ] **Step 3: Build**
 
 ```bash
-pnpm --filter @rural-community-platform/web build
+pnpm --filter @pretou/web build
 ```
 
 Expected: `✓ Compiled successfully`. The route list should now show `/app/feed` as before (loading.tsx doesn't change the route).
@@ -286,7 +286,7 @@ git commit -m "feat(web): add loading.tsx for /app/feed (instant skeleton on nav
 - [ ] **Step 1: Full component suite**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web test:components
 ```
 
 Expected: all green. Pre-existing 39 + 5 new = 44 tests.
@@ -296,7 +296,7 @@ Expected: all green. Pre-existing 39 + 5 new = 44 tests.
 Ensure local Supabase is running (`npx supabase status`); if stopped, run `npx supabase start`. Then:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:integration
+pnpm --filter @pretou/web test:integration
 ```
 
 Expected: all green (36 tests).
@@ -304,8 +304,8 @@ Expected: all green (36 tests).
 - [ ] **Step 3: Typecheck + build (sanity re-run)**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck && \
-pnpm --filter @rural-community-platform/web build
+pnpm --filter @pretou/web typecheck && \
+pnpm --filter @pretou/web build
 ```
 
 Expected: both exit 0.
@@ -313,7 +313,7 @@ Expected: both exit 0.
 - [ ] **Step 4: Manual smoke — the whole point of this phase**
 
 ```bash
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 In the browser:

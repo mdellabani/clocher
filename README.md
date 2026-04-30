@@ -1,6 +1,6 @@
 # Pretou
 
-> Internal repo: `rural-community-platform`
+> Internal repo: `pretou`
 
 SaaS platform for small French communes. Community feed, official announcements, events, mairie admin panel, and public commune website.
 
@@ -41,7 +41,7 @@ This runs Turborepo's `dev` task, starting the **web** and **mobile** apps in pa
 
 To run just one:
 ```bash
-pnpm --filter @rural-community-platform/web dev   # web only
+pnpm --filter @pretou/web dev   # web only
 cd apps/mobile && npx expo start --clear           # mobile only
 ```
 
@@ -124,8 +124,8 @@ supabase/           Postgres schema, RLS policies, Edge Functions, seed data
 
 ```bash
 pnpm dev                                             # start web + mobile in parallel
-pnpm --filter @rural-community-platform/web dev     # web dev server only
-pnpm --filter @rural-community-platform/mobile start # expo dev server only
+pnpm --filter @pretou/web dev     # web dev server only
+pnpm --filter @pretou/mobile start # expo dev server only
 npx supabase start                                   # start local supabase
 npx supabase stop                                    # stop local supabase
 npx supabase db reset                                # reset DB + apply migrations + seed

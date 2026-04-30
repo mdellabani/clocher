@@ -17,8 +17,8 @@ import { supabase } from "@/lib/supabase";
 import { unregisterPushToken } from "@/lib/notifications";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
-import { ROLE_LABELS } from "@rural-community-platform/shared";
-import type { Role } from "@rural-community-platform/shared";
+import { ROLE_LABELS } from "@pretou/shared";
+import type { Role } from "@pretou/shared";
 
 export default function ProfileScreen() {
   const { profile, isAdmin } = useAuth();

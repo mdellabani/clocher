@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { voteAction, removeVoteAction } from "@/app/app/posts/[id]/poll-actions";
 import { usePoll } from "@/hooks/queries/use-poll";
 

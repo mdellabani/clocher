@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Globe, CheckCircle2, AlertCircle, Trash2 } from "lucide-react";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import {
   setCustomDomainAction,
   verifyDomainAction,

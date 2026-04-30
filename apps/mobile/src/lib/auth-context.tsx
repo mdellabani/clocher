@@ -3,7 +3,7 @@ import { AppState, type AppStateStatus } from "react-native";
 import { supabase } from "./supabase";
 import { ThemeProvider } from "./theme-context";
 import type { Session } from "@supabase/supabase-js";
-import type { Profile } from "@rural-community-platform/shared";
+import type { Profile } from "@pretou/shared";
 
 type ProfileWithCommune = Profile & {
   communes: {

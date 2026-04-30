@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ProducerCard } from "./producer-card";
 import { CreateProducerDialog } from "./create-producer-dialog";
-import { PRODUCER_CATEGORIES } from "@rural-community-platform/shared";
-import type { Producer } from "@rural-community-platform/shared";
+import { PRODUCER_CATEGORIES } from "@pretou/shared";
+import type { Producer } from "@pretou/shared";
 
 type ViewMode = "list" | "grid";
 

@@ -1,5 +1,5 @@
 {
-  "name": "@rural-community-platform/mobile",
+  "name": "@pretou/mobile",
   "version": "1.0.0",
   "private": true,
   "main": "expo-router/entry",
@@ -16,7 +16,7 @@
     "@expo-google-fonts/dm-sans": "^0.4.2",
     "@expo/metro-runtime": "~6.1.2",
     "@react-native-async-storage/async-storage": "^2.2.0",
-    "@rural-community-platform/shared": "workspace:*",
+    "@pretou/shared": "workspace:*",
     "@supabase/supabase-js": "^2.49.0",
     "@tanstack/react-query": "^5.62.0",
     "expo": "~54.0.33",

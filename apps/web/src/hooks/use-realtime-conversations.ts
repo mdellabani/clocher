@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 export function useRealtimeConversations(myUserId: string | undefined) {
   const qc = useQueryClient();

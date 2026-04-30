@@ -5,8 +5,8 @@ import {
   deletePost,
   setRsvp,
   removeRsvp,
-} from "@rural-community-platform/shared";
-import type { RsvpStatus } from "@rural-community-platform/shared";
+} from "@pretou/shared";
+import type { RsvpStatus } from "@pretou/shared";
 import { redirect } from "next/navigation";
 
 export async function setRsvpAction(

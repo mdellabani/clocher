@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2, FileText, Upload } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { uploadCouncilDocumentAction, deleteCouncilDocumentAction } from "@/app/admin/dashboard/council-actions";
 
 const CATEGORY_LABELS: Record<string, string> = {

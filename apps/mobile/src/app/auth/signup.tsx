@@ -16,7 +16,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { User, Mail, Lock, MapPin, Check, Eye, EyeOff } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useTheme } from "@/lib/theme-context";
-import { signupSchema } from "@rural-community-platform/shared";
+import { signupSchema } from "@pretou/shared";
 
 type CommuneItem = {
   id: string;

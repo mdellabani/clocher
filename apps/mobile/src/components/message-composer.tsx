@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 import { supabase } from "@/lib/supabase";
-import { sendMessage } from "@rural-community-platform/shared";
+import { sendMessage } from "@pretou/shared";
 
 export function MessageComposer({
   conversationId,

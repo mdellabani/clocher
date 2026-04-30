@@ -3,7 +3,7 @@ import { resetData, serviceClient, SEED_IDS, SEED_EMAILS, signInAs } from "./_fi
 import {
   getEventsByCommune,
   getActiveProducersByCommune,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 
 describe("getEventsByCommune", () => {
   beforeEach(async () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { resolveTheme } from "@rural-community-platform/shared";
+import { resolveTheme } from "@pretou/shared";
 
 // Mounts an extra <style> block that overrides the page-level ThemeInjector's
 // CSS variables. Cascade rule: this component renders after ThemeInjector in

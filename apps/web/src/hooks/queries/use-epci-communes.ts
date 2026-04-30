@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCommunesByEpci } from "@rural-community-platform/shared";
+import { getCommunesByEpci } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useEpciCommunes(epciId: string | null) {

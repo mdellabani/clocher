@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getActiveProducersByCommune, queryKeys } from "@rural-community-platform/shared";
-import type { Producer } from "@rural-community-platform/shared";
+import { getActiveProducersByCommune, queryKeys } from "@pretou/shared";
+import type { Producer } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useProducers(communeId: string) {

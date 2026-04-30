@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import type { Post, PostListFilters } from "@rural-community-platform/shared";
+import type { Post, PostListFilters } from "@pretou/shared";
 import { PostCard } from "@/components/post-card";
 import { FeedFilters } from "@/components/feed-filters";
 import { CreatePostDialog } from "@/components/create-post-dialog";

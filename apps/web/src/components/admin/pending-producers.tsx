@@ -2,7 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { approveProducerAction, rejectProducerAction } from "@/app/admin/producer-actions";
-import { PRODUCER_CATEGORIES, queryKeys } from "@rural-community-platform/shared";
+import { PRODUCER_CATEGORIES, queryKeys } from "@pretou/shared";
 import { Check, X } from "lucide-react";
 
 interface PendingProducer {

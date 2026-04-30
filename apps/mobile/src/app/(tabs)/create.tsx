@@ -25,9 +25,9 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
 import { ImagePickerButton } from "@/components/image-picker-button";
-import { createPostSchema, createPoll } from "@rural-community-platform/shared";
-import { POST_TYPE_LABELS, POST_TYPE_COLORS } from "@rural-community-platform/shared";
-import type { PostType, CreatePollInput } from "@rural-community-platform/shared";
+import { createPostSchema, createPoll } from "@pretou/shared";
+import { POST_TYPE_LABELS, POST_TYPE_COLORS } from "@pretou/shared";
+import type { PostType, CreatePollInput } from "@pretou/shared";
 import type { ImagePickerAsset } from "expo-image-picker";
 
 const ADMIN_POST_TYPES: PostType[] = ["annonce", "evenement", "entraide", "discussion", "service"];

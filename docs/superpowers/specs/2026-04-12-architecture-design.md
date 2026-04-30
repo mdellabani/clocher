@@ -1,4 +1,4 @@
-# Rural Community Platform — Architecture Design Spec
+# Pretou — Architecture Design Spec
 
 **Date:** 2026-04-12
 **Status:** Approved
@@ -19,7 +19,7 @@ Split the platform into two specialized frontend apps (Next.js web + Expo mobile
 Monorepo with Turborepo + pnpm workspaces.
 
 ```
-rural-community-platform/
+pretou/
 ├── apps/
 │   ├── web/                 ← Next.js 15 (App Router, SSR, Tailwind, shadcn/ui)
 │   └── mobile/              ← Expo (React Native, Expo Router)

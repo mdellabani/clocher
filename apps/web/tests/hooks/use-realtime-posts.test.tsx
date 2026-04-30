@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useRealtimePosts } from "@/hooks/use-realtime-posts";
 
 type Listener = (payload: { eventType: string; new?: unknown; old?: unknown }) => void;

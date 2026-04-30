@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { HomepageClient } from "@/app/admin/homepage/homepage-client";
 
 vi.mock("@/components/admin/section-editors/section-editor", () => ({ SectionEditor: () => <div>SECTION_EDITOR</div> }));

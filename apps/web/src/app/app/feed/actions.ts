@@ -1,8 +1,8 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { createPostSchema, createPoll } from "@rural-community-platform/shared";
-import type { CreatePollInput } from "@rural-community-platform/shared";
+import { createPostSchema, createPoll } from "@pretou/shared";
+import type { CreatePollInput } from "@pretou/shared";
 
 export async function createPostAction(formData: FormData) {
   const supabase = await createClient();

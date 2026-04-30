@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Eye, EyeOff, ChevronDown, ChevronUp, Trash2, Plus } from "lucide-react";
 import { SectionEditor } from "@/components/admin/section-editors/section-editor";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import {
   updateSectionAction,
   addSectionAction,

@@ -3,8 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { SlidersHorizontal } from "lucide-react";
-import { POST_TYPE_LABELS } from "@rural-community-platform/shared";
-import type { PostType } from "@rural-community-platform/shared";
+import { POST_TYPE_LABELS } from "@pretou/shared";
+import type { PostType } from "@pretou/shared";
 
 const TYPE_OPTIONS: { value: PostType; label: string }[] = [
   { value: "annonce", label: POST_TYPE_LABELS.annonce },

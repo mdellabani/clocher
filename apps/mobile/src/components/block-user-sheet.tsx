@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 import { supabase } from "@/lib/supabase";
-import { blockUser } from "@rural-community-platform/shared";
+import { blockUser } from "@pretou/shared";
 
 export function confirmBlockUser(blockedId: string, onDone?: () => void) {
   Alert.alert(

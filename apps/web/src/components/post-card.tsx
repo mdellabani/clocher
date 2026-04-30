@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { PostTypeBadge } from "@/components/post-type-badge";
 import { ReportDialog } from "@/components/report-dialog";
-import type { Post, PostType } from "@rural-community-platform/shared";
+import type { Post, PostType } from "@pretou/shared";
 import { Pin } from "lucide-react";
 
 function getImageUrl(storagePath: string): string {

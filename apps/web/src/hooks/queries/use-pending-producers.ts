@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPendingProducers, queryKeys } from "@rural-community-platform/shared";
+import { getPendingProducers, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function usePendingProducers(communeId: string) {

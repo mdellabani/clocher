@@ -1,6 +1,6 @@
 "use client";
 
-import type { AuditLog } from "@rural-community-platform/shared";
+import type { AuditLog } from "@pretou/shared";
 
 interface AuditLogViewProps {
   entries: AuditLog[];

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCommuneMembers, queryKeys } from "@rural-community-platform/shared";
+import { getCommuneMembers, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useCommuneMembers(communeId: string) {

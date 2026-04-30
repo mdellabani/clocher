@@ -1,6 +1,6 @@
 "use client";
 
-import type { Producer } from "@rural-community-platform/shared";
+import type { Producer } from "@pretou/shared";
 import { useProfile } from "@/hooks/use-profile";
 import { useProducers } from "@/hooks/queries/use-producers";
 import { ProducersContent } from "./producers-content";

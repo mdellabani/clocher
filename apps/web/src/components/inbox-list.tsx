@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { InboxConversation } from "@rural-community-platform/shared";
+import type { InboxConversation } from "@pretou/shared";
 
 export function InboxList({
   rows,

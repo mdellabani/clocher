@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPostById, queryKeys } from "@rural-community-platform/shared";
+import { getPostById, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function usePostDetail(postId: string) {

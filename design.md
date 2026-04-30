@@ -1,4 +1,4 @@
-# Rural Community Platform — Design Document
+# Pretou — Design Document
 
 **Date:** 2026-04-12
 **Status:** Draft v3 (revised architecture — monorepo with web + mobile apps)
@@ -44,7 +44,7 @@ Unlike existing solutions (PanneauPocket, IntraMuros) that focus on top-down mun
 ### Monorepo structure
 
 ```
-rural-community-platform/
+pretou/
 ├── apps/
 │   ├── web/             ← Next.js (commune website + desktop admin)
 │   └── mobile/          ← Expo (resident app + field admin)

@@ -1,6 +1,6 @@
 import { unstable_cache } from "next/cache";
 import { createPublicClient } from "@/lib/supabase/public";
-import { getCommuneBySlug } from "@rural-community-platform/shared";
+import { getCommuneBySlug } from "@pretou/shared";
 
 // Next 16 forbids accessing dynamic data sources (cookies()) inside
 // unstable_cache. Public commune routes don't need auth — use the anon

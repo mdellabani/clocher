@@ -20,7 +20,7 @@ import {
   getMessages,
   markConversationRead,
   type MessageRow,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 import { ActionSheetIOS, Platform, Alert } from "react-native";
 
 type Meta = {

@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { approveProducer, rejectProducer } from "@rural-community-platform/shared";
+import { approveProducer, rejectProducer } from "@pretou/shared";
 
 export async function approveProducerAction(
   producerId: string,

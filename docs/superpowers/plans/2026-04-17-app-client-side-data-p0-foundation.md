@@ -52,7 +52,7 @@
 Run from repo root:
 
 ```bash
-pnpm add --filter @rural-community-platform/web @tanstack/react-query@^5.62.0
+pnpm add --filter @pretou/web @tanstack/react-query@^5.62.0
 ```
 
 - [ ] **Step 2: Verify install**
@@ -70,7 +70,7 @@ Expected output: `"@tanstack/react-query": "^5.62.0",`
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 Expected: exits 0, no errors.
@@ -112,7 +112,7 @@ Create `apps/web/tests/query/keys.test.ts`:
 
 ```ts
 import { describe, expect, it } from "vitest";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 describe("queryKeys", () => {
   it("produces hierarchical post list keys partitioned by commune", () => {
@@ -156,10 +156,10 @@ describe("queryKeys", () => {
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- keys.test
+pnpm --filter @pretou/web test:components -- keys.test
 ```
 
-Expected: FAIL — `queryKeys` is not exported from `@rural-community-platform/shared`.
+Expected: FAIL — `queryKeys` is not exported from `@pretou/shared`.
 
 - [ ] **Step 4: Implement the registry**
 
@@ -210,7 +210,7 @@ export type { PostFilters } from "./query-keys";
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- keys.test
+pnpm --filter @pretou/web test:components -- keys.test
 ```
 
 Expected: PASS (5 tests).
@@ -273,7 +273,7 @@ describe("makeQueryClient", () => {
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- client.test
+pnpm --filter @pretou/web test:components -- client.test
 ```
 
 Expected: FAIL — module `@/lib/query/client` not found.
@@ -304,7 +304,7 @@ export function makeQueryClient() {
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- client.test
+pnpm --filter @pretou/web test:components -- client.test
 ```
 
 Expected: PASS (5 tests).
@@ -380,7 +380,7 @@ describe("prefetchAndDehydrate", () => {
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- prefetch.test
+pnpm --filter @pretou/web test:components -- prefetch.test
 ```
 
 Expected: FAIL — module `@/lib/query/prefetch` not found.
@@ -406,7 +406,7 @@ export async function prefetchAndDehydrate(
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- prefetch.test
+pnpm --filter @pretou/web test:components -- prefetch.test
 ```
 
 Expected: PASS (3 tests).
@@ -468,7 +468,7 @@ describe("QueryProvider", () => {
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- query-provider.test
+pnpm --filter @pretou/web test:components -- query-provider.test
 ```
 
 Expected: FAIL — module `@/components/providers/query-provider` not found.
@@ -498,7 +498,7 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- query-provider.test
+pnpm --filter @pretou/web test:components -- query-provider.test
 ```
 
 Expected: PASS (2 tests).
@@ -559,7 +559,7 @@ describe("renderWithQuery", () => {
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- render-with-query.test
+pnpm --filter @pretou/web test:components -- render-with-query.test
 ```
 
 Expected: FAIL — module not found.
@@ -596,7 +596,7 @@ export function renderWithQuery(ui: ReactElement, options: RenderWithQueryOption
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- render-with-query.test
+pnpm --filter @pretou/web test:components -- render-with-query.test
 ```
 
 Expected: PASS (2 tests).
@@ -651,7 +651,7 @@ describe("Skeleton", () => {
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- skeleton.test
+pnpm --filter @pretou/web test:components -- skeleton.test
 ```
 
 Expected: FAIL — module not found.
@@ -680,7 +680,7 @@ The `cn` helper is already exported from `apps/web/src/lib/utils.ts` (verified d
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components -- skeleton.test
+pnpm --filter @pretou/web test:components -- skeleton.test
 ```
 
 Expected: PASS (2 tests).
@@ -740,7 +740,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 Expected: exits 0.
@@ -750,7 +750,7 @@ Expected: exits 0.
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web test:components
 ```
 
 Expected: all green. None of the existing tests render `AppLayout` directly, so wrapping should be inert.
@@ -760,7 +760,7 @@ Expected: all green. None of the existing tests render `AppLayout` directly, so 
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 Open `http://localhost:3000/app/feed`. Log in. Confirm: page renders exactly as before, no console errors, no hydration warnings. Close dev server.
@@ -784,7 +784,7 @@ Current file (reference):
 ```tsx
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getProfile } from "@rural-community-platform/shared";
+import { getProfile } from "@pretou/shared";
 import { NavBar } from "@/components/nav-bar";
 
 export default async function AdminLayout({
@@ -813,7 +813,7 @@ Replace the entire contents of `apps/web/src/app/admin/layout.tsx` with:
 ```tsx
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getProfile } from "@rural-community-platform/shared";
+import { getProfile } from "@pretou/shared";
 import { NavBar } from "@/components/nav-bar";
 import { QueryProvider } from "@/components/providers/query-provider";
 
@@ -843,7 +843,7 @@ export default async function AdminLayout({
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 Expected: exits 0.
@@ -853,7 +853,7 @@ Expected: exits 0.
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 Open `http://localhost:3000/admin/dashboard` while logged in as an admin. Confirm: page renders exactly as before, no console errors, no hydration warnings. Close dev server.
@@ -876,7 +876,7 @@ git commit -m "feat(web): wrap /admin layout in QueryProvider (no behavioral cha
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web test:components
 ```
 
 Expected: all green. Counts include the five new tests from Tasks 2–7 (keys, client, prefetch, provider, helper, skeleton).
@@ -886,7 +886,7 @@ Expected: all green. Counts include the five new tests from Tasks 2–7 (keys, c
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 Expected: exits 0.
@@ -896,7 +896,7 @@ Expected: exits 0.
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web build
+pnpm --filter @pretou/web build
 ```
 
 Expected: exits 0, no new warnings other than pre-existing ones.
@@ -912,7 +912,7 @@ npx supabase start
 Then:
 
 ```bash
-pnpm --filter @rural-community-platform/web test:integration
+pnpm --filter @pretou/web test:integration
 ```
 
 Expected: all green.
@@ -922,7 +922,7 @@ Expected: all green.
 Run:
 
 ```bash
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 Visit, in this order, confirming each page loads with no console errors:
@@ -953,7 +953,7 @@ git commit -m "docs: note React Query pattern for authed routes"
 ## Done when
 
 - All ten tasks committed.
-- `pnpm --filter @rural-community-platform/web test` (runs components + integration) passes.
+- `pnpm --filter @pretou/web test` (runs components + integration) passes.
 - Manual smoke of `/`, `/app/feed`, `/admin/dashboard` shows no regression.
 - No page has been migrated — P0 is purely scaffolding. Migrations begin in P1.
 

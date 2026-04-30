@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Trash2, Plus } from "lucide-react";
 import { updateAssociationsAction } from "@/app/admin/dashboard/commune-actions";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 interface Association {
   name: string;

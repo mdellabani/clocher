@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Copy, RefreshCw } from "lucide-react";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { regenerateInviteCodeAction } from "@/app/admin/dashboard/invite-actions";
 
 interface InviteCodeManagerProps {

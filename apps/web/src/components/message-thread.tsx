@@ -1,4 +1,4 @@
-import type { MessageRow } from "@rural-community-platform/shared";
+import type { MessageRow } from "@pretou/shared";
 
 export function MessageThread({
   messages,

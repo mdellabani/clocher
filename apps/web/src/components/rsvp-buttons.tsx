@@ -2,10 +2,10 @@
 
 import { useTransition } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { Button } from "@/components/ui/button";
 import { setRsvpAction, removeRsvpAction } from "@/app/app/posts/[id]/actions";
-import type { RsvpStatus } from "@rural-community-platform/shared";
+import type { RsvpStatus } from "@pretou/shared";
 import { useRsvps } from "@/hooks/queries/use-rsvps";
 
 interface RsvpButtonsProps {

@@ -1,8 +1,8 @@
 import { StyleSheet, Text, TouchableOpacity, View, Linking, Image } from "react-native";
 import { MapPin, Clock, Phone, Truck } from "lucide-react-native";
 import { useTheme } from "@/lib/theme-context";
-import { PRODUCER_CATEGORIES } from "@rural-community-platform/shared";
-import type { Producer } from "@rural-community-platform/shared";
+import { PRODUCER_CATEGORIES } from "@pretou/shared";
+import type { Producer } from "@pretou/shared";
 
 interface ProducerCardProps {
   producer: Producer;

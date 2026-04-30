@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { SUPER_ADMIN_EMAILS } from "@/lib/super-admin";
-import type { Profile } from "@rural-community-platform/shared";
+import type { Profile } from "@pretou/shared";
 
 type ProfileWithCommune = Profile & {
   communes: {

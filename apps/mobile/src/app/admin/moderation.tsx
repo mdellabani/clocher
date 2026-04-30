@@ -20,9 +20,9 @@ import {
   getPendingProducers, approveProducer, rejectProducer,
   getCommuneMembers, promoteToModerator, demoteToResident,
   getAuditLog, getCommune,
-} from "@rural-community-platform/shared";
-import { ROLE_LABELS } from "@rural-community-platform/shared";
-import type { Role } from "@rural-community-platform/shared";
+} from "@pretou/shared";
+import { ROLE_LABELS } from "@pretou/shared";
+import type { Role } from "@pretou/shared";
 
 type PendingUser = { id: string; display_name: string; created_at: string };
 type PendingProducer = { id: string; name: string; categories: string[]; created_at: string };

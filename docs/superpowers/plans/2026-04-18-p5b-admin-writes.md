@@ -135,7 +135,7 @@ adminList: (communeId: string, filters: { types?: string[]; dateFilter?: string;
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useAdminPosts } from "@/hooks/queries/use-admin-posts";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -174,7 +174,7 @@ describe("useAdminPosts", () => {
 - [ ] **Step 5: Run test, verify FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test use-admin-posts
+pnpm --filter @pretou/web test use-admin-posts
 ```
 
 - [ ] **Step 6: Implementation**
@@ -182,7 +182,7 @@ pnpm --filter @rural-community-platform/web test use-admin-posts
 ```ts
 // apps/web/src/hooks/queries/use-admin-posts.ts
 import { useQuery } from "@tanstack/react-query";
-import { getAdminPostsPaginated, queryKeys, type AdminPostFilters } from "@rural-community-platform/shared";
+import { getAdminPostsPaginated, queryKeys, type AdminPostFilters } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useAdminPosts(communeId: string, filters: AdminPostFilters) {
@@ -217,7 +217,7 @@ const { data: adminPostsData } = useAdminPosts(communeId, adminPostFilters);
 />
 ```
 
-Add the import: `import { type AdminPostFilters } from "@rural-community-platform/shared";` and `import { useAdminPosts } from "@/hooks/queries/use-admin-posts";`
+Add the import: `import { type AdminPostFilters } from "@pretou/shared";` and `import { useAdminPosts } from "@/hooks/queries/use-admin-posts";`
 
 - [ ] **Step 9: Update `dashboard/page.tsx` to prefetch admin posts**
 
@@ -237,8 +237,8 @@ Add `getAdminPostsPaginated` to the shared imports.
 - [ ] **Step 10: Typecheck + manual smoke**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web typecheck
+pnpm --filter @pretou/web dev
 ```
 
 Visit `/admin/dashboard` → "Publications" tab → see the paginated post list (was empty after P5a).
@@ -290,7 +290,7 @@ Using `["posts"]` as the prefix invalidates `posts.list`, `posts.pinned`, `posts
 - [ ] **Step 4: Typecheck**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 - [ ] **Step 5: Manual smoke**
@@ -348,7 +348,7 @@ export async function updateAssociationsAction(/* existing args */) {
 
 ```tsx
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 const qc = useQueryClient();
 
@@ -363,7 +363,7 @@ The component needs `communeId` as a prop. If it doesn't already have it, add it
 - [ ] **Step 4: Typecheck**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 - [ ] **Step 5: Manual smoke**
@@ -405,7 +405,7 @@ Same for `deleteCouncilDocumentAction`. Drop the `revalidatePath("/admin/dashboa
 
 ```tsx
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 const qc = useQueryClient();
 
@@ -418,7 +418,7 @@ Component needs `communeId` prop — pass from `dashboard-client.tsx`.
 - [ ] **Step 3: Typecheck + manual smoke**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 Upload a document → list updates in admin. Visit public commune site → document shows.
@@ -454,7 +454,7 @@ Drop `revalidatePath` import + 3 calls.
 
 ```tsx
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 const qc = useQueryClient();
 // after each successful action call:
@@ -464,7 +464,7 @@ qc.invalidateQueries({ queryKey: queryKeys.commune(communeId) });
 - [ ] **Step 3: Typecheck + manual smoke**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 Set a custom domain → admin reflects. Domain manager shows verified state correctly.
@@ -494,7 +494,7 @@ git commit -m "refactor(web): domain-actions use revalidateTag; client invalidat
 
 ```tsx
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 const qc = useQueryClient();
 // after success
@@ -506,7 +506,7 @@ The component is rendered twice in `dashboard-client.tsx` (in Dashboard tab and 
 - [ ] **Step 3: Typecheck + manual smoke**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 Regenerate the invite code → new code displays in <100ms.
@@ -544,7 +544,7 @@ Drop the 3× `revalidatePath("/", "layout")` calls + the import.
 
 ```tsx
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 const qc = useQueryClient();
 // after each successful action
@@ -556,7 +556,7 @@ The component receives the new commune snapshot via the cache after invalidation
 - [ ] **Step 3: Typecheck + manual smoke**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 Change theme color in `/admin/dashboard` → admin pages update colors instantly. Open public commune site in a separate tab → new color appears on next request.
@@ -584,7 +584,7 @@ Drop import + 2× `revalidatePath` calls.
 
 ```tsx
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 const qc = useQueryClient();
 // after each successful approve/reject
@@ -633,7 +633,7 @@ The editor calls actions on every section save / reorder / delete. After each, i
 
 ```tsx
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 // inside the editor (it'll need communeId — pass from homepage-client.tsx)
 const qc = useQueryClient();
@@ -646,7 +646,7 @@ qc.invalidateQueries({ queryKey: queryKeys.admin.homepageSections(communeId) });
 - [ ] **Step 3: Typecheck + manual smoke**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 Edit a section → save → editor reflects in <100ms. Open public commune site → section change appears.
@@ -671,7 +671,7 @@ git commit -m "refactor(web): homepage-actions use revalidateTag; editor invalid
 
 ```tsx
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 const qc = useQueryClient();
 // after each successful action
@@ -711,8 +711,8 @@ If anything shows up, edit that file inline (drop the import + call), commit wit
 - [ ] **Step 2: Run full test suite**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
-pnpm --filter @rural-community-platform/web test:components
+pnpm --filter @pretou/web typecheck
+pnpm --filter @pretou/web test:components
 ```
 
 Both should be green.
@@ -731,7 +731,7 @@ User-run end-to-end validation.
 
 ```bash
 npx supabase start
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 - [ ] **Step 2: Walk through each mutation path**

@@ -1,4 +1,4 @@
 {
   "installCommand": "pnpm install",
-  "buildCommand": "cd ../.. && pnpm turbo build --filter @rural-community-platform/web"
+  "buildCommand": "cd ../.. && pnpm turbo build --filter @pretou/web"
 }

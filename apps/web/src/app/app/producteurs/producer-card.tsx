@@ -1,6 +1,6 @@
 import { MapPin, Clock, Phone, Mail, Truck } from "lucide-react";
-import { PRODUCER_CATEGORIES } from "@rural-community-platform/shared";
-import type { Producer } from "@rural-community-platform/shared";
+import { PRODUCER_CATEGORIES } from "@pretou/shared";
+import type { Producer } from "@pretou/shared";
 
 type ViewMode = "list" | "grid";
 

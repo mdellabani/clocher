@@ -17,8 +17,8 @@ import { useTheme } from "@/lib/theme-context";
 import { PostCard } from "@/components/post-card";
 import { FeedHeader } from "@/components/feed-header";
 import { FeedFilterSheet } from "@/components/feed-filter-sheet";
-import { getPosts, getEpciPosts, getPostsPaginated, getPinnedPosts, getCommunesByEpci, POST_TYPE_LABELS, getProducers } from "@rural-community-platform/shared";
-import type { Post, PostType } from "@rural-community-platform/shared";
+import { getPosts, getEpciPosts, getPostsPaginated, getPinnedPosts, getCommunesByEpci, POST_TYPE_LABELS, getProducers } from "@pretou/shared";
+import type { Post, PostType } from "@pretou/shared";
 
 type DateFilter = "" | "today" | "week" | "month";
 

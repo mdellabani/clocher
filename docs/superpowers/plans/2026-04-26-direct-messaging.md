@@ -150,7 +150,7 @@ Open `packages/shared/src/query-keys.ts`. Remove every entry under `queryKeys.co
 
 - [ ] **Step 4: Build the shared package**
 
-Run: `pnpm --filter @rural-community-platform/shared build`
+Run: `pnpm --filter @pretou/shared build`
 Expected: builds without errors. (If it fails, a non-comments file imports from `comments` — fix that import.)
 
 - [ ] **Step 5: Commit**
@@ -221,7 +221,7 @@ For each of `apps/web/src/components/sections/events-section.tsx` and `apps/web/
 
 - [ ] **Step 4: Run web component tests**
 
-Run: `pnpm --filter @rural-community-platform/web test:components`
+Run: `pnpm --filter @pretou/web test:components`
 Expected: existing 126 tests pass (no comment tests left because they were deleted in 1.2).
 
 - [ ] **Step 5: Commit**
@@ -257,7 +257,7 @@ Open `apps/web/src/components/nav-bar.tsx`. Remove any `<Link href="/moderation"
 
 - [ ] **Step 5: Run web component tests**
 
-Run: `pnpm --filter @rural-community-platform/web test:components`
+Run: `pnpm --filter @pretou/web test:components`
 Expected: still passes (NavBar test will fail if we leave a stale moderator-link assertion — fix it or remove it from the test).
 
 - [ ] **Step 6: Commit**
@@ -663,7 +663,7 @@ Expected: zero lines.
 
 - [ ] **Step 4: Build shared and web to surface type errors elsewhere**
 
-Run: `pnpm --filter @rural-community-platform/shared build && pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/shared build && pnpm --filter @pretou/web typecheck`
 Expected: builds. If web typecheck fails because some file still imports `Comment` types, fix that file (it's residual from Phase 1 and should be a one-line removal).
 
 - [ ] **Step 5: Commit**
@@ -752,7 +752,7 @@ Replace the `throw` with concrete inserts using the helpers and the service-role
 
 - [ ] **Step 4: Run the file (it has no tests yet — should pass with 0 tests)**
 
-Run: `pnpm --filter @rural-community-platform/web test:integration -- messaging-rls`
+Run: `pnpm --filter @pretou/web test:integration -- messaging-rls`
 Expected: 0 tests, no errors.
 
 - [ ] **Step 5: Commit**
@@ -825,7 +825,7 @@ Apply the same shape for cases 2–8. **Always assert exact counts**, never just
 
 - [ ] **Step 3: Run**
 
-Run: `pnpm --filter @rural-community-platform/web test:integration -- messaging-rls`
+Run: `pnpm --filter @pretou/web test:integration -- messaging-rls`
 Expected: 8 tests passing.
 
 - [ ] **Step 4: Commit**
@@ -860,7 +860,7 @@ For "neither user_a nor user_b = pierre" (case 2), use sophie + jeanne as the pa
 
 - [ ] **Step 2: Run**
 
-Run: `pnpm --filter @rural-community-platform/web test:integration -- messaging-rls`
+Run: `pnpm --filter @pretou/web test:integration -- messaging-rls`
 Expected: 8 + 9 = 17 tests passing.
 
 - [ ] **Step 3: Commit**
@@ -897,7 +897,7 @@ Then 6 `it` blocks per spec table. Always assert exact counts.
 
 - [ ] **Step 2: Run**
 
-Run: `pnpm --filter @rural-community-platform/web test:integration -- messaging-rls`
+Run: `pnpm --filter @pretou/web test:integration -- messaging-rls`
 Expected: 23 passing.
 
 - [ ] **Step 3: Commit**
@@ -917,7 +917,7 @@ Cases 1–6 from spec table. Notably:
 
 - [ ] **Step 2: Run**
 
-Run: `pnpm --filter @rural-community-platform/web test:integration -- messaging-rls`
+Run: `pnpm --filter @pretou/web test:integration -- messaging-rls`
 Expected: 29 passing.
 
 - [ ] **Step 3: Commit**
@@ -935,7 +935,7 @@ Cases include impersonation, self-block, select-only-own, delete-own.
 
 - [ ] **Step 2: Run**
 
-Run: `pnpm --filter @rural-community-platform/web test:integration -- messaging-rls`
+Run: `pnpm --filter @pretou/web test:integration -- messaging-rls`
 Expected: 34 passing.
 
 - [ ] **Step 3: Commit**
@@ -951,7 +951,7 @@ git commit -m "test(messaging): cover user_blocks (5 cases)"
 
 - [ ] **Step 2: Run**
 
-Run: `pnpm --filter @rural-community-platform/web test:integration -- messaging-rls`
+Run: `pnpm --filter @pretou/web test:integration -- messaging-rls`
 Expected: 39 passing.
 
 - [ ] **Step 3: Commit**
@@ -1099,7 +1099,7 @@ In `packages/shared/src/types/index.ts` add: `export * from "./message";` near t
 
 - [ ] **Step 3: Build**
 
-Run: `pnpm --filter @rural-community-platform/shared build`
+Run: `pnpm --filter @pretou/shared build`
 Expected: builds.
 
 - [ ] **Step 4: Commit**
@@ -1175,7 +1175,7 @@ blocks: {
 
 - [ ] **Step 2: Build**
 
-Run: `pnpm --filter @rural-community-platform/shared build`
+Run: `pnpm --filter @pretou/shared build`
 
 - [ ] **Step 3: Commit**
 
@@ -1258,7 +1258,7 @@ In `packages/shared/src/queries/index.ts`: add `export * from "./messages";`.
 
 - [ ] **Step 3: Build**
 
-Run: `pnpm --filter @rural-community-platform/shared build`
+Run: `pnpm --filter @pretou/shared build`
 Expected: builds. (If the implicit join names are wrong, adjust to the actual FK names found in `database.ts`.)
 
 - [ ] **Step 4: Commit**
@@ -1462,7 +1462,7 @@ export async function reportConversation(supabase: Client, input: ReportConversa
 
 - [ ] **Step 2: Build**
 
-Run: `pnpm --filter @rural-community-platform/shared build`
+Run: `pnpm --filter @pretou/shared build`
 
 - [ ] **Step 3: Commit**
 
@@ -1490,7 +1490,7 @@ Mirror the messaging-rls fixture pattern. Cover the happy paths and the rejected
 
 - [ ] **Step 2: Run**
 
-Run: `pnpm --filter @rural-community-platform/web test:integration`
+Run: `pnpm --filter @pretou/web test:integration`
 Expected: all tests pass.
 
 - [ ] **Step 3: Commit**
@@ -1740,7 +1740,7 @@ describe("ContacterButton", () => {
 
 - [ ] **Step 2: Verify it fails**
 
-Run: `pnpm --filter @rural-community-platform/web test:components -- contacter-button`
+Run: `pnpm --filter @pretou/web test:components -- contacter-button`
 Expected: error — module not found.
 
 - [ ] **Step 3: Implement**
@@ -1786,7 +1786,7 @@ export function ContacterButton(props: {
 
 - [ ] **Step 4: Verify it passes**
 
-Run: `pnpm --filter @rural-community-platform/web test:components -- contacter-button`
+Run: `pnpm --filter @pretou/web test:components -- contacter-button`
 Expected: 3 passing.
 
 - [ ] **Step 5: Commit**
@@ -1851,7 +1851,7 @@ describe("AnnonceContactBlock", () => {
 
 - [ ] **Step 2: Verify failure**
 
-Run: `pnpm --filter @rural-community-platform/web test:components -- annonce-contact-block`
+Run: `pnpm --filter @pretou/web test:components -- annonce-contact-block`
 
 - [ ] **Step 3: Implement**
 
@@ -1909,7 +1909,7 @@ The existing `apps/web/tests/components/post-card.test.tsx` may need a small upd
 
 - [ ] **Step 3: Run all component tests**
 
-Run: `pnpm --filter @rural-community-platform/web test:components`
+Run: `pnpm --filter @pretou/web test:components`
 Expected: all pass.
 
 - [ ] **Step 4: Commit**
@@ -1932,7 +1932,7 @@ git commit -m "feat(web): wire ContacterButton + AnnonceContactBlock into PostCa
 ```tsx
 import { createClient } from "@/lib/supabase/server";
 import { prefetchAndDehydrate } from "@/lib/query/prefetch";
-import { getConversations, queryKeys } from "@rural-community-platform/shared";
+import { getConversations, queryKeys } from "@pretou/shared";
 import { MessagesClient } from "./messages-client";
 import { HydrationBoundary } from "@tanstack/react-query";
 
@@ -1980,7 +1980,7 @@ export function MessagesClient() {
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
-import { getConversations, queryKeys } from "@rural-community-platform/shared";
+import { getConversations, queryKeys } from "@pretou/shared";
 
 export function useConversations() {
   const supabase = createClient();
@@ -1998,7 +1998,7 @@ export function useConversations() {
 ```tsx
 // apps/web/src/components/inbox-list.tsx
 import Link from "next/link";
-import type { InboxConversation } from "@rural-community-platform/shared";
+import type { InboxConversation } from "@pretou/shared";
 
 export function InboxList({ rows, onLoadMore }: { rows: InboxConversation[]; onLoadMore?: () => void }) {
   if (rows.length === 0) {
@@ -2081,7 +2081,7 @@ describe("InboxList", () => {
 
 - [ ] **Step 6: Run component tests**
 
-Run: `pnpm --filter @rural-community-platform/web test:components -- inbox-list`
+Run: `pnpm --filter @pretou/web test:components -- inbox-list`
 Expected: 3 passing.
 
 - [ ] **Step 7: Commit**
@@ -2108,7 +2108,7 @@ import {
   blockUser,
   unblockUser,
   reportConversation,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 
 export async function startConversationAction(args: { postId: string; otherUserId: string }) {
   const supabase = await createClient();
@@ -2249,7 +2249,7 @@ export function CrossCommuneBanner({ communeName }: { communeName: string }) {
 
 ```tsx
 // apps/web/src/components/message-thread.tsx
-import type { MessageRow } from "@rural-community-platform/shared";
+import type { MessageRow } from "@pretou/shared";
 
 export function MessageThread({ messages }: { messages: MessageRow[] }) {
   return (
@@ -2361,7 +2361,7 @@ describe("MessageComposer", () => {
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
-import { getMessages, queryKeys } from "@rural-community-platform/shared";
+import { getMessages, queryKeys } from "@pretou/shared";
 
 export function useMessages(conversationId: string) {
   const supabase = createClient();
@@ -2376,7 +2376,7 @@ export function useMessages(conversationId: string) {
 
 - [ ] **Step 7: Run all component tests**
 
-Run: `pnpm --filter @rural-community-platform/web test:components`
+Run: `pnpm --filter @pretou/web test:components`
 Expected: all pass.
 
 - [ ] **Step 8: Commit**
@@ -2399,7 +2399,7 @@ git commit -m "feat(web): thread page, MessageThread, MessageComposer, CrossComm
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 export function useRealtimeConversations(myUserId: string) {
   const qc = useQueryClient();
@@ -2428,7 +2428,7 @@ export function useRealtimeConversations(myUserId: string) {
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 
 export function useRealtimeThread(conversationId: string) {
   const qc = useQueryClient();
@@ -2474,7 +2474,7 @@ git commit -m "feat(web): realtime hooks for inbox + thread"
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
-import { getConversations, queryKeys } from "@rural-community-platform/shared";
+import { getConversations, queryKeys } from "@pretou/shared";
 
 export function useUnreadCount() {
   const supabase = createClient();
@@ -2519,7 +2519,7 @@ In `apps/web/src/components/nav-bar.tsx`, add `<InboxNavLink />` next to the oth
 
 - [ ] **Step 4: Run tests**
 
-Run: `pnpm --filter @rural-community-platform/web test:components`
+Run: `pnpm --filter @pretou/web test:components`
 
 - [ ] **Step 5: Commit**
 
@@ -2615,7 +2615,7 @@ import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { supabase } from "@/lib/supabase";
-import { getConversations, type InboxConversation } from "@rural-community-platform/shared";
+import { getConversations, type InboxConversation } from "@pretou/shared";
 
 export default function ExchangesScreen() {
   const router = useRouter();
@@ -2702,7 +2702,7 @@ import {
   getMessages,
   markConversationRead,
   type MessageRow,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 import { MessageThread } from "@/components/message-thread";
 import { MessageComposer } from "@/components/message-composer";
 import { CrossCommuneBanner } from "@/components/cross-commune-banner";
@@ -2795,7 +2795,7 @@ git commit -m "feat(mobile): thread screen, MessageThread, MessageComposer"
 import { Pressable, Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { supabase } from "@/lib/supabase";
-import { getOrCreateConversation } from "@rural-community-platform/shared";
+import { getOrCreateConversation } from "@pretou/shared";
 
 export function ContacterButton(props: {
   postId: string; postType: string; authorId: string; viewerId: string;
@@ -2918,7 +2918,7 @@ Update the migrations summary at the bottom — remove the two deleted patches, 
 
 - [ ] **Step 5: Run + test commands**
 
-Add one bullet: "Run `pnpm --filter @rural-community-platform/web test:integration -- messaging-rls` after any change to messaging RLS or RPC."
+Add one bullet: "Run `pnpm --filter @pretou/web test:integration -- messaging-rls` after any change to messaging RLS or RPC."
 
 - [ ] **Step 6: Commit**
 
@@ -2933,17 +2933,17 @@ git commit -m "docs: update CLAUDE.md for messaging + comments removal"
 
 - [ ] **Step 1: Component tests**
 
-Run: `pnpm --filter @rural-community-platform/web test:components`
+Run: `pnpm --filter @pretou/web test:components`
 Expected: all pass.
 
 - [ ] **Step 2: Integration tests**
 
-Run: `pnpm --filter @rural-community-platform/web test:integration`
+Run: `pnpm --filter @pretou/web test:integration`
 Expected: all pass — including the 46 RLS cases.
 
 - [ ] **Step 3: Web typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: zero errors.
 
 - [ ] **Step 4: Build**

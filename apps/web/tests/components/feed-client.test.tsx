@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import { renderWithQuery } from "../helpers/render-with-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { FeedClient } from "@/app/app/feed/feed-client";
 
 vi.mock("next/navigation", () => ({

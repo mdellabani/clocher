@@ -77,7 +77,7 @@ No additions to the registry.
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { usePostDetail } from "@/hooks/queries/use-post-detail";
 
 const singleMock = vi.fn();
@@ -119,7 +119,7 @@ describe("usePostDetail", () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `pnpm --filter @rural-community-platform/web test use-post-detail`
+Run: `pnpm --filter @pretou/web test use-post-detail`
 Expected: FAIL with module not found on `@/hooks/queries/use-post-detail`.
 
 - [ ] **Step 3: Write minimal implementation**
@@ -127,7 +127,7 @@ Expected: FAIL with module not found on `@/hooks/queries/use-post-detail`.
 ```ts
 // apps/web/src/hooks/queries/use-post-detail.ts
 import { useQuery } from "@tanstack/react-query";
-import { getPostById, queryKeys } from "@rural-community-platform/shared";
+import { getPostById, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function usePostDetail(postId: string) {
@@ -146,7 +146,7 @@ export function usePostDetail(postId: string) {
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `pnpm --filter @rural-community-platform/web test use-post-detail`
+Run: `pnpm --filter @pretou/web test use-post-detail`
 Expected: 2 passing.
 
 - [ ] **Step 5: Commit**
@@ -171,7 +171,7 @@ git commit -m "feat(web): usePostDetail hook"
 import { describe, it, expect, vi } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useComments } from "@/hooks/queries/use-comments";
 
 vi.mock("@/lib/supabase/client", () => ({
@@ -200,7 +200,7 @@ describe("useComments", () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `pnpm --filter @rural-community-platform/web test use-comments`
+Run: `pnpm --filter @pretou/web test use-comments`
 Expected: FAIL (module missing).
 
 - [ ] **Step 3: Write minimal implementation**
@@ -208,7 +208,7 @@ Expected: FAIL (module missing).
 ```ts
 // apps/web/src/hooks/queries/use-comments.ts
 import { useQuery } from "@tanstack/react-query";
-import { getComments, queryKeys } from "@rural-community-platform/shared";
+import { getComments, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useComments(postId: string) {
@@ -227,7 +227,7 @@ export function useComments(postId: string) {
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `pnpm --filter @rural-community-platform/web test use-comments`
+Run: `pnpm --filter @pretou/web test use-comments`
 Expected: 1 passing.
 
 - [ ] **Step 5: Commit**
@@ -254,7 +254,7 @@ git commit -m "feat(web): useComments hook"
 import { describe, it, expect, vi } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useRsvps } from "@/hooks/queries/use-rsvps";
 
 vi.mock("@/lib/supabase/client", () => ({
@@ -285,7 +285,7 @@ describe("useRsvps", () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `pnpm --filter @rural-community-platform/web test use-rsvps`
+Run: `pnpm --filter @pretou/web test use-rsvps`
 Expected: FAIL (module missing).
 
 - [ ] **Step 3: Write minimal implementation**
@@ -293,8 +293,8 @@ Expected: FAIL (module missing).
 ```ts
 // apps/web/src/hooks/queries/use-rsvps.ts
 import { useQuery } from "@tanstack/react-query";
-import { getRsvps, queryKeys } from "@rural-community-platform/shared";
-import type { RsvpStatus } from "@rural-community-platform/shared";
+import { getRsvps, queryKeys } from "@pretou/shared";
+import type { RsvpStatus } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 type RsvpRow = { user_id: string; status: RsvpStatus };
@@ -329,7 +329,7 @@ export function useRsvps(postId: string, userId: string) {
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `pnpm --filter @rural-community-platform/web test use-rsvps`
+Run: `pnpm --filter @pretou/web test use-rsvps`
 Expected: 1 passing.
 
 - [ ] **Step 5: Commit**
@@ -354,7 +354,7 @@ git commit -m "feat(web): useRsvps hook with derived counts + myStatus"
 import { describe, it, expect, vi } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { usePoll } from "@/hooks/queries/use-poll";
 
 vi.mock("@/lib/supabase/client", () => ({
@@ -393,7 +393,7 @@ describe("usePoll", () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `pnpm --filter @rural-community-platform/web test use-poll`
+Run: `pnpm --filter @pretou/web test use-poll`
 Expected: FAIL (module missing).
 
 - [ ] **Step 3: Write minimal implementation**
@@ -401,8 +401,8 @@ Expected: FAIL (module missing).
 ```ts
 // apps/web/src/hooks/queries/use-poll.ts
 import { useQuery } from "@tanstack/react-query";
-import { getPollByPostId, queryKeys } from "@rural-community-platform/shared";
-import type { Poll } from "@rural-community-platform/shared";
+import { getPollByPostId, queryKeys } from "@pretou/shared";
+import type { Poll } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function usePoll(postId: string) {
@@ -421,7 +421,7 @@ export function usePoll(postId: string) {
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `pnpm --filter @rural-community-platform/web test use-poll`
+Run: `pnpm --filter @pretou/web test use-poll`
 Expected: 2 passing.
 
 - [ ] **Step 5: Commit**
@@ -448,7 +448,7 @@ Mirrors `useRealtimePosts` (P1c): INSERT prepends, UPDATE patches, DELETE remove
 import { describe, it, expect, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useRealtimeComments } from "@/hooks/use-realtime-comments";
 
 type Handler = (payload: { eventType: string; new?: unknown; old?: unknown }) => void;
@@ -502,7 +502,7 @@ describe("useRealtimeComments", () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `pnpm --filter @rural-community-platform/web test use-realtime-comments`
+Run: `pnpm --filter @pretou/web test use-realtime-comments`
 Expected: FAIL (module missing).
 
 - [ ] **Step 3: Write minimal implementation**
@@ -513,7 +513,7 @@ Expected: FAIL (module missing).
 
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 type Comment = { id: string; [k: string]: unknown };
@@ -557,7 +557,7 @@ export function useRealtimeComments(postId: string) {
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `pnpm --filter @rural-community-platform/web test use-realtime-comments`
+Run: `pnpm --filter @pretou/web test use-realtime-comments`
 Expected: 2 passing.
 
 - [ ] **Step 5: Commit**
@@ -644,8 +644,8 @@ import {
   setRsvp,
   removeRsvp,
   createCommentSchema,
-} from "@rural-community-platform/shared";
-import type { RsvpStatus } from "@rural-community-platform/shared";
+} from "@pretou/shared";
+import type { RsvpStatus } from "@pretou/shared";
 import { redirect } from "next/navigation";
 
 export async function addCommentAction(postId: string, body: string) {
@@ -749,7 +749,7 @@ Drop the `revalidatePath` import and the call. No other changes.
 
 - [ ] **Step 4: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 5: Commit**
@@ -777,7 +777,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { CommentSection } from "@/components/comment-section";
 
 const addCommentMock = vi.fn().mockResolvedValue({ error: null });
@@ -813,7 +813,7 @@ describe("CommentSection", () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `pnpm --filter @rural-community-platform/web test comment-section`
+Run: `pnpm --filter @pretou/web test comment-section`
 Expected: FAIL — component still takes `comments` prop.
 
 - [ ] **Step 3: Rewrite the component**
@@ -824,7 +824,7 @@ Expected: FAIL — component still takes `comments` prop.
 
 import { useState, useTransition } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
@@ -941,7 +941,7 @@ export function CommentSection({ postId, currentUserId, isAdmin }: CommentSectio
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `pnpm --filter @rural-community-platform/web test comment-section`
+Run: `pnpm --filter @pretou/web test comment-section`
 Expected: 1 passing.
 
 - [ ] **Step 5: Commit**
@@ -968,10 +968,10 @@ Removes the `currentStatus` and `counts` props. Takes `userId` instead.
 
 import { useTransition } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { Button } from "@/components/ui/button";
 import { setRsvpAction, removeRsvpAction } from "@/app/app/posts/[id]/actions";
-import type { RsvpStatus } from "@rural-community-platform/shared";
+import type { RsvpStatus } from "@pretou/shared";
 import { useRsvps } from "@/hooks/queries/use-rsvps";
 
 interface RsvpButtonsProps {
@@ -1033,7 +1033,7 @@ export function RsvpButtons({ postId, userId }: RsvpButtonsProps) {
 
 - [ ] **Step 2: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: fails with callers passing removed props — they are fixed in Task 12 when the page rewires.
 
 - [ ] **Step 3: Commit**
@@ -1062,7 +1062,7 @@ Replace the top of the file and update every call to `voteAction`/`removeVoteAct
 
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { voteAction, removeVoteAction } from "@/app/app/posts/[id]/poll-actions";
 import { usePoll } from "@/hooks/queries/use-poll";
 
@@ -1216,7 +1216,7 @@ Splits the current 156-line server component into a tiny server shell + a client
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { PostDetailClient } from "@/app/app/posts/[id]/post-detail-client";
 
 vi.mock("@/hooks/use-realtime-comments", () => ({ useRealtimeComments: () => undefined }));
@@ -1253,7 +1253,7 @@ describe("PostDetailClient", () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `pnpm --filter @rural-community-platform/web test post-detail-client`
+Run: `pnpm --filter @pretou/web test post-detail-client`
 Expected: FAIL (module missing).
 
 - [ ] **Step 3: Implement `post-detail-client.tsx`**
@@ -1263,7 +1263,7 @@ Expected: FAIL (module missing).
 "use client";
 
 import { notFound } from "next/navigation";
-import type { PostType } from "@rural-community-platform/shared";
+import type { PostType } from "@pretou/shared";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PostTypeBadge } from "@/components/post-type-badge";
 import { CommentSection } from "@/components/comment-section";
@@ -1393,7 +1393,7 @@ import {
   getProfile,
   getPollByPostId,
   queryKeys,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 import { createClient } from "@/lib/supabase/server";
 import { prefetchAndDehydrate } from "@/lib/query/prefetch";
 import { PostDetailClient } from "./post-detail-client";
@@ -1458,12 +1458,12 @@ export default async function PostDetailPage({
 
 - [ ] **Step 5: Run test to verify it passes**
 
-Run: `pnpm --filter @rural-community-platform/web test post-detail-client`
+Run: `pnpm --filter @pretou/web test post-detail-client`
 Expected: 1 passing.
 
 - [ ] **Step 6: Typecheck**
 
-Run: `pnpm --filter @rural-community-platform/web typecheck`
+Run: `pnpm --filter @pretou/web typecheck`
 Expected: no errors.
 
 - [ ] **Step 7: Commit**
@@ -1481,7 +1481,7 @@ git commit -m "feat(web): migrate /app/posts/[id] to thin shell + React Query"
 
 ```bash
 npx supabase start
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 - [ ] **Step 2: Walk through the checklist in a browser**

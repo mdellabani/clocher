@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAuditLog, queryKeys } from "@rural-community-platform/shared";
+import { getAuditLog, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useAuditLog(communeId: string, limit = 50) {

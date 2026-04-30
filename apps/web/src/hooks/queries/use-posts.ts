@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPostsPaginated, queryKeys } from "@rural-community-platform/shared";
-import type { Post, PostListFilters } from "@rural-community-platform/shared";
+import { getPostsPaginated, queryKeys } from "@pretou/shared";
+import type { Post, PostListFilters } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 const PAGE_SIZE = 20;

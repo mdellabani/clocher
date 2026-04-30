@@ -1,7 +1,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
-import { getConversations, queryKeys } from "@rural-community-platform/shared";
+import { getConversations, queryKeys } from "@pretou/shared";
 
 export function useUnreadCount() {
   const supabase = createClient();

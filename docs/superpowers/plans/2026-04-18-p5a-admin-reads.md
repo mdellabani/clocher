@@ -123,7 +123,7 @@ export default async function SmokePage({ searchParams }: { searchParams: Promis
 }
 ```
 
-Then with `pnpm --filter @rural-community-platform/web dev` running:
+Then with `pnpm --filter @pretou/web dev` running:
 
 ```bash
 curl -s http://localhost:3000/_smoke
@@ -173,7 +173,7 @@ import {
   getCouncilDocsByCommune,
   getHomepageSectionsByCommune,
   getPostsThisWeekCount,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 
 describe("admin shared helpers", () => {
   beforeEach(async () => {
@@ -206,7 +206,7 @@ describe("admin shared helpers", () => {
 - [ ] **Step 2: Run test, verify FAIL (helpers missing)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:integration -t "admin shared helpers"
+pnpm --filter @pretou/web test:integration -t "admin shared helpers"
 ```
 
 Expected: FAIL — helpers don't exist yet.
@@ -278,7 +278,7 @@ export { getCommune, getCommuneBySlug, getCommunesByEpci, getAllCommunes, getCom
 - [ ] **Step 7: Run test, verify PASS**
 
 ```bash
-pnpm --filter @rural-community-platform/web test:integration -t "admin shared helpers"
+pnpm --filter @pretou/web test:integration -t "admin shared helpers"
 ```
 
 Expected: 3 passing.
@@ -307,7 +307,7 @@ Match the established pattern from `apps/web/tests/hooks/use-events.test.tsx` an
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { usePendingUsers } from "@/hooks/queries/use-pending-users";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -340,7 +340,7 @@ describe("usePendingUsers", () => {
 - [ ] **Step 2: Run test, verify FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test use-pending-users
+pnpm --filter @pretou/web test use-pending-users
 ```
 
 Expected: FAIL (module missing).
@@ -350,7 +350,7 @@ Expected: FAIL (module missing).
 ```ts
 // apps/web/src/hooks/queries/use-pending-users.ts
 import { useQuery } from "@tanstack/react-query";
-import { getPendingUsers, queryKeys } from "@rural-community-platform/shared";
+import { getPendingUsers, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function usePendingUsers(communeId: string) {
@@ -394,7 +394,7 @@ Same pattern as Task 3, swap the query key and shared helper.
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { usePendingProducers } from "@/hooks/queries/use-pending-producers";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -427,7 +427,7 @@ describe("usePendingProducers", () => {
 - [ ] **Step 2: Run test, verify FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test use-pending-producers
+pnpm --filter @pretou/web test use-pending-producers
 ```
 
 - [ ] **Step 3: Implementation**
@@ -435,7 +435,7 @@ pnpm --filter @rural-community-platform/web test use-pending-producers
 ```ts
 // apps/web/src/hooks/queries/use-pending-producers.ts
 import { useQuery } from "@tanstack/react-query";
-import { getPendingProducers, queryKeys } from "@rural-community-platform/shared";
+import { getPendingProducers, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function usePendingProducers(communeId: string) {
@@ -477,7 +477,7 @@ git commit -m "feat(web): usePendingProducers hook (1min staleTime)"
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useCommuneMembers } from "@/hooks/queries/use-commune-members";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -508,7 +508,7 @@ describe("useCommuneMembers", () => {
 - [ ] **Step 2: Run test, verify FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test use-commune-members
+pnpm --filter @pretou/web test use-commune-members
 ```
 
 - [ ] **Step 3: Implementation**
@@ -516,7 +516,7 @@ pnpm --filter @rural-community-platform/web test use-commune-members
 ```ts
 // apps/web/src/hooks/queries/use-commune-members.ts
 import { useQuery } from "@tanstack/react-query";
-import { getCommuneMembers, queryKeys } from "@rural-community-platform/shared";
+import { getCommuneMembers, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useCommuneMembers(communeId: string) {
@@ -557,7 +557,7 @@ git commit -m "feat(web): useCommuneMembers hook"
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useAuditLog } from "@/hooks/queries/use-audit-log";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -588,7 +588,7 @@ describe("useAuditLog", () => {
 - [ ] **Step 2: Run test, verify FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test use-audit-log
+pnpm --filter @pretou/web test use-audit-log
 ```
 
 - [ ] **Step 3: Implementation**
@@ -596,7 +596,7 @@ pnpm --filter @rural-community-platform/web test use-audit-log
 ```ts
 // apps/web/src/hooks/queries/use-audit-log.ts
 import { useQuery } from "@tanstack/react-query";
-import { getAuditLog, queryKeys } from "@rural-community-platform/shared";
+import { getAuditLog, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useAuditLog(communeId: string, limit = 50) {
@@ -640,7 +640,7 @@ Reuses existing `getCommune(client, communeId)` which does `select("*")` so all 
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useCommuneAdmin } from "@/hooks/queries/use-commune-admin";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -671,7 +671,7 @@ describe("useCommuneAdmin", () => {
 - [ ] **Step 2: Run test, verify FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test use-commune-admin
+pnpm --filter @pretou/web test use-commune-admin
 ```
 
 - [ ] **Step 3: Implementation**
@@ -679,7 +679,7 @@ pnpm --filter @rural-community-platform/web test use-commune-admin
 ```ts
 // apps/web/src/hooks/queries/use-commune-admin.ts
 import { useQuery } from "@tanstack/react-query";
-import { getCommune, queryKeys } from "@rural-community-platform/shared";
+import { getCommune, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useCommuneAdmin(communeId: string) {
@@ -721,7 +721,7 @@ git commit -m "feat(web): useCommuneAdmin hook (30min staleTime)"
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useCouncilDocs } from "@/hooks/queries/use-council-docs";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -752,7 +752,7 @@ describe("useCouncilDocs", () => {
 - [ ] **Step 2: Run test, verify FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test use-council-docs
+pnpm --filter @pretou/web test use-council-docs
 ```
 
 - [ ] **Step 3: Implementation**
@@ -760,7 +760,7 @@ pnpm --filter @rural-community-platform/web test use-council-docs
 ```ts
 // apps/web/src/hooks/queries/use-council-docs.ts
 import { useQuery } from "@tanstack/react-query";
-import { getCouncilDocsByCommune, queryKeys } from "@rural-community-platform/shared";
+import { getCouncilDocsByCommune, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useCouncilDocs(communeId: string) {
@@ -802,7 +802,7 @@ git commit -m "feat(web): useCouncilDocs hook (30min staleTime)"
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { usePostsThisWeek } from "@/hooks/queries/use-posts-this-week";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -832,7 +832,7 @@ describe("usePostsThisWeek", () => {
 - [ ] **Step 2: Run test, verify FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test use-posts-this-week
+pnpm --filter @pretou/web test use-posts-this-week
 ```
 
 - [ ] **Step 3: Implementation**
@@ -840,7 +840,7 @@ pnpm --filter @rural-community-platform/web test use-posts-this-week
 ```ts
 // apps/web/src/hooks/queries/use-posts-this-week.ts
 import { useQuery } from "@tanstack/react-query";
-import { getPostsThisWeekCount, queryKeys } from "@rural-community-platform/shared";
+import { getPostsThisWeekCount, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function usePostsThisWeek(communeId: string) {
@@ -879,7 +879,7 @@ git commit -m "feat(web): usePostsThisWeek hook (count only)"
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { useHomepageSections } from "@/hooks/queries/use-homepage-sections";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
@@ -912,7 +912,7 @@ describe("useHomepageSections", () => {
 - [ ] **Step 2: Run test, verify FAIL**
 
 ```bash
-pnpm --filter @rural-community-platform/web test use-homepage-sections
+pnpm --filter @pretou/web test use-homepage-sections
 ```
 
 - [ ] **Step 3: Implementation**
@@ -920,7 +920,7 @@ pnpm --filter @rural-community-platform/web test use-homepage-sections
 ```ts
 // apps/web/src/hooks/queries/use-homepage-sections.ts
 import { useQuery } from "@tanstack/react-query";
-import { getHomepageSectionsByCommune, queryKeys } from "@rural-community-platform/shared";
+import { getHomepageSectionsByCommune, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useHomepageSections(communeId: string) {
@@ -1049,7 +1049,7 @@ Open `apps/web/src/app/[commune-slug]/page.tsx`. Locate the call to `getCommuneB
 // apps/web/src/lib/cached-fetchers/commune.ts
 import { unstable_cache } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { getCommuneBySlug, getHomepageSectionsByCommune } from "@rural-community-platform/shared";
+import { getCommuneBySlug, getHomepageSectionsByCommune } from "@pretou/shared";
 
 export async function getCommuneBySlugCached(slug: string) {
   const inner = unstable_cache(
@@ -1093,7 +1093,7 @@ If the page fetches other commune-derived data (council docs visible to anon, et
 Manual check:
 
 ```bash
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 Visit `http://localhost:3000/saint-medard-64` — page should render exactly as before (cache is empty so first visit fetches; second visit serves from cache; both look identical).
@@ -1101,7 +1101,7 @@ Visit `http://localhost:3000/saint-medard-64` — page should render exactly as 
 - [ ] **Step 5: Typecheck**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 Expected: no errors.
@@ -1131,7 +1131,7 @@ Biggest task in P5a. Splits the 199-line page into a ~50-line server shell and a
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { DashboardClient } from "@/app/admin/dashboard/dashboard-client";
 
 // Stub child components so the test only verifies the host wires hooks → tabs.
@@ -1192,7 +1192,7 @@ describe("DashboardClient", () => {
 - [ ] **Step 2: Run test, verify FAIL (module missing)**
 
 ```bash
-pnpm --filter @rural-community-platform/web test dashboard-client
+pnpm --filter @pretou/web test dashboard-client
 ```
 
 - [ ] **Step 3: Implement `dashboard-client.tsx`**
@@ -1202,7 +1202,7 @@ pnpm --filter @rural-community-platform/web test dashboard-client
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import type { PostType } from "@rural-community-platform/shared";
+import type { PostType } from "@pretou/shared";
 import { ThemeInjector } from "@/components/theme-injector";
 import { AdminTabs } from "@/components/admin/admin-tabs";
 import { SummaryCards } from "@/components/admin/summary-cards";
@@ -1354,7 +1354,7 @@ import {
   getCouncilDocsByCommune,
   getPostsThisWeekCount,
   queryKeys,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 import { createClient } from "@/lib/supabase/server";
 import { prefetchAndDehydrate } from "@/lib/query/prefetch";
 import { DashboardClient } from "./dashboard-client";
@@ -1432,7 +1432,7 @@ export default async function AdminDashboardPage() {
 - [ ] **Step 5: Run component test, verify PASS**
 
 ```bash
-pnpm --filter @rural-community-platform/web test dashboard-client
+pnpm --filter @pretou/web test dashboard-client
 ```
 
 Expected: 1 passing.
@@ -1440,7 +1440,7 @@ Expected: 1 passing.
 - [ ] **Step 6: Typecheck**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 Expected: no errors.
@@ -1448,7 +1448,7 @@ Expected: no errors.
 - [ ] **Step 7: Manual smoke**
 
 ```bash
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 Visit `/admin/dashboard` as an admin user. Verify all 6 tabs render with data (the post-management tab will show empty list — that's expected, called out in Task 13's note).
@@ -1499,7 +1499,7 @@ import {
   getProfile,
   getHomepageSectionsByCommune,
   queryKeys,
-} from "@rural-community-platform/shared";
+} from "@pretou/shared";
 import { createClient } from "@/lib/supabase/server";
 import { prefetchAndDehydrate } from "@/lib/query/prefetch";
 import { ThemeInjector } from "@/components/theme-injector";
@@ -1560,7 +1560,7 @@ export default async function AdminHomepagePage() {
 - [ ] **Step 3: Typecheck**
 
 ```bash
-pnpm --filter @rural-community-platform/web typecheck
+pnpm --filter @pretou/web typecheck
 ```
 
 - [ ] **Step 4: Manual smoke**
@@ -1584,7 +1584,7 @@ User-run validation. No code changes; report results.
 
 ```bash
 npx supabase start
-pnpm --filter @rural-community-platform/web dev
+pnpm --filter @pretou/web dev
 ```
 
 - [ ] **Step 2: Walk through admin flows**

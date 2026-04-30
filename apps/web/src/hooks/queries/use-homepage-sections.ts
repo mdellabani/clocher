@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getHomepageSectionsByCommune, queryKeys } from "@rural-community-platform/shared";
+import { getHomepageSectionsByCommune, queryKeys } from "@pretou/shared";
 import { createClient } from "@/lib/supabase/client";
 
 export function useHomepageSections(communeId: string) {

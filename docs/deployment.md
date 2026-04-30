@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide covers two environments for the Rural Community Platform:
+This guide covers two environments for the Pretou:
 
 - **Demo** — seeded with Saint-Médard data, for product demos and testing
 - **Production** — clean database, for real communes and users
@@ -15,7 +15,7 @@ Both environments use the same three services:
 
 | | Demo | Production |
 |---|---|---|
-| Supabase project | `rural-community-demo` | `rural-community-prod` |
+| Supabase project | `pretou-demo` | `pretou-prod` |
 | Seeded data | Yes (Saint-Médard) | No (clean) |
 | Vercel | Preview deployments | Production deployment |
 | Purpose | Demos, screenshots, testing | Real communes, real users |
@@ -52,7 +52,7 @@ Supabase must be set up first — both Vercel and Expo depend on the project URL
 1. Go to [supabase.com/dashboard](https://supabase.com/dashboard) and click **New Project**
 2. Configure:
    - **Organization:** your personal org (or create one)
-   - **Project name:** `rural-community-platform-test`
+   - **Project name:** `pretou-test`
    - **Database password:** generate a strong password and store it securely
    - **Region:** `West EU (Paris)` — closest to target users in rural France
 3. Wait for the project to finish provisioning (~2 minutes)
@@ -143,7 +143,7 @@ When prompted:
 - **Set up and develop:** Yes
 - **Which scope:** your personal account
 - **Link to existing project:** No (create new)
-- **Project name:** `rural-community-platform-test`
+- **Project name:** `pretou-test`
 - **Directory:** `./` (root — Vercel uses the root `vercel.json` is in `apps/web/` but link from root)
 
 Then configure the project in the Vercel dashboard:
@@ -173,7 +173,7 @@ Each `vercel env add` will prompt for the value and which environments to apply 
 vercel --prod
 ```
 
-Note the production URL (e.g., `https://rural-community-platform-test.vercel.app`).
+Note the production URL (e.g., `https://pretou-test.vercel.app`).
 
 ### 2.4 Post-deploy: update Supabase auth
 
@@ -301,7 +301,7 @@ These modules require additional environment variables beyond the core platform.
 | `GITHUB_APP_ID` | GitHub App settings page | Vercel + `apps/web/.env.local` |
 | `GITHUB_APP_PRIVATE_KEY` | Base64-encoded `.pem` file | Vercel + `apps/web/.env.local` |
 | `GITHUB_APP_INSTALLATION_ID` | URL after installing the app (`/installations/<id>`) | Vercel + `apps/web/.env.local` |
-| `FEEDBACK_REPO` | e.g. `mdellabani/clocher` | Vercel + `apps/web/.env.local` |
+| `FEEDBACK_REPO` | e.g. `mdellabani/pretou` | Vercel + `apps/web/.env.local` |
 
 ### 4.3 Setup instructions
 

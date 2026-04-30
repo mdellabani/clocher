@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { PRODUCER_CATEGORIES } from "@rural-community-platform/shared";
+import { PRODUCER_CATEGORIES } from "@pretou/shared";
 import { createProducerAction } from "./actions";
 
 export function CreateProducerDialog({ communeId }: { communeId: string }) {

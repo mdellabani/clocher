@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,8 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { POST_TYPE_LABELS } from "@rural-community-platform/shared";
-import type { PostType } from "@rural-community-platform/shared";
+import { POST_TYPE_LABELS } from "@pretou/shared";
+import type { PostType } from "@pretou/shared";
 import { createPostAction } from "@/app/app/feed/actions";
 import { PollForm } from "@/components/poll-form";
 import type { PollFormData } from "@/components/poll-form";

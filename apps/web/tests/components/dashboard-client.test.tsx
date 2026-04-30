@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { queryKeys } from "@rural-community-platform/shared";
+import { queryKeys } from "@pretou/shared";
 import { DashboardClient } from "@/app/admin/dashboard/dashboard-client";
 
 vi.mock("@/components/admin/summary-cards", () => ({ SummaryCards: () => <div>SUMMARY</div> }));

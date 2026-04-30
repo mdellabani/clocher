@@ -1,7 +1,7 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
-import { getMessages, queryKeys } from "@rural-community-platform/shared";
+import { getMessages, queryKeys } from "@pretou/shared";
 
 export function useMessages(conversationId: string) {
   const supabase = createClient();
